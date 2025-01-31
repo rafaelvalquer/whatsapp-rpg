@@ -3,18 +3,20 @@ const qrcode = require("qrcode-terminal");
 const axios = require("axios");
 const BattleSystem = require("./battleSystem");
 const missionsData = require("./missions"); // Importa o JSON
+
 const puppeteer = require('puppeteer-core');
 
 async function launchBrowser() {
   const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    headless: true // Verifique se está executando em modo headless
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
+    headless: true,
   });
 
   return browser;
 }
 
 launchBrowser().catch(console.error);
+
 
 //#region whatsapp-web.js
 // Inicializa o cliente com autenticação local
