@@ -4,7 +4,7 @@ const axios = require("axios");
 const BattleSystem = require("./battleSystem");
 const missionsData = require("./missions"); // Importa o JSON
 
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 
 async function launchBrowser() {
   const browser = await puppeteer.launch({
