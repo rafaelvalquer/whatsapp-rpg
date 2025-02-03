@@ -15,7 +15,7 @@ module.exports = {
               event: 'batalha',
               enemy: {
                 enemyName: 'Orc',
-                enemyHP: 10,
+                enemyHP: 2,
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 5

@@ -248,7 +248,7 @@ Escolha uma *missão* para iniciar a sua jornada:`
       optionsText += `${index + 1}. ${option.text}\n`;
     });
 
-    client.sendMessage(message.from, step.text);
+    client.sendMessage(message.from, mission.steps[step].text);
     await client.sendMessage(message.from, optionsText);
 
     userStates[message.from] = "missao";
