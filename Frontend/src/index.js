@@ -665,19 +665,22 @@ const handleUserResponse = async (message, state) => {
       }
 
       //atualiza personagem
-      const update = await updateCharacter(userData[message.from], battle.player.status);
-      if (update.success) {
-        await client.sendMessage(
-          message.from,
-          "Personagem atualizado com sucesso no banco"
-        );
-        userData[message.from] = update.user; // Atualiza os dados do personagem localmente
-      } else {
-        client.sendMessage(
-          message.from,
-          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-        );
+      if(userData[message.from].status.hp != battle.player.status.hp ){
+        const update = await updateCharacter(userData[message.from], battle.player.status);
+        if (update.success) {
+          await client.sendMessage(
+            message.from,
+            "Personagem atualizado com sucesso no banco"
+          );
+          userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+        } else {
+          client.sendMessage(
+            message.from,
+            "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+          );
+        }
       }
+
 
       navigationFlow.batalha(message);
       break;
