@@ -36,22 +36,23 @@ class BattleSystem {
 
   // Lógica de movimento e ataque do inimigo
   enemyAction() {
-    // Movendo o inimigo em direção ao jogador
-    if (this.enemyPosition < this.playerPosition) {
-      this.enemyPosition += 1;
-    } else if (this.enemyPosition > this.playerPosition) {
-      this.enemyPosition -= 1;
+    // Se o inimigo já está ao lado do jogador, ele ataca e não se move
+    if (Math.abs(this.enemyPosition - this.playerPosition) === 1) {
+        const damage = Math.max(this.enemy.enemyStr - this.player.status.con, 1);
+        this.player.status.hp -= damage;
+        return `O inimigo atacou o jogador e causou ${damage} de dano! HP do jogador restante: ${this.player.status.hp}`;
     }
 
-    // Se o inimigo está ao lado do jogador, ele ataca
-    if (Math.abs(this.enemyPosition - this.playerPosition) === 1) {
-      const damage = Math.max(this.enemy.enemyStr - this.player.status.con, 1);
-      this.player.status.hp -= damage;
-      return `O inimigo atacou o jogador e causou ${damage} de dano! HP do jogador restante: ${this.player.status.hp}`;
-    } else {
-      return "O inimigo se aproximou do jogador.";
+    // Se o inimigo não está ao lado do jogador, ele se move em direção ao jogador
+    if (this.enemyPosition < this.playerPosition) {
+        this.enemyPosition += 1;
+    } else if (this.enemyPosition > this.playerPosition) {
+        this.enemyPosition -= 1;
     }
-  }
+
+    return "O inimigo se aproximou do jogador.";
+}
+
   
     displayGrid() {
       const grid = new Array(this.gridSize).fill("[0]");

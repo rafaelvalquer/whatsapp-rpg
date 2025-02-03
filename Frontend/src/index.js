@@ -627,20 +627,20 @@ const handleUserResponse = async (message, state) => {
         const result = battle.movePlayer(1); // Move o jogador para frente
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
-        await message.reply(enemy);
-        await message.reply(`Estado atual:\n${battle.displayGrid()}`);
+        await client.sendMessage(message.from, enemy);
+        await client.sendMessage(message.from, `Estado atual:\n${battle.displayGrid()}`);
       } else if (input === "atacar" || input === "2") {
         const result = battle.playerAttack(); // Realiza um ataque
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
-        await message.reply(enemy);
-        await message.reply(`Estado atual:\n${battle.displayGrid()}`);
+        await client.sendMessage(message.from, enemy);
+        await client.sendMessage(message.from, `Estado atual:\n${battle.displayGrid()}`);
       } else if (input === "voltar" || input === "3") {
         const result = battle.movePlayer(-1); // Move o jogador para trás
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
-        await message.reply(enemy);
-        await message.reply(`Estado atual:\n${battle.displayGrid()}`);
+        await client.sendMessage(message.from, enemy);
+        await client.sendMessage(message.from, `Estado atual:\n${battle.displayGrid()}`);
       } else {
         await message.reply(
           "Comando inválido! Use 'avançar', 'voltar' ou 'atacar'."
