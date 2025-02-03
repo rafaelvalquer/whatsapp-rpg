@@ -204,14 +204,22 @@ Escolha uma *missão* para iniciar a sua jornada:`
 
   batalha: async (message) => {
     if (!battleController[message.from].battle) {
-      const enemy = battleController[message.from].enemy
-      await client.sendMessage(message.from, `Você encontrou um ${enemy.enemyName}`);
+      const enemy = battleController[message.from].enemy;
+      await client.sendMessage(
+        message.from,
+        `Você encontrou um ${enemy.enemyName}`
+      );
 
       await client.sendMessage(
         message.from,
         `${userData[message.from].name} hora da batalha.`
       );
-      battleController[message.from].battle = new BattleSystem(6, 0, userData[message.from], enemy); // Inicialize o sistema de batalha com um grid de 6 posições
+      battleController[message.from].battle = new BattleSystem(
+        6,
+        0,
+        userData[message.from],
+        enemy
+      ); // Inicialize o sistema de batalha com um grid de 6 posições
       const battle = battleController[message.from].battle;
 
       // Exibir o grid inicial
@@ -623,29 +631,54 @@ const handleUserResponse = async (message, state) => {
       const battle = battleController[message.from].battle;
       console.log(battle);
 
-      if (input === "avançar" || input === "1" ) {
+      if (input === "avançar" || input === "1") {
         const result = battle.movePlayer(1); // Move o jogador para frente
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
-        await client.sendMessage(message.from, `Estado atual:\n${battle.displayGrid()}`);
+        await client.sendMessage(
+          message.from,
+          `Estado atual:\n${battle.displayGrid()}`
+        );
       } else if (input === "atacar" || input === "2") {
         const result = battle.playerAttack(); // Realiza um ataque
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
-        await client.sendMessage(message.from, `Estado atual:\n${battle.displayGrid()}`);
+        await client.sendMessage(
+          message.from,
+          `Estado atual:\n${battle.displayGrid()}`
+        );
       } else if (input === "voltar" || input === "3") {
         const result = battle.movePlayer(-1); // Move o jogador para trás
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
-        await client.sendMessage(message.from, `Estado atual:\n${battle.displayGrid()}`);
+        await client.sendMessage(
+          message.from,
+          `Estado atual:\n${battle.displayGrid()}`
+        );
       } else {
         await message.reply(
           "Comando inválido! Use 'avançar', 'voltar' ou 'atacar'."
         );
       }
+
+      //atualiza personagem
+      const update = await updateCharacter(userData[message.from], battle.player.status);
+      if (update.success) {
+        await client.sendMessage(
+          message.from,
+          "Personagem atualizado com sucesso no banco"
+        );
+        userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+      } else {
+        client.sendMessage(
+          message.from,
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
+      }
+
       navigationFlow.batalha(message);
       break;
 
