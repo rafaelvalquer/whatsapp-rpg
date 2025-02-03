@@ -11,7 +11,7 @@ module.exports = {
           options: [
             {
               text: "Aceitar ajudar imediatamente.",
-              nextStep: 2,
+              nextStep: 4,
               event: 'batalha',
               enemy: {
                 enemyName: 'Orc',

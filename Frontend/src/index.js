@@ -236,6 +236,23 @@ Escolha uma *missão* para iniciar a sua jornada:`
     userStates[message.from] = "batalha.retorno"; // Atualize corretamente o estado
     console.log("Estado atualizado:", JSON.stringify(userStates, null, 2)); // Log final para validar
   },
+  batalhaFim: async (message) => {
+    delete battleController[message.from].battle
+    delete battleController[message.from].enemy
+
+    const mission = missionsData.missoes[battleController[message.from].missao];
+    const step = battleController[message.from].step;
+    let optionsText = "";
+
+    mission.steps[step].options.forEach((option, index) => {
+      optionsText += `${index + 1}. ${option.text}\n`;
+    });
+
+    client.sendMessage(message.from, step.text);
+    await client.sendMessage(message.from, optionsText);
+
+    userStates[message.from] = "missao";
+  },
 };
 //###############################################################
 // FIM Fluxo de navegação
@@ -591,6 +608,9 @@ const handleUserResponse = async (message, state) => {
         //validando se opção digitada está correta
         const option = mission.steps[step].options[input - 1]; // Pega opção
 
+        let nextStep = option.nextStep - 1;
+        battleController[message.from].step = nextStep;
+
         switch (option.event) {
           case "batalha":
             battleController[message.from].enemy = option.enemy;
@@ -598,8 +618,10 @@ const handleUserResponse = async (message, state) => {
             break;
           default:
             // atualiza proximo step
-            let nextStep = option.nextStep - 1;
-            battleController[message.from].step = nextStep;
+
+            //let nextStep = option.nextStep - 1;
+            //battleController[message.from].step = nextStep;
+
             let text = mission.steps[nextStep].text;
             let optionsText = "";
 
@@ -640,8 +662,9 @@ const handleUserResponse = async (message, state) => {
       } else if (input === "atacar" || input === "2") {
         const result = battle.playerAttack(); // Realiza um ataque
         
+        //Verificar se o inimigo foi derrotado
         if(battle.enemy.enemyHP <= 0){
-          userStates[message.from] = "missao";
+          await message.reply(result);
         } else {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
           await message.reply(result);
@@ -685,8 +708,12 @@ const handleUserResponse = async (message, state) => {
           );
         }
 
+        if(battle.enemy.enemyHP <= 0){
+          navigationFlow.batalhaFim(message);
+        }else {
+          navigationFlow.batalha(message);
+        }
 
-      navigationFlow.batalha(message);
       break;
 
     default:
