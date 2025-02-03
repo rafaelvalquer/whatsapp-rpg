@@ -661,10 +661,9 @@ const handleUserResponse = async (message, state) => {
         );
       }
 
-      console.log('status = ' + JSON.stringify(userData[message.from].status));
-      console.log('battle = ' + JSON.stringify(battle.player.status))
+      //Atualizar Personagem no banco
       const updates = {
-        status: userData[message.from].status
+        status: battle.player.status
       };
 
         const update = await updateCharacter(userData[message.from], updates);
