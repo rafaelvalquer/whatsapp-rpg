@@ -639,13 +639,18 @@ const handleUserResponse = async (message, state) => {
         );
       } else if (input === "atacar" || input === "2") {
         const result = battle.playerAttack(); // Realiza um ataque
-        const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-        await message.reply(result);
-        await client.sendMessage(message.from, enemy);
-        await client.sendMessage(
-          message.from,
-          `Estado atual:\n${battle.displayGrid()}`
-        );
+        
+        if(battle.enemy.enemyHP <= 0){
+          userStates[message.from] = "missao";
+        } else {
+          const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
+          await message.reply(result);
+          await client.sendMessage(message.from, enemy);
+          await client.sendMessage(
+            message.from,
+            `Estado atual:\n${battle.displayGrid()}`
+          );
+        }
       } else if (input === "voltar" || input === "3") {
         const result = battle.movePlayer(-1); // Move o jogador para trás
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
