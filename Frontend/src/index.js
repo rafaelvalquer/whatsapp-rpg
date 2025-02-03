@@ -661,8 +661,10 @@ const handleUserResponse = async (message, state) => {
         );
       }
 
+      console.log('status = ' + JSON.stringify(userData[message.from].status));
+      console.log('battle = ' + JSON.stringify(battle.player.status))
       const updates = {
-        status: userData[message.from].status,
+        status: userData[message.from].status
       };
 
         const update = await updateCharacter(userData[message.from], updates);
