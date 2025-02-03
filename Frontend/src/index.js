@@ -661,11 +661,11 @@ const handleUserResponse = async (message, state) => {
         );
       }
 
-      console.log('HP userData = ' + userData[message.from].status.hp);
-      console.log('HP battle = ' + battle.player.status.hp)
-      //atualiza personagem
-      if(userData[message.from].status.hp != battle.player.status.hp ){
-        const update = await updateCharacter(userData[message.from], battle.player.status);
+      const updates = {
+        status: userData[message.from].status,
+      };
+
+        const update = await updateCharacter(userData[message.from], updates);
         if (update.success) {
           await client.sendMessage(
             message.from,
@@ -678,7 +678,6 @@ const handleUserResponse = async (message, state) => {
             "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
           );
         }
-      }
 
 
       navigationFlow.batalha(message);
