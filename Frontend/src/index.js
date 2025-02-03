@@ -625,9 +625,6 @@ const handleUserResponse = async (message, state) => {
       break;
 
     case "batalha.retorno":
-      if (!battleController[message.from].battle) {
-      }
-
       const battle = battleController[message.from].battle;
       console.log(battle);
 
@@ -664,6 +661,8 @@ const handleUserResponse = async (message, state) => {
         );
       }
 
+      console.log('HP userData = ' + userData[message.from].status.hp);
+      console.log('HP battle = ' + battle.player.status.hp)
       //atualiza personagem
       if(userData[message.from].status.hp != battle.player.status.hp ){
         const update = await updateCharacter(userData[message.from], battle.player.status);
