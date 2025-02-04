@@ -240,7 +240,7 @@ Escolha uma *missão* para iniciar a sua jornada:`
     delete battleController[message.from].battle
     delete battleController[message.from].enemy
 
-    const mission = missionsData.missoes[battleController[message.from].missao];
+    const mission = structuredClone(missionsData.missoes[battleController[message.from].missao]);
     const step = battleController[message.from].step;
     let optionsText = "";
 
@@ -575,7 +575,7 @@ const handleUserResponse = async (message, state) => {
         };
 
         const mission =
-          missionsData.missoes[battleController[message.from].missao];
+          structuredClone(missionsData.missoes[battleController[message.from].missao]);
         const step = mission.steps[0];
         let optionsText = "";
 
@@ -598,7 +598,7 @@ const handleUserResponse = async (message, state) => {
     case "missao":
       // Processa o input válido
       const mission =
-        missionsData.missoes[battleController[message.from].missao];
+        structuredClone(missionsData.missoes[battleController[message.from].missao]);
       const step = battleController[message.from].step;
 
       console.log("mission = " + JSON.stringify(mission));
