@@ -19,7 +19,7 @@ module.exports = {
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 5,
-                enemyXP: 10
+                enemyXP: 101
               }
             },
             {

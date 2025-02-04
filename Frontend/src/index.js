@@ -73,6 +73,57 @@ async function updateState(userData, state) {
   }
 }
 
+//Função para calcular o proximo nivel do Personagem.
+function xpParaProximoNivel(level) {
+  const baseXP = 100;
+  const factor = 1.5;
+  return Math.floor(baseXP * level ** factor);
+}
+
+function verificarLevelUp(personagem) {
+  const xpNecessario = xpParaProximoNivel(personagem.level);
+
+  if (personagem.status.xp >= xpNecessario) {
+    personagem.status.lv += 1;
+    personagem.status.xp -= xpNecessario; // Subtrai o XP usado
+
+    if (personagem.classe == "guerreiro") {
+      personagem.status.maxHP += 10; // Aumenta HP ao subir de nível
+      personagem.status.hp = personagem.status.maxHP; // Recupera todo HP
+      personagem.status.str += 3; // Aumenta força
+      personagem.status.con += 2; // Aumenta defesa
+      personagem.status.agi += 1; // Aumenta agilidade
+      personagem.status.int += 1; // Aumenta inteligência (leve crescimento)
+    } else if (personagem.classe == "arqueiro") {
+      personagem.status.maxHP += 6; // Aumenta HP, mas menos que o guerreiro
+      personagem.status.hp = personagem.status.maxHP;
+      personagem.status.str += 2; // Aumenta força moderadamente
+      personagem.status.con += 1; // Pouco aumento na defesa
+      personagem.status.agi += 3; // Agilidade é o foco principal
+      personagem.status.int += 2; // Inteligência cresce um pouco para habilidades de mira/tática
+    } else if (personagem.classe == "mago") {
+      personagem.status.maxHP += 5; // HP cresce pouco, pois mago é frágil
+      personagem.status.hp = personagem.status.maxHP;
+      personagem.status.str += 1; // Pouca força, não é o foco
+      personagem.status.con += 1; // Pouca defesa, pois mago depende de magia
+      personagem.status.agi += 2; // Mais ágil que guerreiro, menos que arqueiro
+      personagem.status.int += 4; // Inteligência cresce muito, pois é o atributo principal
+    }
+
+    return {
+      personagem,
+      mensagem: `Parabéns! Você subiu para o nível ${personagem.status.lv}! 🎉`,
+    };
+  }
+
+  return {
+    personagem,
+    mensagem: `Você ainda precisa de ${
+      xpNecessario - personagem.status.xp
+    } XP para subir de nível.`,
+  };
+}
+
 //###############################################################
 //#region Fluxo de navegação
 // Fluxo de navegação
@@ -237,10 +288,12 @@ Escolha uma *missão* para iniciar a sua jornada:`
     console.log("Estado atualizado:", JSON.stringify(userStates, null, 2)); // Log final para validar
   },
   batalhaFim: async (message) => {
-    delete battleController[message.from].battle
-    delete battleController[message.from].enemy
+    delete battleController[message.from].battle;
+    delete battleController[message.from].enemy;
 
-    const mission = structuredClone(missionsData.missoes[battleController[message.from].missao]);
+    const mission = structuredClone(
+      missionsData.missoes[battleController[message.from].missao]
+    );
     const step = battleController[message.from].step;
     let optionsText = "";
 
@@ -454,6 +507,7 @@ const handleUserResponse = async (message, state) => {
             status: {
               lv: 1,
               xp: 0,
+              maxHP: 30,
               hp: 30,
               str: 4,
               con: 3,
@@ -470,7 +524,8 @@ const handleUserResponse = async (message, state) => {
             status: {
               lv: 1,
               xp: 0,
-              hp: 20,
+              maxHP: 25,
+              hp: 25,
               str: 2,
               con: 2,
               agi: 5,
@@ -486,6 +541,7 @@ const handleUserResponse = async (message, state) => {
             status: {
               lv: 1,
               xp: 0,
+              maxHP: 20,
               hp: 20,
               str: 1,
               con: 2,
@@ -574,8 +630,9 @@ const handleUserResponse = async (message, state) => {
           step: 0,
         };
 
-        const mission =
-          structuredClone(missionsData.missoes[battleController[message.from].missao]);
+        const mission = structuredClone(
+          missionsData.missoes[battleController[message.from].missao]
+        );
         const step = mission.steps[0];
         let optionsText = "";
 
@@ -597,8 +654,9 @@ const handleUserResponse = async (message, state) => {
 
     case "missao":
       // Processa o input válido
-      const mission =
-        structuredClone(missionsData.missoes[battleController[message.from].missao]);
+      const mission = structuredClone(
+        missionsData.missoes[battleController[message.from].missao]
+      );
       const step = battleController[message.from].step;
 
       console.log("mission = " + JSON.stringify(mission));
@@ -661,10 +719,14 @@ const handleUserResponse = async (message, state) => {
         );
       } else if (input === "atacar" || input === "2") {
         const result = battle.playerAttack(); // Realiza um ataque
-        
+
         //Verificar se o inimigo foi derrotado
-        if(battle.enemy.enemyHP <= 0){
+        if (battle.enemy.enemyHP <= 0) {
           await message.reply(result);
+
+          const respostaLevelUp = verificarLevelUp(userData[message.from]);
+          userData[message.from] = respostaLevelUp.personagem; // Atualiza os dados do usuário
+          await message.reply(respostaLevelUp.mensagem);
         } else {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
           await message.reply(result);
@@ -691,28 +753,28 @@ const handleUserResponse = async (message, state) => {
 
       //Atualizar Personagem no banco
       const updates = {
-        status: battle.player.status
+        status: battle.player.status,
       };
 
-        const update = await updateCharacter(userData[message.from], updates);
-        if (update.success) {
-          await client.sendMessage(
-            message.from,
-            "Personagem atualizado com sucesso no banco"
-          );
-          userData[message.from] = update.user; // Atualiza os dados do personagem localmente
-        } else {
-          client.sendMessage(
-            message.from,
-            "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-          );
-        }
+      const update = await updateCharacter(userData[message.from], updates);
+      if (update.success) {
+        await client.sendMessage(
+          message.from,
+          "Personagem atualizado com sucesso no banco"
+        );
+        userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+      } else {
+        client.sendMessage(
+          message.from,
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
+      }
 
-        if(battle.enemy.enemyHP <= 0){
-          navigationFlow.batalhaFim(message);
-        }else {
-          navigationFlow.batalha(message);
-        }
+      if (battle.enemy.enemyHP <= 0) {
+        navigationFlow.batalhaFim(message);
+      } else {
+        navigationFlow.batalha(message);
+      }
 
       break;
 

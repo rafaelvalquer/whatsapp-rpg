@@ -10,6 +10,10 @@ const StatusSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  maxHP: {
+    type: Number,
+    default: 0,
+  },
   hp: {
     type: Number,
     default: 0,

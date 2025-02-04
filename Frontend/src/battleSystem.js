@@ -35,11 +35,11 @@ class BattleSystem {
       if (this.enemy.enemyHP <= 0) {
         const xp = this.enemy.enemyXP;
         this.player.status.xp += xp;
-        return `O jogador atacou o inimigo e causou ${damage} de dano! O inimigo foi derrotado! 🎉
-        Você ganhou ${xp} de experiência! 🏆`;
+        return `O jogador atacou o inimigo e causou *${damage}* de dano! O inimigo foi derrotado! 🎉
+Você ganhou *${xp}* de experiência! 🏆`;
     }
 
-      return `O jogador atacou o inimigo e causou ${damage} de dano! HP do inimigo restante: ${this.enemy.enemyHP}`;
+      return `O jogador atacou o inimigo e causou *${damage}* de dano! HP do inimigo restante: ${this.enemy.enemyHP}`;
     } else {
       return "O inimigo está muito longe para atacar!";
     }
@@ -53,10 +53,10 @@ class BattleSystem {
       this.player.status.hp -= damage;
 
       if (this.player.status.hp <= 0) {
-        return `O inimigo atacou o jogador e causou ${damage} de dano! Você morreu! ☠️`;
+        return `O inimigo atacou o jogador e causou *${damage}* de dano! Você morreu! ☠️`;
     }
 
-      return `O inimigo atacou o jogador e causou ${damage} de dano! HP do jogador restante: ${this.player.status.hp}`;
+      return `O inimigo atacou o jogador e causou *${damage}* de dano! HP do jogador restante: ${this.player.status.hp}`;
     }
 
     // Se o inimigo não está ao lado do jogador, ele se move em direção ao jogador
