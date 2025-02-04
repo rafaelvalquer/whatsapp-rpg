@@ -81,7 +81,7 @@ function xpParaProximoNivel(level) {
 }
 
 function verificarLevelUp(personagem) {
-  const xpNecessario = xpParaProximoNivel(personagem.level);
+  const xpNecessario = xpParaProximoNivel(personagem.status.lv);
 
   if (personagem.status.xp >= xpNecessario) {
     personagem.status.lv += 1;
