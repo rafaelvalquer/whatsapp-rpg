@@ -33,7 +33,10 @@ class BattleSystem {
       this.enemy.enemyHP -= damage;
 
       if (this.enemy.enemyHP <= 0) {
-        return `O jogador atacou o inimigo e causou ${damage} de dano! O inimigo foi derrotado! 🎉`;
+        const xp = this.enemy.enemyXP;
+        this.player.status.xp += xp;
+        return `O jogador atacou o inimigo e causou ${damage} de dano! O inimigo foi derrotado! 🎉
+        Você ganhou ${xp} de experiência! 🏆`;
     }
 
       return `O jogador atacou o inimigo e causou ${damage} de dano! HP do inimigo restante: ${this.enemy.enemyHP}`;
@@ -52,7 +55,7 @@ class BattleSystem {
       if (this.player.status.hp <= 0) {
         return `O inimigo atacou o jogador e causou ${damage} de dano! Você morreu! ☠️`;
     }
-    
+
       return `O inimigo atacou o jogador e causou ${damage} de dano! HP do jogador restante: ${this.player.status.hp}`;
     }
 

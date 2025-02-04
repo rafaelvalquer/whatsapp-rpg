@@ -18,7 +18,8 @@ module.exports = {
                 enemyHP: 2,
                 enemyStr: 3,
                 enemyCon: 2,
-                position: 5
+                position: 5,
+                enemyXP: 10
               }
             },
             {
