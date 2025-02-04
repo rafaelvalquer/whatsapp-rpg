@@ -207,7 +207,7 @@ Escolha uma *missão* para iniciar a sua jornada:`
       const enemy = battleController[message.from].enemy;
       await client.sendMessage(
         message.from,
-        `Você encontrou um ${enemy.enemyName}`
+        `Você encontrou um ${enemy.enemyName}. HP = ${enemy.enemyHP}`
       );
 
       await client.sendMessage(
