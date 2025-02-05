@@ -111,6 +111,8 @@ function verificarLevelUp(personagem) {
       personagem.status.int += 4; // Inteligência cresce muito, pois é o atributo principal
     }
 
+    console.log('################')
+    console.log(JSON.stringify(personagem));
     return {
       personagem,
       mensagem: `Parabéns! Você subiu para o nível ${personagem.status.lv}! 🎉`,
@@ -766,6 +768,7 @@ const handleUserResponse = async (message, state) => {
           await message.reply(result);
 
           const respostaLevelUp = verificarLevelUp(userData[message.from]); // Verificar se o personagem pulou de LV
+          console.log('respostaLevelUp = ' + JSON.stringify(respostaLevelUp))
           userData[message.from] = respostaLevelUp.personagem; // Atualiza os dados do usuário
           await client.sendMessage(message.from, respostaLevelUp.mensagem);
         } else {
@@ -833,7 +836,7 @@ const handleUserResponse = async (message, state) => {
       battle = battleController[message.from]?.battle;
       if (isValidInput(input, ["1", "2", "3"])) {
         if (input === "1") {
-          userData[message.from].arma1 = items[battle.enemy.arma];
+          userData[message.from].status.arma1 = items[battle.enemy.arma];
           
           //Atualizar Personagem no banco
           let  updates = {
