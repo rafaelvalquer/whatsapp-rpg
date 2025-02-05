@@ -881,15 +881,12 @@ const handleUserResponse = async (message, state) => {
               );
             }
                     
-          await client.sendMessage(message.from, `Ao empunhar o ${items[userData[message.from].arma2].nome}, um novo poder desperta dentro de você!"`);
+          await client.sendMessage(message.from, `Ao empunhar o ${items[userData[message.from].status.arma2].nome}, um novo poder desperta dentro de você!`);
 
           navigationFlow.batalhaFim(message);
         } else if (input === "3") {
-          navigationFlow.faq(message);
-        } else if (input === "4") {
-          navigationFlow.faq(message);
-        } else if (input === "5") {
-          navigationFlow.faq(message);
+          await client.sendMessage(message.from, "Você decidiu deixar a arma no local e segue seu caminho.");
+          navigationFlow.batalhaFim(message);
         }
       } else {
         await message.reply(
