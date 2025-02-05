@@ -818,8 +818,9 @@ const handleUserResponse = async (message, state) => {
           await client.sendMessage(message.from, frase);
 
           navigationFlow.recompensa(message);
+        } else {
+          navigationFlow.batalhaFim(message);
         }
-        navigationFlow.batalhaFim(message);
       } else {
         navigationFlow.batalha(message);
       }
