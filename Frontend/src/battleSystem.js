@@ -35,7 +35,7 @@ class BattleSystem {
       if (this.enemy.enemyHP <= 0) {
         const xp = this.enemy.enemyXP;
         this.player.status.xp += xp;
-        return `O jogador atacou o inimigo e causou *${damage}* de dano! O inimigo foi derrotado! 🎉
+        return `O jogador atacou o inimigo e causou *${damage}* de dano! O ${this.enemy.enemyName} foi derrotado! 🎉
 Você ganhou *${xp}* de experiência! 🏆`;
     }
 

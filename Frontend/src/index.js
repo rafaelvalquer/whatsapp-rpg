@@ -3,6 +3,7 @@ const qrcode = require("qrcode-terminal");
 const axios = require("axios");
 const BattleSystem = require("./battleSystem");
 const missionsData = require("./missions"); // Importa o JSON
+const items = require("./armas.json"); // Importa o JSON
 
 //#region whatsapp-web.js
 // Inicializa o cliente com autenticação local
@@ -118,10 +119,22 @@ function verificarLevelUp(personagem) {
 
   return {
     personagem,
-    mensagem: `Você ainda precisa de ${
+    mensagem: `Você ainda precisa de *${
       xpNecessario - personagem.status.xp
-    } XP para subir de nível.`,
+    }* XP para subir de nível.`,
   };
+}
+
+// Função para dar a arma ao jogador ao vencer
+function obterRecompensa(personagem, inimigo) {
+  if (inimigo.arma) {
+    const armaRecebida = items[inimigo.arma]; // Pega o item do inimigo
+    if (armaRecebida) {
+      personagem.status.arma1 = armaRecebida; // Adiciona ao personagem
+      return `Você derrotou ${inimigo.enemyName} e ganhou uma ${armaRecebida.nome}!`;
+    }
+  }
+  return `Você derrotou ${inimigo.enemyName}, mas ele não tinha itens valiosos.`;
 }
 
 //###############################################################
@@ -305,6 +318,33 @@ Escolha uma *missão* para iniciar a sua jornada:`
     await client.sendMessage(message.from, optionsText);
 
     userStates[message.from] = "missao";
+  },
+
+  recompensa: async (message) => {
+    const battle = battleController[message.from].battle;
+
+    if (battle.enemy.arma) {
+      const frase = `📜 Atributos do ${items[battle.enemy.arma].nome}:
+
+🗡 Força: +[${items[battle.enemy.arma].str}]
+🛡 Resistência: +[${items[battle.enemy.arma].con}]
+🎯 Agilidade: +[${items[battle.enemy.arma].agi}]
+📖 Inteligência: +[${items[battle.enemy.arma].int}]
+🎒 Armas atuais:
+🔹 Mão Direita: [${userData[message.from].arma1}]
+🔹 Mão Esquerda: [${userData[message.from].arma2}]
+
+⚔️ O que deseja fazer?
+1️⃣ Trocar a Mão Direita
+2️⃣ Trocar a Mão Esquerda
+3️⃣ Deixar a arma no local`;
+
+      await client.sendMessage(message.from, frase);
+      userStates[message.from] = "recompensa.arma";
+    } else {
+      userStates[message.from] = "recompensa.item"; // falta fazer
+    }
+
   },
 };
 //###############################################################
@@ -724,9 +764,9 @@ const handleUserResponse = async (message, state) => {
         if (battle.enemy.enemyHP <= 0) {
           await message.reply(result);
 
-          const respostaLevelUp = verificarLevelUp(userData[message.from]);
+          const respostaLevelUp = verificarLevelUp(userData[message.from]); // Verificar se o personagem pulou de LV
           userData[message.from] = respostaLevelUp.personagem; // Atualiza os dados do usuário
-          await message.reply(respostaLevelUp.mensagem);
+          await client.sendMessage(message.from, respostaLevelUp.mensagem);
         } else {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
           await message.reply(result);
@@ -771,11 +811,86 @@ const handleUserResponse = async (message, state) => {
       }
 
       if (battle.enemy.enemyHP <= 0) {
+        if (battle.enemy.arma || battle.enemy.item) {
+          const frase = `Ao revirar os restos do ${
+            battle.enemy.enemyName
+          }, você descobre um ${items[battle.enemy.arma].nome}.`;
+          await client.sendMessage(message.from, frase);
+
+          navigationFlow.recompensa(message);
+        }
         navigationFlow.batalhaFim(message);
       } else {
         navigationFlow.batalha(message);
       }
 
+      break;
+
+    //#region Recompensa Retorno
+    case "recompensa.arma":
+      if (isValidInput(input, ["1", "2", "3"])) {
+        if (input === "1") {
+          userData[message.from].arma1 = items[battle.enemy.arma];
+          
+          //Atualizar Personagem no banco
+          let  updates = {
+            status: battle.player.status,
+          };
+
+          let  update = await updateCharacter(userData[message.from], updates);
+          if (update.success) {
+            await client.sendMessage(
+              message.from,
+              "Personagem atualizado com sucesso no banco"
+            );
+            userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+          } else {
+            client.sendMessage(
+              message.from,
+              "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+            );
+          }
+
+          await client.sendMessage(message.from, `Você equipa o ${userData[message.from].arma1.nome} e sente sua força crescer. O próximo inimigo que se cuide!`);
+          navigationFlow.batalhaFim(message);
+
+        } else if (input === "2") {
+          userData[message.from].arma2 = items[battle.enemy.arma];
+
+            //Atualizar Personagem no banco
+            let  updates = {
+              status: battle.player.status,
+            };
+  
+            let  update = await updateCharacter(userData[message.from], updates);
+            if (update.success) {
+              await client.sendMessage(
+                message.from,
+                "Personagem atualizado com sucesso no banco"
+              );
+              userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+            } else {
+              client.sendMessage(
+                message.from,
+                "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+              );
+            }
+                    
+          await client.sendMessage(message.from, `Ao empunhar o ${userData[message.from].arma1.nome}, um novo poder desperta dentro de você!"`);
+
+          navigationFlow.batalhaFim(message);
+        } else if (input === "3") {
+          navigationFlow.faq(message);
+        } else if (input === "4") {
+          navigationFlow.faq(message);
+        } else if (input === "5") {
+          navigationFlow.faq(message);
+        }
+      } else {
+        await message.reply(
+          "Opção inválida. Por favor, responda com 1, 2 ou 3."
+        );
+      }
       break;
 
     default:
