@@ -835,7 +835,7 @@ const handleUserResponse = async (message, state) => {
       battle = battleController[message.from]?.battle;
       if (isValidInput(input, ["1", "2", "3"])) {
         if (input === "1") {
-          battle.player.status.arma1 = items[battle.enemy.arma];
+          battle.player.status.arma1 = battle.enemy.arma;
           
           //Atualizar Personagem no banco
           let  updates = {
