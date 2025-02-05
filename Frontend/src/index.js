@@ -333,8 +333,8 @@ Escolha uma *missão* para iniciar a sua jornada:`
 🎯 Agilidade: +[${items[battle.enemy.arma].agi}]
 📖 Inteligência: +[${items[battle.enemy.arma].int}]
 🎒 Armas atuais:
-🔹 Mão Direita: [${userData[message.from].arma1}]
-🔹 Mão Esquerda: [${userData[message.from].arma2}]`;
+🔹 Mão Direita: [${userData[message.from].status.arma1}]
+🔹 Mão Esquerda: [${userData[message.from].status.arma2}]`;
 
 const opcoes = `⚔️ O que deseja fazer?
 1️⃣ Trocar a Mão Direita
@@ -856,7 +856,7 @@ const handleUserResponse = async (message, state) => {
             );
           }
 
-          await client.sendMessage(message.from, `Você equipa o ${items[userData[message.from].arma1].nome} e sente sua força crescer. O próximo inimigo que se cuide!`);
+          await client.sendMessage(message.from, `Você equipa o ${items[userData[message.from].status.arma1].nome} e sente sua força crescer. O próximo inimigo que se cuide!`);
           navigationFlow.batalhaFim(message);
 
         } else if (input === "2") {
