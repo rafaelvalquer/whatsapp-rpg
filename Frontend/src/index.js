@@ -333,8 +333,8 @@ Escolha uma *missão* para iniciar a sua jornada:`
 🎯 Agilidade: +[${items[battle.enemy.arma].agi}]
 📖 Inteligência: +[${items[battle.enemy.arma].int}]
 🎒 Armas atuais:
-🔹 Mão Direita: [${items[userData[message.from].status.arma1].nome}]
-🔹 Mão Esquerda: [${items[userData[message.from].status.arma2].nome}]`;
+🔹 Mão Direita: [${items[userData[message.from].status.arma1].nome || 'Vazio'}]
+🔹 Mão Esquerda: [${items[userData[message.from].status.arma2].nome|| 'Vazio'}]`;
 
 const opcoes = `⚔️ O que deseja fazer?
 1️⃣ Trocar a Mão Direita
