@@ -749,7 +749,6 @@ const handleUserResponse = async (message, state) => {
 
     case "batalha.retorno":
       battle = battleController[message.from]?.battle;
-      console.log(battle);
 
       if (input === "avançar" || input === "1") {
         const result = battle.movePlayer(1); // Move o jogador para frente
@@ -767,8 +766,8 @@ const handleUserResponse = async (message, state) => {
         if (battle.enemy.enemyHP <= 0) {
           await message.reply(result);
 
-          const respostaLevelUp = verificarLevelUp(userData[message.from]); // Verificar se o personagem pulou de LV
-          userData[message.from] = respostaLevelUp.personagem; // Atualiza os dados do usuário
+          const respostaLevelUp = verificarLevelUp(battle.player); // Verificar se o personagem pulou de LV
+          battle.player.status = respostaLevelUp.personagem; // Atualiza os dados do usuário
           await client.sendMessage(message.from, respostaLevelUp.mensagem);
         } else {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
@@ -798,14 +797,6 @@ const handleUserResponse = async (message, state) => {
       const updates = {
         status: battle.player.status,
       };
-
-      console.log('##########################')
-      console.log('updates = ' + JSON.stringify(userData[message.from]));
-      console.log('updates = ' + JSON.stringify(updates));
-
-
-
-      console.log('##########################')
 
       const update = await updateCharacter(userData[message.from], updates);
       if (update.success) {
