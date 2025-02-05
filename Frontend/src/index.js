@@ -856,11 +856,11 @@ const handleUserResponse = async (message, state) => {
             );
           }
 
-          await client.sendMessage(message.from, `Você equipa o ${userData[message.from].arma1.nome} e sente sua força crescer. O próximo inimigo que se cuide!`);
+          await client.sendMessage(message.from, `Você equipa o ${items[userData[message.from].arma1].nome} e sente sua força crescer. O próximo inimigo que se cuide!`);
           navigationFlow.batalhaFim(message);
 
         } else if (input === "2") {
-          battle.player.status.arma2 = items[battle.enemy.arma];
+          battle.player.status.arma2 = battle.enemy.arma;
 
             //Atualizar Personagem no banco
             let  updates = {
@@ -881,7 +881,7 @@ const handleUserResponse = async (message, state) => {
               );
             }
                     
-          await client.sendMessage(message.from, `Ao empunhar o ${userData[message.from].arma1.nome}, um novo poder desperta dentro de você!"`);
+          await client.sendMessage(message.from, `Ao empunhar o ${items[userData[message.from].arma2].nome}, um novo poder desperta dentro de você!"`);
 
           navigationFlow.batalhaFim(message);
         } else if (input === "3") {
