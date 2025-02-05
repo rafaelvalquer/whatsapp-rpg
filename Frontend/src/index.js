@@ -334,14 +334,15 @@ Escolha uma *missão* para iniciar a sua jornada:`
 📖 Inteligência: +[${items[battle.enemy.arma].int}]
 🎒 Armas atuais:
 🔹 Mão Direita: [${userData[message.from].arma1}]
-🔹 Mão Esquerda: [${userData[message.from].arma2}]
+🔹 Mão Esquerda: [${userData[message.from].arma2}]`;
 
-⚔️ O que deseja fazer?
+const opcoes = `⚔️ O que deseja fazer?
 1️⃣ Trocar a Mão Direita
 2️⃣ Trocar a Mão Esquerda
 3️⃣ Deixar a arma no local`;
 
       await client.sendMessage(message.from, frase);
+      await client.sendMessage(message.from, opcoes);
       userStates[message.from] = "recompensa.arma";
     } else {
       userStates[message.from] = "recompensa.item"; // falta fazer
@@ -834,7 +835,7 @@ const handleUserResponse = async (message, state) => {
       battle = battleController[message.from]?.battle;
       if (isValidInput(input, ["1", "2", "3"])) {
         if (input === "1") {
-          userData[message.from].status.arma1 = items[battle.enemy.arma];
+          battle.player.status.arma1 = items[battle.enemy.arma];
           
           //Atualizar Personagem no banco
           let  updates = {
@@ -859,7 +860,7 @@ const handleUserResponse = async (message, state) => {
           navigationFlow.batalhaFim(message);
 
         } else if (input === "2") {
-          userData[message.from].arma2 = items[battle.enemy.arma];
+          battle.player.status.arma2 = items[battle.enemy.arma];
 
             //Atualizar Personagem no banco
             let  updates = {
