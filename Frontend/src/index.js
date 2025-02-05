@@ -768,7 +768,7 @@ const handleUserResponse = async (message, state) => {
           await message.reply(result);
 
           const respostaLevelUp = verificarLevelUp(battle.player); // Verificar se o personagem pulou de LV
-          battle.player.status = respostaLevelUp.personagem; // Atualiza os dados do usuário
+          battle.player = respostaLevelUp.personagem; // Atualiza os dados do usuário
           await client.sendMessage(message.from, respostaLevelUp.mensagem);
         } else {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
