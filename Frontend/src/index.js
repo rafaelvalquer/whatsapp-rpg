@@ -416,6 +416,7 @@ client.on("message", async (message) => {
 // Lida com as respostas do usuário com base no estado atual
 const handleUserResponse = async (message, state) => {
   const input = message.body.trim();
+  let battle;
 
   switch (state) {
     //#region Boas Vindas
@@ -745,7 +746,7 @@ const handleUserResponse = async (message, state) => {
       break;
 
     case "batalha.retorno":
-      const battle = battleController[message.from].battle;
+      battle = battleController[message.from]?.battle;
       console.log(battle);
 
       if (input === "avançar" || input === "1") {
@@ -829,7 +830,7 @@ const handleUserResponse = async (message, state) => {
 
     //#region Recompensa Retorno
     case "recompensa.arma":
-      console.log(JSON.stringify(battle));
+      battle = battleController[message.from]?.battle;
       if (isValidInput(input, ["1", "2", "3"])) {
         if (input === "1") {
           userData[message.from].arma1 = items[battle.enemy.arma];
