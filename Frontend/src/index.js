@@ -768,7 +768,6 @@ const handleUserResponse = async (message, state) => {
           await message.reply(result);
 
           const respostaLevelUp = verificarLevelUp(userData[message.from]); // Verificar se o personagem pulou de LV
-          console.log('respostaLevelUp = ' + JSON.stringify(respostaLevelUp))
           userData[message.from] = respostaLevelUp.personagem; // Atualiza os dados do usuário
           await client.sendMessage(message.from, respostaLevelUp.mensagem);
         } else {
@@ -799,6 +798,14 @@ const handleUserResponse = async (message, state) => {
       const updates = {
         status: battle.player.status,
       };
+
+      console.log('##########################')
+      console.log('updates = ' + JSON.stringify(userData[message.from]));
+      console.log('updates = ' + JSON.stringify(updates));
+
+
+
+      console.log('##########################')
 
       const update = await updateCharacter(userData[message.from], updates);
       if (update.success) {
