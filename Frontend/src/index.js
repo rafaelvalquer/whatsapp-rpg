@@ -829,6 +829,7 @@ const handleUserResponse = async (message, state) => {
 
     //#region Recompensa Retorno
     case "recompensa.arma":
+      console.log(JSON.stringify(battle));
       if (isValidInput(input, ["1", "2", "3"])) {
         if (input === "1") {
           userData[message.from].arma1 = items[battle.enemy.arma];
