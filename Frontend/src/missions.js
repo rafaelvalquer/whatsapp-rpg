@@ -26,6 +26,8 @@ module.exports = {
             {
               text: "Negociar uma recompensa antes de ajudar.",
               nextStep: 3,
+              event: 'encontraItem',
+              item: 101
             },
             {
               text: "Recusar a ajuda e seguir seu caminho.",

@@ -21,6 +21,9 @@
   },
   "101": {
     "nome": "Poção",
-    "hp": 10
+    "tipo" : "hp",
+    "valor" : 10,
+    "emoji" : "🩸",
+    "txt" : "Recupera até 10 de HP"
   }
 }

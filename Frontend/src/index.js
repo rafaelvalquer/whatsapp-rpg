@@ -384,6 +384,25 @@ const opcoes = `⚔️ O que deseja fazer?
     }
 
   },
+
+  encontraItem: async (message) => {
+
+      const item = battleController[message.from].item;
+      await client.sendMessage(
+        message.from,
+        `📜 "Você encontrou uma ${items[item].nome}${items[item].emoji}! ${items[item].txt}."`
+      );
+
+      await client.sendMessage(
+        message.from,
+        `O que deseja fazer?  
+1️⃣ Usar agora  
+2️⃣ Guardar para mais tarde`);
+
+      userStates[message.from] = "encontraItem.retorno"; // Atualize corretamente o estado
+    
+  },
+
 };
 //###############################################################
 // FIM Fluxo de navegação
@@ -695,7 +714,7 @@ const handleUserResponse = async (message, state) => {
       }
       break;
 
-    //#region Menu Missões
+    //#region QUadro de Missões
     case "quadroDeMissoes.retorna":
       // Processa o input válido
       if (
@@ -731,6 +750,7 @@ const handleUserResponse = async (message, state) => {
       }
       break;
 
+    //#region Missão
     case "missao":
       // Processa o input válido
       const mission = structuredClone(
@@ -754,7 +774,7 @@ const handleUserResponse = async (message, state) => {
             navigationFlow.batalha(message);
             break;
           case "encontraItem":
-            battleController[message.from].enemy = option.enemy;
+            battleController[message.from].item = option.item;
             navigationFlow.encontraItem(message);
             break;
           case "encontraFerido":
@@ -939,6 +959,78 @@ const handleUserResponse = async (message, state) => {
       }
       break;
 
+    case "encontraItem.retorno":
+      let encontraItem = battleController[message.from].item //ID do item
+
+      if (input === "1") {
+        if (items[encontraItem].tipo === "hp") {
+          userData[message.from].status.hp = Math.min(userData[message.from].status.maxHP, userData[message.from].status.hp + items[encontraItem].valor);
+          encontraItem.txt = `💖 Você usou ${items[encontraItem].nome}${items[encontraItem].emoji} e recuperou ${items[encontraItem].valor} de HP!`;
+        } else if (item.tipo === "mana") {
+          userData[message.from].status.mana = Math.min(userData[message.from].status.maxMana, userData[message.from].status.mana + items[encontraItem].valor);
+          encontraItem.txt = `🔷 Você usou ${items[encontraItem].nome}${items[encontraItem].emoji} e recuperou ${items[encontraItem].valor} de Mana!`;
+        } else if (item.tipo === "força") {
+          userData[message.from].status.str = Math.max(0, userData[message.from].status.str + items[encontraItem].valor);  // Garantir que a força não fique negativa
+          encontraItem.txt = `💪 Você usou ${items[encontraItem].nome}${items[encontraItem].emoji} e aumentou sua Força em ${items[encontraItem].valor} por 3 turnos!`;
+        } else {
+          encontraItem.txt = `🤔 Esse item não tem efeito conhecido...`;
+        }
+
+      //Atualizar Personagem no banco
+      encontraItem.updates = {
+        status: userData[message.from].status,
+      };
+
+      encontraItem.update = await updateCharacter(userData[message.from], encontraItem.updates);
+      if (update.success) {
+        await client.sendMessage(
+          message.from,
+          "Personagem atualizado com sucesso no banco"
+        );
+        userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+      } else {
+        client.sendMessage(
+          message.from,
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
+      }
+
+      } else if (input === "2") {
+
+          // Verifica se o item já existe e atualiza a quantidade
+          if (userData[message.from].status.items[encontraItem]) {
+            userData[message.from].status.items[encontraItem] += 1;
+          } else {
+            userData[message.from].status.items[encontraItem] = 1;
+          }
+
+          encontraItem.txt = `🗃️ Você guardou 1 do item ${items[encontraItem].nome}.`;
+
+      //Atualizar Personagem no banco
+      encontraItem.updates = {
+        status: userData[message.from].status,
+      };
+
+      encontraItem.update = await updateCharacter(userData[message.from], encontraItem.updates);
+      if (update.success) {
+        await client.sendMessage(
+          message.from,
+          "Personagem atualizado com sucesso no banco"
+        );
+        userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+      } else {
+        client.sendMessage(
+          message.from,
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
+      }
+      }
+      await client.sendMessage(message.from, encontraItem.txt);
+      delete battleController[message.from].item;
+
+      userStates[message.from] = "missao";
+      
+      break;
     default:
       await message.reply("Não entendi sua mensagem. Por favor, siga o fluxo.");
   }
