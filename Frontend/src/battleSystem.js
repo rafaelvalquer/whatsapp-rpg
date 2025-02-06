@@ -64,8 +64,8 @@ Você ganhou *${xp}* de experiência! 🏆`;
   enemyAction() {
 
     // Pegando as armas do jogador
-    const arma1 = this.player.status.arma1 ? armas[this.player.status.arma1] : null;
-    const arma2 = this.player.status.arma2 ? armas[this.player.status.arma2] : null;
+    const arma1 = this.player.status.arma1 ? items[this.player.status.arma1] : null;
+    const arma2 = this.player.status.arma2 ? items[this.player.status.arma2] : null;
 
     // Pegando os atributos das armas (se existirem)
     const defesaArma1 = arma1 ? arma1.con : 0;
