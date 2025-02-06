@@ -982,7 +982,7 @@ const handleUserResponse = async (message, state) => {
       };
 
       encontraItem.update = await updateCharacter(userData[message.from], encontraItem.updates);
-      if (update.success) {
+      if (encontraItem.update.success) {
         await client.sendMessage(
           message.from,
           "Personagem atualizado com sucesso no banco"
