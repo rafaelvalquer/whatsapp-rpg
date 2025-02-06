@@ -139,9 +139,7 @@ Seus status aumentaram::
     mensagem += "Parabéns! Continue evoluindo! 💪🔥"
     return {
       personagem,
-      mensagem: `Parabéns! Você subiu para o nível ${personagem.status.lv}! 🎉
-      Novos status:
-      `,
+      mensagem: mensagem,
     };
   }
 
