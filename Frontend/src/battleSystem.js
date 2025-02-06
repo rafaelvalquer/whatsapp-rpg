@@ -31,33 +31,75 @@ class BattleSystem {
 
   playerAttack() {
 
+    //Verificar distancia do Player com o inimigo
+    const distancia = Math.abs(this.playerPosition - this.enemyPosition);
+
     // Pegando as armas equipadas pelo jogador
     const arma1 = this.player.status.arma1 ? items[this.player.status.arma1] : null;
     const arma2 = this.player.status.arma2 ? items[this.player.status.arma2] : null;
 
     // Pegando os atributos das armas (se existirem)
-    const poderAtaque1 = arma1 ? arma1.str : 0;
-    const poderAtaque2 = arma2 ? arma2.str : 0;
-        
-    if (Math.abs(this.playerPosition - this.enemyPosition) === 1) {
-      // Dano base + dano das armas
-      const danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1);
-      const damage = danoBase + poderAtaque1 + poderAtaque2; 
-
-      // Reduzindo HP do inimigo
-      this.enemy.enemyHP -= damage;
-
-      if (this.enemy.enemyHP <= 0) {
-        const xp = this.enemy.enemyXP;
-        this.player.status.xp += xp;
-        return `${this.player.name} atacou o inimigo e causou *${damage}* de dano! O ${this.enemy.enemyName} foi derrotado! 🎉
-Você ganhou *${xp}* de experiência! 🏆`;
+    if (this.player.classe === "guerreiro") {
+      poderArma1 = arma1 ? arma1.str : 0;
+      poderArma2 = arma2 ? arma2.str : 0;
+    } else if (this.player.classe === "arqueiro") {
+      poderArma1 = arma1 ? arma1.agi : 0;
+      poderArma2 = arma2 ? arma2.agi : 0;
+    } else if (this.player.classe === "mago") {
+      poderArma1 = arma1 ? arma1.int : 0;
+      poderArma2 = arma2 ? arma2.int : 0;
     }
 
-      return `${this.player.name} atacou o inimigo e causou *${damage}* de dano! HP do ${this.enemy.enemyName} restante: ${this.enemy.enemyHP}`;
-    } else {
-      return "O inimigo está muito longe para atacar!";
+
+    if (this.player.classe === "guerreiro") {
+      if (distancia === 1) {
+  
+        // Dano base + dano das armas
+        const danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1);
+        const damage = danoBase + poderArma1 + poderArma2;
+
+        // Reduzindo HP do inimigo
+        this.enemy.enemyHP -= damage;
+
+        return this.verificarInimigoDerrotado(damage);
+      } else {
+        return "O inimigo está muito longe para atacar!";
+      }
     }
+    if (this.player.classe === "arqueiro") {
+      if (distancia >= 1 && distancia <= 3) {
+        let danoBase = Math.max(this.player.status.agi - this.enemy.enemyCon, 1);
+        if (distancia === 1) danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1); // Se estiver perto, usa STR
+  
+        const damage = danoBase + poderArma1 + poderArma2;
+        this.enemy.enemyHP -= damage;
+        return this.verificarInimigoDerrotado(damage);
+      } else {
+        return "O inimigo está fora do alcance do seu arco!";
+      }
+    }
+    if (this.player.classe === "mago") {
+      if (distancia >= 1 && distancia <= 5) {
+        let danoBase = Math.max(this.player.status.int - this.enemy.enemyCon, 1);
+        if (distancia === 1) danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1); // Se estiver perto, usa STR
+  
+        const damage = danoBase + poderArma1 + poderArma2;
+        this.enemy.enemyHP -= damage;
+        return this.verificarInimigoDerrotado(damage);
+      } else {
+        return "O inimigo está muito longe para sua magia!";
+      }
+    }
+  }
+
+  verificarInimigoDerrotado(damage) {
+    if (this.enemy.enemyHP <= 0) {
+      const xp = this.enemy.enemyXP;
+      this.player.status.xp += xp;
+      return `${this.player.name} atacou o inimigo e causou *${damage}* de dano! O ${this.enemy.enemyName} foi derrotado! 🎉
+  Você ganhou *${xp}* de experiência! 🏆`;
+    }
+    return `${this.player.name} atacou o inimigo e causou *${damage}* de dano! HP do ${this.enemy.enemyName} restante: ${this.enemy.enemyHP}`;
   }
 
   // Lógica de movimento e ataque do inimigo

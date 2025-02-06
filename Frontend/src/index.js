@@ -84,13 +84,13 @@ function xpParaProximoNivel(level) {
 function verificarLevelUp(personagem) {
   const xpNecessario = xpParaProximoNivel(personagem.status.lv);
 
-  let mensagem = `Parabéns! Você subiu para o nível *${personagem.status.lv}*! 🎉
-Seus status aumentaram::
-`;
-
   if (personagem.status.xp >= xpNecessario) {
     personagem.status.lv += 1;
     personagem.status.xp -= xpNecessario; // Subtrai o XP usado
+
+    let mensagem = `Parabéns! Você subiu para o nível *${personagem.status.lv}*! 🎉
+    Seus status aumentaram::
+    `;
 
     if (personagem.classe == "guerreiro") {
       mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${personagem.status.maxHP + 10}
@@ -188,24 +188,35 @@ const navigationFlow = {
       }! Vamos seguir para escolha da sua classe.`
     );
 
-    const options = `1 – Guerreiro
-Status iniciais:
-Força (STR): 4
-Resistência (CON): 3
-Agilidade (AGI): 2
-Inteligência (INT): 1
-2 – Arqueiro
-Status iniciais:
-Força (STR): 2
-Resistência (CON): 2
-Agilidade (AGI): 5
-Inteligência (INT): 1
-3 – Mago
-Status iniciais:
-Força (STR): 1
-Resistência (CON): 2
-Agilidade (AGI): 1
-Inteligência (INT): 6`;
+    const options = `1 – Guerreiro 🗡️  
+Status iniciais:  
+Força (STR): 4  
+Resistência (CON): 3  
+Agilidade (AGI): 2  
+Inteligência (INT): 1  
+
+▶️ O Guerreiro é um combatente corpo a corpo, precisando estar ao lado do inimigo para atacar.  
+Ele causa alto dano físico com base em sua Força (STR) e pode equipar armas pesadas para aumentar seu ataque.  
+
+2 – Arqueiro 🏹  
+Status iniciais:  
+Força (STR): 2  
+Resistência (CON): 2  
+Agilidade (AGI): 5  
+Inteligência (INT): 1  
+
+▶️ O Arqueiro pode atacar de longe, utilizando sua Agilidade (AGI) para causar dano.  
+Se o inimigo estiver muito próximo, ele usará a Força (STR) para atacar e Resistência (CON) para se defender.  
+
+3 – Mago 🔥  
+Status iniciais:  
+Força (STR): 1  
+Resistência (CON): 2  
+Agilidade (AGI): 1  
+Inteligência (INT): 6  
+
+▶️ O Mago ataca à distância, usando sua Inteligência (INT) para lançar feitiços poderosos.  
+Se o inimigo estiver muito perto, ele terá que usar a Força (STR) para atacar e Resistência (CON) para se defender, mas é frágil em combate corpo a corpo.`;
 
     await client.sendMessage(message.from, options);
     userStates[message.from] = "configuracaoPersonagem.retorno";
@@ -568,7 +579,7 @@ const handleUserResponse = async (message, state) => {
 
     //#region Configura Personagem
     case "configuracaoPersonagem.retorno":
-      if (isValidInput(input, ["1", "2", "3"])) {
+      if (isValidInput(input, ["1", "2", "3", "4"])) {
         const classesConfig = {
           1: {
             classe: "guerreiro",
