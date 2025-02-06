@@ -985,7 +985,7 @@ const handleUserResponse = async (message, state) => {
       if (input === "1") {
         if (items[encontraItem.id].tipo === "hp") {
           userData[message.from].status.hp = Math.min(userData[message.from].status.maxHP, userData[message.from].status.hp + items[encontraItem.id].valor);
-          encontraItem.txt = `💖 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou ${items[encontraItem.id].valor} de HP!`;
+          encontraItem.txt = `💖 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou *${items[encontraItem.id].valor}* de HP!`;
         } else if (item.tipo === "mana") {
           userData[message.from].status.mana = Math.min(userData[message.from].status.maxMana, userData[message.from].status.mana + items[encontraItem.id].valor);
           encontraItem.txt = `🔷 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou ${items[encontraItem.id].valor} de Mana!`;
@@ -1020,10 +1020,10 @@ const handleUserResponse = async (message, state) => {
       } else if (input === "2") {
 
           // Verifica se o item já existe e atualiza a quantidade
-          if (userData[message.from].status.items[encontraItem.id]) {
-            userData[message.from].status.items[encontraItem.id] += 1;
+          if (userData[message.from].status.item[encontraItem.id]) {
+            userData[message.from].status.item[encontraItem.id] += 1;
           } else {
-            userData[message.from].status.items[encontraItem.id] = 1;
+            userData[message.from].status.item[encontraItem.id] = 1;
           }
 
           encontraItem.txt = `🗃️ Você guardou 1 do item ${items[encontraItem.id].nome}.`;
