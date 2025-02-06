@@ -990,7 +990,7 @@ const handleUserResponse = async (message, state) => {
           message.from,
           "Personagem atualizado com sucesso no banco"
         );
-        userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+        userData[message.from] = encontraItem.update.user; // Atualiza os dados do personagem localmente
       } else {
         client.sendMessage(
           message.from,
@@ -1001,13 +1001,13 @@ const handleUserResponse = async (message, state) => {
       } else if (input === "2") {
 
           // Verifica se o item já existe e atualiza a quantidade
-          if (userData[message.from].status.items[encontraItem]) {
-            userData[message.from].status.items[encontraItem] += 1;
+          if (userData[message.from].status.items[encontraItem.id]) {
+            userData[message.from].status.items[encontraItem.id] += 1;
           } else {
-            userData[message.from].status.items[encontraItem] = 1;
+            userData[message.from].status.items[encontraItem.id] = 1;
           }
 
-          encontraItem.txt = `🗃️ Você guardou 1 do item ${items[encontraItem].nome}.`;
+          encontraItem.txt = `🗃️ Você guardou 1 do item ${items[encontraItem.id].nome}.`;
 
       //Atualizar Personagem no banco
       encontraItem.updates = {
@@ -1015,12 +1015,12 @@ const handleUserResponse = async (message, state) => {
       };
 
       encontraItem.update = await updateCharacter(userData[message.from], encontraItem.updates);
-      if (update.success) {
+      if (encontraItem.update.success) {
         await client.sendMessage(
           message.from,
           "Personagem atualizado com sucesso no banco"
         );
-        userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+        userData[message.from] = encontraItem.update.user; // Atualiza os dados do personagem localmente
       } else {
         client.sendMessage(
           message.from,
