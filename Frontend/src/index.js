@@ -960,18 +960,19 @@ const handleUserResponse = async (message, state) => {
       break;
 
     case "encontraItem.retorno":
-      let encontraItem = battleController[message.from].item //ID do item
+      let encontraItem = {};
+      encontraItem.id = battleController[message.from].item //ID do item
 
       if (input === "1") {
-        if (items[encontraItem].tipo === "hp") {
-          userData[message.from].status.hp = Math.min(userData[message.from].status.maxHP, userData[message.from].status.hp + items[encontraItem].valor);
-          encontraItem.txt = `💖 Você usou ${items[encontraItem].nome}${items[encontraItem].emoji} e recuperou ${items[encontraItem].valor} de HP!`;
+        if (items[encontraItem.id].tipo === "hp") {
+          userData[message.from].status.hp = Math.min(userData[message.from].status.maxHP, userData[message.from].status.hp + items[encontraItem.id].valor);
+          encontraItem.txt = `💖 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou ${items[encontraItem.id].valor} de HP!`;
         } else if (item.tipo === "mana") {
-          userData[message.from].status.mana = Math.min(userData[message.from].status.maxMana, userData[message.from].status.mana + items[encontraItem].valor);
-          encontraItem.txt = `🔷 Você usou ${items[encontraItem].nome}${items[encontraItem].emoji} e recuperou ${items[encontraItem].valor} de Mana!`;
+          userData[message.from].status.mana = Math.min(userData[message.from].status.maxMana, userData[message.from].status.mana + items[encontraItem.id].valor);
+          encontraItem.txt = `🔷 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou ${items[encontraItem.id].valor} de Mana!`;
         } else if (item.tipo === "força") {
-          userData[message.from].status.str = Math.max(0, userData[message.from].status.str + items[encontraItem].valor);  // Garantir que a força não fique negativa
-          encontraItem.txt = `💪 Você usou ${items[encontraItem].nome}${items[encontraItem].emoji} e aumentou sua Força em ${items[encontraItem].valor} por 3 turnos!`;
+          userData[message.from].status.str = Math.max(0, userData[message.from].status.str + items[encontraItem.id].valor);  // Garantir que a força não fique negativa
+          encontraItem.txt = `💪 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e aumentou sua Força em ${items[encontraItem.id].valor} por 3 turnos!`;
         } else {
           encontraItem.txt = `🤔 Esse item não tem efeito conhecido...`;
         }
