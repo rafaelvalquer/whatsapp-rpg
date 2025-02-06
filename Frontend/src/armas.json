@@ -18,5 +18,9 @@
   "4": {
     "nome": "Cajado Mágico",
     "int": 4
+  },
+  "101": {
+    "nome": "Poção",
+    "hp": 10
   }
 }

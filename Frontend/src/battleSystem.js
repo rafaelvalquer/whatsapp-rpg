@@ -38,6 +38,10 @@ class BattleSystem {
     const arma1 = this.player.status.arma1 ? items[this.player.status.arma1] : null;
     const arma2 = this.player.status.arma2 ? items[this.player.status.arma2] : null;
 
+    // Declarando as variáveis corretamente
+    let poderArma1 = 0;
+    let poderArma2 = 0;
+
     // Pegando os atributos das armas (se existirem)
     if (this.player.classe === "guerreiro") {
       poderArma1 = arma1 ? arma1.str : 0;
