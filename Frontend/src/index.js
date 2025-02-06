@@ -84,25 +84,50 @@ function xpParaProximoNivel(level) {
 function verificarLevelUp(personagem) {
   const xpNecessario = xpParaProximoNivel(personagem.status.lv);
 
+  let mensagem = `Parabéns! Você subiu para o nível *${personagem.status.lv}*! 🎉
+Seus status aumentaram::
+`;
+
   if (personagem.status.xp >= xpNecessario) {
     personagem.status.lv += 1;
     personagem.status.xp -= xpNecessario; // Subtrai o XP usado
 
     if (personagem.classe == "guerreiro") {
+      mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${personagem.status.maxHP + 10}
+🔹 Força (STR): ${personagem.status.str} ➡️ ${personagem.status.str + 3}
+🔹 Resistência (CON): ${personagem.status.con} ➡️ ${personagem.status.con + 2}
+🔹 Agilidade (AGI): ${personagem.status.agi} ➡️ ${personagem.status.agi +1}
+🔹 Inteligência (INT): ${personagem.status.int} ➡️ ${personagem.status.int + 1}
+`
       personagem.status.maxHP += 10; // Aumenta HP ao subir de nível
       personagem.status.hp = personagem.status.maxHP; // Recupera todo HP
       personagem.status.str += 3; // Aumenta força
       personagem.status.con += 2; // Aumenta defesa
       personagem.status.agi += 1; // Aumenta agilidade
       personagem.status.int += 1; // Aumenta inteligência (leve crescimento)
+
     } else if (personagem.classe == "arqueiro") {
+      mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${personagem.status.maxHP + 6}
+🔹 Força (STR): ${personagem.status.str} ➡️ ${personagem.status.str + 2}
+🔹 Resistência (CON): ${personagem.status.con} ➡️ ${personagem.status.con + 1}
+🔹 Agilidade (AGI): ${personagem.status.agi} ➡️ ${personagem.status.agi + 3}
+🔹 Inteligência (INT): ${personagem.status.int} ➡️ ${personagem.status.int + 2}
+`;
+
       personagem.status.maxHP += 6; // Aumenta HP, mas menos que o guerreiro
       personagem.status.hp = personagem.status.maxHP;
       personagem.status.str += 2; // Aumenta força moderadamente
       personagem.status.con += 1; // Pouco aumento na defesa
       personagem.status.agi += 3; // Agilidade é o foco principal
       personagem.status.int += 2; // Inteligência cresce um pouco para habilidades de mira/tática
+
     } else if (personagem.classe == "mago") {
+      mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${personagem.status.maxHP + 5}
+🔹 Força (STR): ${personagem.status.str} ➡️ ${personagem.status.str + 1}
+🔹 Resistência (CON): ${personagem.status.con} ➡️ ${personagem.status.con + 1}
+🔹 Agilidade (AGI): ${personagem.status.agi} ➡️ ${personagem.status.agi + 2}
+🔹 Inteligência (INT): ${personagem.status.int} ➡️ ${personagem.status.int + 4}
+      `;
       personagem.status.maxHP += 5; // HP cresce pouco, pois mago é frágil
       personagem.status.hp = personagem.status.maxHP;
       personagem.status.str += 1; // Pouca força, não é o foco
@@ -111,11 +136,12 @@ function verificarLevelUp(personagem) {
       personagem.status.int += 4; // Inteligência cresce muito, pois é o atributo principal
     }
 
-    console.log('################')
-    console.log(JSON.stringify(personagem));
+    mensagem += "Parabéns! Continue evoluindo! 💪🔥"
     return {
       personagem,
-      mensagem: `Parabéns! Você subiu para o nível ${personagem.status.lv}! 🎉`,
+      mensagem: `Parabéns! Você subiu para o nível ${personagem.status.lv}! 🎉
+      Novos status:
+      `,
     };
   }
 
@@ -297,7 +323,7 @@ Escolha uma *missão* para iniciar a sua jornada:`
       `Escolha uma das opções:
 1. Avançar
 2. Atacar
-3. Voltar`
+3. Recuar`
     );
     userStates[message.from] = "batalha.retorno"; // Atualize corretamente o estado
     console.log("Estado atualizado:", JSON.stringify(userStates, null, 2)); // Log final para validar
@@ -718,6 +744,14 @@ const handleUserResponse = async (message, state) => {
             battleController[message.from].enemy = option.enemy;
             navigationFlow.batalha(message);
             break;
+          case "encontraItem":
+            battleController[message.from].enemy = option.enemy;
+            navigationFlow.encontraItem(message);
+            break;
+          case "encontraFerido":
+            battleController[message.from].enemy = option.enemy;
+            navigationFlow.encontraFerido(message);
+            break;
           default:
             // atualiza proximo step
 
@@ -813,6 +847,7 @@ const handleUserResponse = async (message, state) => {
         );
       }
 
+      //Verifica fim da batalha
       if (battle.enemy.enemyHP <= 0) {
         if (battle.enemy.arma || battle.enemy.item) {
           const frase = `Ao revirar os restos do ${
@@ -856,7 +891,7 @@ const handleUserResponse = async (message, state) => {
             );
           }
 
-          await client.sendMessage(message.from, `Você equipa o ${items[userData[message.from].status.arma1].nome} e sente sua força crescer. O próximo inimigo que se cuide!`);
+          await client.sendMessage(message.from, `Você se equipa com ${items[userData[message.from].status.arma1].nome} e sente sua força crescer. O próximo inimigo que se cuide!`);
           navigationFlow.batalhaFim(message);
 
         } else if (input === "2") {

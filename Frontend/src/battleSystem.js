@@ -1,3 +1,5 @@
+const items = require("./armas.json"); // Importa o JSON
+
 class BattleSystem {
   constructor(gridSize, playerPosition, player, enemy) {
     this.gridSize = gridSize;
@@ -28,18 +30,31 @@ class BattleSystem {
   }
 
   playerAttack() {
+
+    // Pegando as armas equipadas pelo jogador
+    const arma1 = this.player.status.arma1 ? items[this.player.status.arma1] : null;
+    const arma2 = this.player.status.arma2 ? items[this.player.status.arma2] : null;
+
+    // Pegando os atributos das armas (se existirem)
+    const poderAtaque1 = arma1 ? arma1.str : 0;
+    const poderAtaque2 = arma2 ? arma2.str : 0;
+        
     if (Math.abs(this.playerPosition - this.enemyPosition) === 1) {
-      const damage = Math.max(this.player.status.str - this.enemy.enemyCon, 1);
+      // Dano base + dano das armas
+      const danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1);
+      const damage = danoBase + poderAtaque1 + poderAtaque2; 
+
+      // Reduzindo HP do inimigo
       this.enemy.enemyHP -= damage;
 
       if (this.enemy.enemyHP <= 0) {
         const xp = this.enemy.enemyXP;
         this.player.status.xp += xp;
-        return `O jogador atacou o inimigo e causou *${damage}* de dano! O ${this.enemy.enemyName} foi derrotado! 🎉
+        return `${this.player.name} atacou o inimigo e causou *${damage}* de dano! O ${this.enemy.enemyName} foi derrotado! 🎉
 Você ganhou *${xp}* de experiência! 🏆`;
     }
 
-      return `O jogador atacou o inimigo e causou *${damage}* de dano! HP do inimigo restante: ${this.enemy.enemyHP}`;
+      return `${this.player.name} atacou o inimigo e causou *${damage}* de dano! HP do ${this.enemy.enemyName} restante: ${this.enemy.enemyHP}`;
     } else {
       return "O inimigo está muito longe para atacar!";
     }
@@ -47,16 +62,28 @@ Você ganhou *${xp}* de experiência! 🏆`;
 
   // Lógica de movimento e ataque do inimigo
   enemyAction() {
+
+    // Pegando as armas do jogador
+    const arma1 = this.player.status.arma1 ? armas[this.player.status.arma1] : null;
+    const arma2 = this.player.status.arma2 ? armas[this.player.status.arma2] : null;
+
+    // Pegando os atributos das armas (se existirem)
+    const defesaArma1 = arma1 ? arma1.con : 0;
+    const defesaArma2 = arma2 ? arma2.con : 0;
+
+    // Defesa total do jogador (constituição + defesa das armas)
+    const defesaTotal = this.player.status.con + defesaArma1 + defesaArma2;
+
     // Se o inimigo já está ao lado do jogador, ele ataca e não se move
     if (Math.abs(this.enemyPosition - this.playerPosition) === 1) {
-      const damage = Math.max(this.enemy.enemyStr - this.player.status.con, 1);
+      const damage = Math.max(this.enemy.enemyStr - defesaTotal, 1);
       this.player.status.hp -= damage;
 
       if (this.player.status.hp <= 0) {
-        return `O inimigo atacou o jogador e causou *${damage}* de dano! Você morreu! ☠️`;
+        return `O ${this.enemy.enemyName} atacou o ${this.player.name} e causou *${damage}* de dano! Você morreu! ☠️`;
     }
 
-      return `O inimigo atacou o jogador e causou *${damage}* de dano! HP do jogador restante: ${this.player.status.hp}`;
+      return `O ${this.enemy.enemyName} atacou o ${this.player.name} e causou *${damage}* de dano! HP do jogador restante: ${this.player.status.hp}`;
     }
 
     // Se o inimigo não está ao lado do jogador, ele se move em direção ao jogador
