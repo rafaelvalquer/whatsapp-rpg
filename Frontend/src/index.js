@@ -357,6 +357,25 @@ Escolha uma *missão* para iniciar a sua jornada:`
     userStates[message.from] = "missao";
   },
 
+  encontraItemFim: async (message) => {
+    delete battleController[message.from].item;
+
+    const mission = structuredClone(
+      missionsData.missoes[battleController[message.from].missao]
+    );
+    const step = battleController[message.from].step;
+    let optionsText = "";
+
+    mission.steps[step].options.forEach((option, index) => {
+      optionsText += `${index + 1}. ${option.text}\n`;
+    });
+
+    client.sendMessage(message.from, mission.steps[step].text);
+    await client.sendMessage(message.from, optionsText);
+
+    userStates[message.from] = "missao";
+  },
+
   recompensa: async (message) => {
     const battle = battleController[message.from].battle;
 
@@ -1029,9 +1048,8 @@ const handleUserResponse = async (message, state) => {
       }
       }
       await client.sendMessage(message.from, encontraItem.txt);
-      delete battleController[message.from].item;
-
-      userStates[message.from] = "missao";
+      
+      navigationFlow.encontraItemFim(message);
       
       break;
     default:
