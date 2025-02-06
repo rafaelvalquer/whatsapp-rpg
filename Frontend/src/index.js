@@ -982,6 +982,8 @@ const handleUserResponse = async (message, state) => {
       };
 
       encontraItem.update = await updateCharacter(userData[message.from], encontraItem.updates);
+      console.log('encontraItem = ' + JSON.stringify(encontraItem));
+
       if (encontraItem.update.success) {
         await client.sendMessage(
           message.from,
