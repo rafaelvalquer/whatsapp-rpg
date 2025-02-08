@@ -334,10 +334,10 @@ Escolha uma *missão* para iniciar a sua jornada:`
 
     if(Object.keys(userData[message.from].status.item).length > 0){
       txt += `
-5.Usar item`
+5. Usar item`
     } else {
       txt += `
-~5.Nenhum item disponível!~`
+~5. Nenhum item disponível!~`
     }
 
     txt += `
@@ -437,7 +437,7 @@ const opcoes = `⚔️ O que deseja fazer?
   usarItem: async (message) => {
 
     let txtItem = Object.entries(userData[message.from].status.item)
-    .map(([id, quantidade, index]) => `${index + 1}. ${items[id].nome} X ${quantidade}`)
+    .map(([id, quantidade], index) => `${index + 1}. ${items[id].nome} X ${quantidade}`)
     .join("\n");
 
     await client.sendMessage(message.from, txtItem);
@@ -899,6 +899,7 @@ const handleUserResponse = async (message, state) => {
       } else if ((input === "item" || input === "5") && Object.keys(userData[message.from].status.item).length > 0) {
         
         navigationFlow.usarItem(message);
+        return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
 
       } else if ((input === "skill" || input === "5") && Object.keys(userData[message.from].status.item).length == 0) {
         await client.sendMessage(message.from, "📦 Seu inventário está vazio.");
@@ -1095,7 +1096,7 @@ const handleUserResponse = async (message, state) => {
           usarItem.escolhaIndex = parseInt(input, 10) - 1;
 
           if (usarItem.escolhaIndex >= 0 && usarItem.escolhaIndex < usarItem.itemIDs.length) {
-            usarItem.itemID = usarItem.itemIDs[escolhaIndex];
+            usarItem.itemID = usarItem.itemIDs[usarItem.escolhaIndex];
 
             if(items[usarItem.itemID].tipo == "hp"){
               userData[message.from].status.hp = Math.min(userData[message.from].status.maxHP, userData[message.from].status.hp + items[usarItem.itemID].valor);
@@ -1105,17 +1106,17 @@ const handleUserResponse = async (message, state) => {
               usarItem.txt = `🔷 Você usou  ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e recuperou *${items[usarItem.itemID].valor}* de Mana!`;
             } else if (items[usarItem.itemID].tipo === "força") {
               userData[message.from].status.str = Math.max(0, userData[message.from].status.str + items[usarItem.itemID].valor);  // Garantir que a força não fique negativa
-              encontraItem.txt = `💪 Você usou ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e aumentou sua Força em ${items[usarItem.itemID].valor} por 3 turnos!`;
+              usarItem.txt = `💪 Você usou ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e aumentou sua Força em ${items[usarItem.itemID].valor} por 3 turnos!`;
             } else {
-              encontraItem.txt = `🤔 Esse item não tem efeito conhecido...`;
+              usarItem.txt = `🤔 Esse item não tem efeito conhecido...`;
             }
 
               // Reduz a quantidade do item
-              userData[message.from].status.item[itemID] -= 1;
+              userData[message.from].status.item[usarItem.itemID] -= 1;
 
               // Se a quantidade chegar a 0, remove o item do inventário
-              if (userData[message.from].status.item[itemID] <= 0) {
-                delete userData[message.from].status.item[itemID];
+              if (userData[message.from].status.item[usarItem.itemID] <= 0) {
+                delete userData[message.from].status.item[usarItem.itemID];
               }
         }
 
@@ -1153,7 +1154,7 @@ const handleUserResponse = async (message, state) => {
         } else {
           client.sendMessage(
             message.from,
-            "Digite um item valido"
+            "❌ Digite um item valido"
           );
           navigationFlow.usarItem(message);
         }
