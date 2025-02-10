@@ -436,8 +436,10 @@ const opcoes = `⚔️ O que deseja fazer?
 
   usarItem: async (message) => {
 
-    let txtItem = Object.entries(userData[message.from].status.item)
-    .map(([id, quantidade], index) => `${index + 1}. ${items[id].nome} X ${quantidade}`)
+    let txtItem = `🎒 *Inventário de Itens*\n\n`;
+    txtItem += "Qual item deseja usar? Digite o número correspondente:\n\n";
+    txtItem = Object.entries(userData[message.from].status.item)
+    .map(([id, quantidade], index) => `*${index + 1}.* ${items[id].nome} ${items[id].emoji}  (x${quantidade})`)
     .join("\n");
 
     await client.sendMessage(message.from, txtItem);
@@ -1010,160 +1012,127 @@ const handleUserResponse = async (message, state) => {
       }
       break;
 
-    case "encontraItem.retorno":
-      let encontraItem = {};
-      encontraItem.id = battleController[message.from].item //ID do item
+      case "encontraItem.retorno":{
+        let encontraItem = {};
+        encontraItem.id = battleController[message.from].item; // ID do item
+    
+        // Criar uma cópia do status antes de modificar
+        let statusCopy = structuredClone(userData[message.from].status);
 
-      if (input === "1") {
-        if (items[encontraItem.id].tipo === "hp") {
-          userData[message.from].status.hp = Math.min(userData[message.from].status.maxHP, userData[message.from].status.hp + items[encontraItem.id].valor);
-          encontraItem.txt = `💖 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou *${items[encontraItem.id].valor}* de HP!`;
-        } else if (items[encontraItem.id].tipo === "mana") {
-          userData[message.from].status.mana = Math.min(userData[message.from].status.maxMana, userData[message.from].status.mana + items[encontraItem.id].valor);
-          encontraItem.txt = `🔷 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou ${items[encontraItem.id].valor} de Mana!`;
-        } else if (items[encontraItem.id].tipo === "força") {
-          userData[message.from].status.str = Math.max(0, userData[message.from].status.str + items[encontraItem.id].valor);  // Garantir que a força não fique negativa
-          encontraItem.txt = `💪 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e aumentou sua Força em ${items[encontraItem.id].valor} por 3 turnos!`;
-        } else {
-          encontraItem.txt = `🤔 Esse item não tem efeito conhecido...`;
+    
+        if (input === "1") {
+            if (items[encontraItem.id].tipo === "hp") {
+                statusCopy.hp = Math.min(statusCopy.maxHP, statusCopy.hp + items[encontraItem.id].valor);
+                encontraItem.txt = `💖 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou *${items[encontraItem.id].valor}* de HP!`;
+            } else if (items[encontraItem.id].tipo === "mana") {
+                statusCopy.mana = Math.min(statusCopy.maxMana, statusCopy.mana + items[encontraItem.id].valor);
+                encontraItem.txt = `🔷 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou ${items[encontraItem.id].valor} de Mana!`;
+            } else if (items[encontraItem.id].tipo === "força") {
+                statusCopy.str = Math.max(0, statusCopy.str + items[encontraItem.id].valor); // Evita valores negativos
+                encontraItem.txt = `💪 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e aumentou sua Força em ${items[encontraItem.id].valor} por 3 turnos!`;
+            } else {
+                encontraItem.txt = `🤔 Esse item não tem efeito conhecido...`;
+            }
+        } else if (input === "2") {
+            // Criar a propriedade 'item' se não existir
+            if (!statusCopy.item) {
+                statusCopy.item = {};
+            }
+    
+            // Verifica se o item já existe e atualiza a quantidade
+            statusCopy.item[encontraItem.id] = (statusCopy.item[encontraItem.id] || 0) + 1;
+            encontraItem.txt = `🗃️ Você guardou 1 do item ${items[encontraItem.id].nome}.`;
         }
-
-      //Atualizar Personagem no banco
-      encontraItem.updates = {
-        status: userData[message.from].status,
-      };
-
-      encontraItem.update = await updateCharacter(userData[message.from], encontraItem.updates);
-      console.log('encontraItem = ' + JSON.stringify(encontraItem));
-
-      if (encontraItem.update.success) {
-        await client.sendMessage(
-          message.from,
-          "Personagem atualizado com sucesso no banco"
-        );
-        userData[message.from] = encontraItem.update.user; // Atualiza os dados do personagem localmente
-      } else {
-        client.sendMessage(
-          message.from,
-          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-        );
+    
+        // Atualizar Personagem no banco de dados
+        encontraItem.updates = { status: statusCopy };
+        encontraItem.update = await updateCharacter(userData[message.from], encontraItem.updates);
+    
+        if (encontraItem.update.success) {
+            await client.sendMessage(message.from, "Personagem atualizado com sucesso no banco");
+            
+            // Atualizar o userData com os novos dados
+            userData[message.from].status = encontraItem.update.user.status;
+        } else {
+            await client.sendMessage(message.from, "Houve um problema ao atualizar seu personagem. Por favor, tente novamente.");
+        }
+    
+        // Enviar mensagem final ao jogador
+        await client.sendMessage(message.from, encontraItem.txt);
+    
+        // Encerrar fluxo de navegação
+        navigationFlow.encontraItemFim(message);
+    
+        break;
       }
+    
 
-      } else if (input === "2") {
+      case "usarItem.retorno":{
 
-          // Verifica se o item já existe e atualiza a quantidade
-          if (userData[message.from].status.item[encontraItem.id]) {
-            userData[message.from].status.item[encontraItem.id] += 1;
-          } else {
-            userData[message.from].status.item[encontraItem.id] = 1;
-          }
+        // Criar uma cópia do status do usuário antes de modificar
+        let statusCopy = structuredClone(userData[message.from].status);
 
-          encontraItem.txt = `🗃️ Você guardou 1 do item ${items[encontraItem.id].nome}.`;
-
-      //Atualizar Personagem no banco
-      encontraItem.updates = {
-        status: userData[message.from].status,
-      };
-
-      encontraItem.update = await updateCharacter(userData[message.from], encontraItem.updates);
-      if (encontraItem.update.success) {
-        await client.sendMessage(
-          message.from,
-          "Personagem atualizado com sucesso no banco"
-        );
-        userData[message.from] = encontraItem.update.user; // Atualiza os dados do personagem localmente
-      } else {
-        client.sendMessage(
-          message.from,
-          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-        );
-      }
-      }
-      await client.sendMessage(message.from, encontraItem.txt);
-      
-      navigationFlow.encontraItemFim(message);
-      
-      break;
-
-      case "usarItem.retorno":
         let usarItem = {};
-        usarItem.userItems = userData[message.from].status.item
+        
+        usarItem.userItems = statusCopy.item;
         usarItem.opcoesValidas = Object.keys(usarItem.userItems).map((_, index) => (index + 1).toString());
         
-
-        if(usarItem.opcoesValidas.includes(input)){  //Validar Input
+        if (usarItem.opcoesValidas.includes(input)) {  // Validar Input
           usarItem.itemIDs = Object.keys(usarItem.userItems);
           usarItem.escolhaIndex = parseInt(input, 10) - 1;
-
+      
           if (usarItem.escolhaIndex >= 0 && usarItem.escolhaIndex < usarItem.itemIDs.length) {
             usarItem.itemID = usarItem.itemIDs[usarItem.escolhaIndex];
-
-            if(items[usarItem.itemID].tipo == "hp"){
-              userData[message.from].status.hp = Math.min(userData[message.from].status.maxHP, userData[message.from].status.hp + items[usarItem.itemID].valor);
+      
+            // Aplicar os efeitos do item no status copiado
+            if (items[usarItem.itemID].tipo === "hp") {
+              statusCopy.hp = Math.min(statusCopy.maxHP, statusCopy.hp + items[usarItem.itemID].valor);
               usarItem.txt = `💖 Você usou ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e recuperou *${items[usarItem.itemID].valor}* de HP!`;
             } else if (items[usarItem.itemID].tipo === "mana") {
-              userData[message.from].status.mana = Math.min(userData[message.from].status.maxMana, userData[message.from].status.mana + items[usarItem.itemID].valor);
-              usarItem.txt = `🔷 Você usou  ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e recuperou *${items[usarItem.itemID].valor}* de Mana!`;
+              statusCopy.mana = Math.min(statusCopy.maxMana, statusCopy.mana + items[usarItem.itemID].valor);
+              usarItem.txt = `🔷 Você usou ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e recuperou *${items[usarItem.itemID].valor}* de Mana!`;
             } else if (items[usarItem.itemID].tipo === "força") {
-              userData[message.from].status.str = Math.max(0, userData[message.from].status.str + items[usarItem.itemID].valor);  // Garantir que a força não fique negativa
+              statusCopy.str = Math.max(0, statusCopy.str + items[usarItem.itemID].valor);
               usarItem.txt = `💪 Você usou ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e aumentou sua Força em ${items[usarItem.itemID].valor} por 3 turnos!`;
             } else {
               usarItem.txt = `🤔 Esse item não tem efeito conhecido...`;
             }
-
-              // Reduz a quantidade do item
-              userData[message.from].status.item[usarItem.itemID] -= 1;
-
-              // Se a quantidade chegar a 0, remove o item do inventário
-              if (userData[message.from].status.item[usarItem.itemID] <= 0) {
-                delete userData[message.from].status.item[usarItem.itemID];
+      
+            // Reduzir a quantidade do item
+            statusCopy.item[usarItem.itemID] -= 1;
+      
+            // Se a quantidade chegar a 0, remover do inventário
+            if (statusCopy.item[usarItem.itemID] <= 0) {
+              delete statusCopy.item[usarItem.itemID];
               }
         }
-
+      
         await client.sendMessage(message.from, usarItem.txt);
-
+      
         battle = battleController[message.from]?.battle;
-        
         usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await client.sendMessage(message.from, usarItem.enemy);
-        await client.sendMessage(
-          message.from,
-          `Estado atual:\n${battle.displayGrid()}`
-        );
-
-
-        //Atualizar Personagem no banco
-        usarItem.updates = {
-          status: userData[message.from].status,
-        };
-  
+          await client.sendMessage(message.from, `Estado atual:\n${battle.displayGrid()}`);
+      
+          // Atualizar Personagem no banco de dados
+          usarItem.updates = { status: statusCopy };
         usarItem.update = await updateCharacter(userData[message.from], usarItem.updates);
+      
         console.log('usarItem = ' + JSON.stringify(usarItem));
-  
+      
         if (usarItem.update.success) {
-          await client.sendMessage(
-            message.from,
-            "Personagem atualizado com sucesso no banco"
-          );
-          userData[message.from] = usarItem.update.user; // Atualiza os dados do personagem localmente
+            await client.sendMessage(message.from, "Personagem atualizado com sucesso no banco");
+            userData[message.from].status = usarItem.update.user.status; // Atualiza os dados do personagem localmente
         } else {
-          client.sendMessage(
-            message.from,
-            "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-          );
+            await client.sendMessage(message.from, "Houve um problema ao atualizar seu personagem. Por favor, tente novamente.");
         }
-  
         } else {
-          client.sendMessage(
-            message.from,
-            "❌ Digite um item valido"
-          );
+          await client.sendMessage(message.from, "❌ Digite um item válido");
           navigationFlow.usarItem(message);
         }
-
         navigationFlow.batalha(message);
-        
         break;
+      }
 
     default:
       await message.reply("Não entendi sua mensagem. Por favor, siga o fluxo.");

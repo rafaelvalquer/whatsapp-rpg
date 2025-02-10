@@ -30,7 +30,7 @@
     "nome": "Poção de Mana",
     "tipo" : "mana",
     "valor" : 10,
-    "emoji" : "🩸",
-    "txt" : "Recupera até 10 de HP"
+    "emoji" : "🔷",
+    "txt" : "Recupera até 10 de Mana"
   }
 }
