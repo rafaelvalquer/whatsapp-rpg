@@ -438,7 +438,7 @@ const opcoes = `⚔️ O que deseja fazer?
 
     let txtItem = `🎒 *Inventário de Itens*\n\n`;
     txtItem += "Qual item deseja usar? Digite o número correspondente:\n\n";
-    txtItem = Object.entries(userData[message.from].status.item)
+    txtItem += Object.entries(userData[message.from].status.item)
     .map(([id, quantidade], index) => `*${index + 1}.* ${items[id].nome} ${items[id].emoji}  (x${quantidade})`)
     .join("\n");
 
@@ -1110,6 +1110,8 @@ const handleUserResponse = async (message, state) => {
         await client.sendMessage(message.from, usarItem.txt);
       
         battle = battleController[message.from]?.battle;
+        battle.player.status = statusCopy;
+        await client.sendMessage(message.from, "battle = " +  battle.player.status.hp + " statuscopy = " + statusCopy.hp);
         usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await client.sendMessage(message.from, usarItem.enemy);
           await client.sendMessage(message.from, `Estado atual:\n${battle.displayGrid()}`);
@@ -1123,6 +1125,7 @@ const handleUserResponse = async (message, state) => {
         if (usarItem.update.success) {
             await client.sendMessage(message.from, "Personagem atualizado com sucesso no banco");
             userData[message.from].status = usarItem.update.user.status; // Atualiza os dados do personagem localmente
+            await client.sendMessage(message.from, "battle = " +  battle.player.status.hp + " statuscopy = " + statusCopy.hp);
         } else {
             await client.sendMessage(message.from, "Houve um problema ao atualizar seu personagem. Por favor, tente novamente.");
         }
