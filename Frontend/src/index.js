@@ -1121,9 +1121,11 @@ const handleUserResponse = async (message, state) => {
         }
 
         await client.sendMessage(message.from, usarItem.txt);
+
+        battle = battleController[message.from]?.battle;
         
-        const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-        await client.sendMessage(message.from, enemy);
+        usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
+        await client.sendMessage(message.from, usarItem.enemy);
         await client.sendMessage(
           message.from,
           `Estado atual:\n${battle.displayGrid()}`
