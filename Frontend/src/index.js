@@ -448,6 +448,25 @@ const opcoes = `⚔️ O que deseja fazer?
   
 },
 
+encontraFerido: async (message) => {
+
+  const item = battleController[message.from].item;
+  await client.sendMessage(
+    message.from,
+    `🩸 "Durante sua jornada, você encontra um viajante ferido caído à beira do caminho. Seu rosto está pálido e seus olhos pedem ajuda."`
+  );
+
+  await client.sendMessage(
+    message.from,
+    `O que deseja fazer?  
+1️⃣ Resgatar o viajante  
+2️⃣ Ignorar e seguir seu caminho`
+  );
+
+  userStates[message.from] = "encontraFerido.retorno"; // Atualize corretamente o estado
+
+},
+
 };
 //###############################################################
 // FIM Fluxo de navegação
@@ -803,9 +822,6 @@ const handleUserResponse = async (message, state) => {
       );
       const step = battleController[message.from].step;
 
-      console.log("mission = " + JSON.stringify(mission));
-      console.log("step = " + JSON.stringify(step));
-
       if (mission.steps[step].options.length >= input) {
         //validando se opção digitada está correta
         const option = mission.steps[step].options[input - 1]; // Pega opção
@@ -824,6 +840,7 @@ const handleUserResponse = async (message, state) => {
             break;
           case "encontraFerido":
             battleController[message.from].enemy = option.enemy;
+            battleController[message.from].item = option.item;
             navigationFlow.encontraFerido(message);
             break;
           default:
@@ -1116,6 +1133,64 @@ const handleUserResponse = async (message, state) => {
         navigationFlow.batalha(message);
         break;
       }
+
+      case "encontraFerido.retorno":{
+        let encontraFerido = {};
+
+        const mission = structuredClone(
+          missionsData.missoes[battleController[message.from].missao]
+        );
+
+        const step = battleController[message.from].step;
+
+        if (input === "1") { 
+          // Escolhe aleatoriamente entre item (0) ou batalha (1)
+          const evento = Math.random() < 0.5 ? "item" : "enemy";
+
+          if (evento === "item") {
+              const item = battleController[message.from].item;
+              await client.sendMessage(
+                message.from,
+                `🎁 O viajante agradece sua ajuda e lhe entrega um presente:  
+                📜 *${items[item].nome}* ${items[item].emoji}! ${items[item].txt}`
+              );
+
+              await client.sendMessage(
+                message.from,
+                `O que deseja fazer?  
+        1️⃣ Usar agora  
+        2️⃣ Guardar para mais tarde`);
+
+        delete battleController[message.from].enemy;
+
+              // Atualiza estado para coletar o item
+              userStates[message.from] = "encontraItem.retorno"; 
+
+          } else {
+              const enemy = battleController[message.from].enemy;
+              await client.sendMessage(
+                message.from,
+                `⚔️ O viajante era uma armadilha! Você caiu em uma emboscada e precisa lutar contra *${enemy.nome}*!`
+              );
+
+              navigationFlow.batalha(message);
+          }
+      } else if (input === "2") { 
+          await client.sendMessage(
+            message.from,
+            "Você ignora o viajante e continua sua jornada sem olhar para trás."
+          );
+
+          delete battleController[message.from].battle;
+          delete battleController[message.from].enemy;
+          delete battleController[message.from].item;
+
+          navigationFlow.continuarAventura(message);
+      } else {
+          await message.reply("Opção inválida. Escolha 1️⃣ para Resgatar ou 2️⃣ para Ignorar.");
+      }    
+        break;
+      }      
 
     default:
       await message.reply("Não entendi sua mensagem. Por favor, siga o fluxo.");

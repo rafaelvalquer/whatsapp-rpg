@@ -12,7 +12,7 @@ module.exports = {
             {
               text: "Aceitar ajudar imediatamente.",
               nextStep: 4,
-              event: 'batalha',
+              event: 'encontraFerido',
               enemy: {
                 enemyName: 'Orc',
                 enemyHP: 10,
@@ -21,7 +21,8 @@ module.exports = {
                 position: 5,
                 enemyXP: 10,
                 arma: 1
-              }
+              },
+              item: 101
             },
             {
               text: "Negociar uma recompensa antes de ajudar.",
@@ -41,6 +42,17 @@ module.exports = {
             {
               text: "Organizar os aldeões para a defesa.",
               nextStep: 4,
+              event: 'encontraFerido',
+              enemy: {
+                enemyName: 'Orc',
+                enemyHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 5,
+                enemyXP: 10,
+                arma: 1
+              },
+              item: 101
             },
             {
               text: "Preparar uma emboscada para os inimigos.",
