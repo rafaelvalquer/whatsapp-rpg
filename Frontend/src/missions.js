@@ -33,9 +33,6 @@ module.exports = {
             {
               text: "Recusar a ajuda e seguir seu caminho.",
               nextStep: "end",
-              end: {
-                xp
-              }
             },
           ],
         },
