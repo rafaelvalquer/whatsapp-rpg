@@ -1135,13 +1135,6 @@ const handleUserResponse = async (message, state) => {
       }
 
       case "encontraFerido.retorno":{
-        let encontraFerido = {};
-
-        const mission = structuredClone(
-          missionsData.missoes[battleController[message.from].missao]
-        );
-
-        const step = battleController[message.from].step;
 
         if (input === "1") { 
           // Escolhe aleatoriamente entre item (0) ou batalha (1)
@@ -1170,7 +1163,7 @@ const handleUserResponse = async (message, state) => {
               const enemy = battleController[message.from].enemy;
               await client.sendMessage(
                 message.from,
-                `⚔️ O viajante era uma armadilha! Você caiu em uma emboscada e precisa lutar contra *${enemy.nome}*!`
+                `⚔️ O viajante era uma armadilha! Você caiu em uma emboscada e precisa lutar contra *${enemy.enemyName}*!`
               );
 
               navigationFlow.batalha(message);
