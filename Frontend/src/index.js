@@ -948,69 +948,49 @@ const handleUserResponse = async (message, state) => {
       break;
 
     //#region Recompensa Retorno
-    case "recompensa.arma":
+    case "recompensa.arma":{
       battle = battleController[message.from]?.battle;
-      if (isValidInput(input, ["1", "2", "3"])) {
-        if (input === "1") {
-          battle.player.status.arma1 = battle.enemy.arma;
-          
-          //Atualizar Personagem no banco
-          let  updates = {
-            status: battle.player.status,
-          };
 
-          let  update = await updateCharacter(userData[message.from], updates);
-          if (update.success) {
-            await client.sendMessage(
-              message.from,
-              "Personagem atualizado com sucesso no banco"
-            );
-            userData[message.from] = update.user; // Atualiza os dados do personagem localmente
-          } else {
-            client.sendMessage(
-              message.from,
-              "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-            );
-          }
-
-          await client.sendMessage(message.from, `Você se equipa com ${items[userData[message.from].status.arma1].nome} e sente sua força crescer. O próximo inimigo que se cuide!`);
-          navigationFlow.batalhaFim(message);
-
-        } else if (input === "2") {
-          battle.player.status.arma2 = battle.enemy.arma;
-
-            //Atualizar Personagem no banco
-            let  updates = {
-              status: battle.player.status,
-            };
-  
-            let  update = await updateCharacter(userData[message.from], updates);
-            if (update.success) {
-              await client.sendMessage(
-                message.from,
-                "Personagem atualizado com sucesso no banco"
-              );
-              userData[message.from] = update.user; // Atualiza os dados do personagem localmente
-            } else {
-              client.sendMessage(
-                message.from,
-                "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-              );
-            }
-                    
-          await client.sendMessage(message.from, `Ao empunhar o ${items[userData[message.from].status.arma2].nome}, um novo poder desperta dentro de você!`);
-
-          navigationFlow.batalhaFim(message);
-        } else if (input === "3") {
-          await client.sendMessage(message.from, "Você decidiu deixar a arma no local e segue seu caminho.");
-          navigationFlow.batalhaFim(message);
-        }
-      } else {
-        await message.reply(
-          "Opção inválida. Por favor, responda com 1, 2 ou 3."
-        );
+      if (!isValidInput(input, ["1", "2", "3"])) {
+        await message.reply("❌ Opção inválida. Por favor, responda com 1, 2 ou 3.");
+        return;
       }
+
+      // Função auxiliar para equipar a arma e atualizar o banco de dados
+      const equiparArma = async (armaSlot) => {
+        battle.player.status[armaSlot] = battle.enemy.arma;
+
+        let updates = { status: battle.player.status };
+        let update = await updateCharacter(userData[message.from], updates);
+
+        if (update.success) {
+          await client.sendMessage(message.from, "✅ Personagem atualizado com sucesso no banco.");
+          userData[message.from] = update.user; // Atualiza os dados localmente
+        } else {
+          await client.sendMessage(message.from, "⚠️ Houve um problema ao atualizar seu personagem. Por favor, tente novamente.");
+          return;
+        }
+
+        let armaNome = items[userData[message.from].status[armaSlot]].nome;
+        await client.sendMessage(message.from, `🗡️ Você se equipa com *${armaNome}* e sente sua força crescer! O próximo inimigo que se cuide!`);
+      };
+
+      switch (input) {
+        case "1":
+          await equiparArma("arma1");
+          break;
+        case "2":
+          await equiparArma("arma2");
+          break;
+        case "3":
+          await client.sendMessage(message.from, "🔄 Você decidiu deixar a arma no local e segue seu caminho.");
+          break;
+      }
+    
+      navigationFlow.batalhaFim(message);
+
       break;
+    }
 
       case "encontraItem.retorno":{
         let encontraItem = {};
