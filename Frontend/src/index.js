@@ -467,6 +467,46 @@ encontraFerido: async (message) => {
 
 },
 
+missaoFim: async (message) => {
+
+  const recompensa = battleController[message.from].recompensa;
+  
+  // Criar uma cópia do status do usuário antes de modificar
+  let playerCopy = structuredClone(userData[message.from]);
+
+  if(recompensa?.xp){
+    playerCopy.status.xp += recompensa.xp;
+    const respostaLevelUp = verificarLevelUp(playerCopy); // Verificar se o personagem pulou de LV
+    playerCopy = respostaLevelUp.personagem;
+
+        // Atualizar Personagem no banco de dados
+        const updateResult = await updateCharacter(userData[message.from], { status: playerCopy });
+
+      if (updateResult.success) {
+        await client.sendMessage(
+          message.from,
+          "Personagem atualizado com sucesso no banco"
+        );
+
+        // Atualizar o userData com os novos dados
+        userData[message.from].status = recompensa.update.user.status;
+      } else {
+        await client.sendMessage(
+          message.from,
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
+      }
+
+  }
+  await client.sendMessage(
+    message.from,
+ "🏡 Com a missão concluída, você retorna ao vilarejo para descansar e compartilhar sua história. O que deseja fazer agora?"
+  );
+
+  navigationFlow.menuInicial(message);
+},
+
+
 };
 //###############################################################
 // FIM Fluxo de navegação
@@ -826,40 +866,45 @@ const handleUserResponse = async (message, state) => {
         //validando se opção digitada está correta
         const option = mission.steps[step].options[input - 1]; // Pega opção
 
-        let nextStep = option.nextStep - 1;
-        battleController[message.from].step = nextStep;
+        if (option.nextStep != "end") {
+          let nextStep = option.nextStep - 1;
+          battleController[message.from].step = nextStep;
 
-        switch (option.event) {
-          case "batalha":
-            battleController[message.from].enemy = option.enemy;
-            navigationFlow.batalha(message);
-            break;
-          case "encontraItem":
-            battleController[message.from].item = option.item;
-            navigationFlow.encontraItem(message);
-            break;
-          case "encontraFerido":
-            battleController[message.from].enemy = option.enemy;
-            battleController[message.from].item = option.item;
-            navigationFlow.encontraFerido(message);
-            break;
-          default:
-            // atualiza proximo step
+          switch (option.event) {
+            case "batalha":
+              battleController[message.from].enemy = option.enemy;
+              navigationFlow.batalha(message);
+              break;
+            case "encontraItem":
+              battleController[message.from].item = option.item;
+              navigationFlow.encontraItem(message);
+              break;
+            case "encontraFerido":
+              battleController[message.from].enemy = option.enemy;
+              battleController[message.from].item = option.item;
+              navigationFlow.encontraFerido(message);
+              break;
+            default:
+              let text = mission.steps[nextStep].text;
+              let optionsText = "";
 
-            //let nextStep = option.nextStep - 1;
-            //battleController[message.from].step = nextStep;
+              mission.steps[nextStep].options.forEach((option, index) => {
+                optionsText += `${index + 1}. ${option.text}\n`;
+              });
 
-            let text = mission.steps[nextStep].text;
-            let optionsText = "";
+              await client.sendMessage(message.from, text);
+              client.sendMessage(message.from, optionsText);
 
-            mission.steps[nextStep].options.forEach((option, index) => {
-              optionsText += `${index + 1}. ${option.text}\n`;
-            });
+              break;
+          }
+        } else {
+          let nextStep = mission.steps.length - 1;
+          battleController[message.from].step = nextStep;
+          let text = mission.steps[nextStep].text;
+          await client.sendMessage(message.from, text);
 
-            await client.sendMessage(message.from, text);
-            client.sendMessage(message.from, optionsText);
-
-            break;
+          battleController[message.from].recompensa = mission.steps[nextStep].recompensa;
+          navigationFlow.missaoFim(message);
         }
       } else {
         message.reply("Opção inválida, vamos tentar novamente");
@@ -915,16 +960,22 @@ const handleUserResponse = async (message, state) => {
         );
       } else if (input === "skill" || input === "4") {
         // Falta fazer
-      } else if ((input === "item" || input === "5") && Object.keys(userData[message.from].status.item).length > 0) {
-        
+      } else if (
+        (input === "item" || input === "5") &&
+        Object.keys(userData[message.from].status.item).length > 0
+      ) {
         navigationFlow.usarItem(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
-
-      } else if ((input === "skill" || input === "5") && Object.keys(userData[message.from].status.item).length == 0) {
+      } else if (
+        (input === "skill" || input === "5") &&
+        Object.keys(userData[message.from].status.item).length == 0
+      ) {
         await client.sendMessage(message.from, "📦 Seu inventário está vazio.");
-
-      }else {
-        await client.sendMessage(message.from, "Comando inválido! Use 'avançar', 'voltar' ou 'atacar'.");
+      } else {
+        await client.sendMessage(
+          message.from,
+          "Comando inválido! Use 'avançar', 'voltar' ou 'atacar'."
+        );
       }
 
       //Atualizar Personagem no banco
@@ -948,7 +999,8 @@ const handleUserResponse = async (message, state) => {
 
       //Verifica fim da batalha
       if (battle.enemy.enemyHP <= 0) {
-        if (battle.enemy.arma || battle.enemy.item) { //falta fazer o item
+        if (battle.enemy.arma || battle.enemy.item) {
+          //falta fazer o item
           const frase = `Ao revirar os restos do ${
             battle.enemy.enemyName
           }, você descobre um ${items[battle.enemy.arma].nome}.`;
@@ -965,11 +1017,13 @@ const handleUserResponse = async (message, state) => {
       break;
 
     //#region Recompensa Retorno
-    case "recompensa.arma":{
+    case "recompensa.arma": {
       battle = battleController[message.from]?.battle;
 
       if (!isValidInput(input, ["1", "2", "3"])) {
-        await message.reply("❌ Opção inválida. Por favor, responda com 1, 2 ou 3.");
+        await message.reply(
+          "❌ Opção inválida. Por favor, responda com 1, 2 ou 3."
+        );
         return;
       }
 
@@ -981,15 +1035,24 @@ const handleUserResponse = async (message, state) => {
         let update = await updateCharacter(userData[message.from], updates);
 
         if (update.success) {
-          await client.sendMessage(message.from, "✅ Personagem atualizado com sucesso no banco.");
+          await client.sendMessage(
+            message.from,
+            "✅ Personagem atualizado com sucesso no banco."
+          );
           userData[message.from] = update.user; // Atualiza os dados localmente
         } else {
-          await client.sendMessage(message.from, "⚠️ Houve um problema ao atualizar seu personagem. Por favor, tente novamente.");
+          await client.sendMessage(
+            message.from,
+            "⚠️ Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+          );
           return;
         }
 
         let armaNome = items[userData[message.from].status[armaSlot]].nome;
-        await client.sendMessage(message.from, `🗡️ Você se equipa com *${armaNome}* e sente sua força crescer! O próximo inimigo que se cuide!`);
+        await client.sendMessage(
+          message.from,
+          `🗡️ Você se equipa com *${armaNome}* e sente sua força crescer! O próximo inimigo que se cuide!`
+        );
       };
 
       switch (input) {
@@ -1000,190 +1063,267 @@ const handleUserResponse = async (message, state) => {
           await equiparArma("arma2");
           break;
         case "3":
-          await client.sendMessage(message.from, "🔄 Você decidiu deixar a arma no local e segue seu caminho.");
+          await client.sendMessage(
+            message.from,
+            "🔄 Você decidiu deixar a arma no local e segue seu caminho."
+          );
           break;
       }
-    
+
       navigationFlow.batalhaFim(message);
 
       break;
     }
 
-      case "encontraItem.retorno":{
-        let encontraItem = {};
-        encontraItem.id = battleController[message.from].item; // ID do item
-    
-        // Criar uma cópia do status antes de modificar
-        let statusCopy = structuredClone(userData[message.from].status);
+    case "encontraItem.retorno": {
+      let encontraItem = {};
+      encontraItem.id = battleController[message.from].item; // ID do item
 
-    
-        if (input === "1") {
-            if (items[encontraItem.id].tipo === "hp") {
-                statusCopy.hp = Math.min(statusCopy.maxHP, statusCopy.hp + items[encontraItem.id].valor);
-                encontraItem.txt = `💖 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou *${items[encontraItem.id].valor}* de HP!`;
-            } else if (items[encontraItem.id].tipo === "mana") {
-                statusCopy.mana = Math.min(statusCopy.maxMana, statusCopy.mana + items[encontraItem.id].valor);
-                encontraItem.txt = `🔷 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e recuperou ${items[encontraItem.id].valor} de Mana!`;
-            } else if (items[encontraItem.id].tipo === "força") {
-                statusCopy.str = Math.max(0, statusCopy.str + items[encontraItem.id].valor); // Evita valores negativos
-                encontraItem.txt = `💪 Você usou ${items[encontraItem.id].nome}${items[encontraItem.id].emoji} e aumentou sua Força em ${items[encontraItem.id].valor} por 3 turnos!`;
-            } else {
-                encontraItem.txt = `🤔 Esse item não tem efeito conhecido...`;
-            }
-        } else if (input === "2") {
-            // Criar a propriedade 'item' se não existir
-            if (!statusCopy.item) {
-                statusCopy.item = {};
-            }
-    
-            // Verifica se o item já existe e atualiza a quantidade
-            statusCopy.item[encontraItem.id] = (statusCopy.item[encontraItem.id] || 0) + 1;
-            encontraItem.txt = `🗃️ Você guardou 1 do item ${items[encontraItem.id].nome}.`;
-        }
-    
-        // Atualizar Personagem no banco de dados
-        encontraItem.updates = { status: statusCopy };
-        encontraItem.update = await updateCharacter(userData[message.from], encontraItem.updates);
-    
-        if (encontraItem.update.success) {
-            await client.sendMessage(message.from, "Personagem atualizado com sucesso no banco");
-            
-            // Atualizar o userData com os novos dados
-            userData[message.from].status = encontraItem.update.user.status;
+      // Criar uma cópia do status antes de modificar
+      let statusCopy = structuredClone(userData[message.from].status);
+
+      if (input === "1") {
+        if (items[encontraItem.id].tipo === "hp") {
+          statusCopy.hp = Math.min(
+            statusCopy.maxHP,
+            statusCopy.hp + items[encontraItem.id].valor
+          );
+          encontraItem.txt = `💖 Você usou ${items[encontraItem.id].nome}${
+            items[encontraItem.id].emoji
+          } e recuperou *${items[encontraItem.id].valor}* de HP!`;
+        } else if (items[encontraItem.id].tipo === "mana") {
+          statusCopy.mana = Math.min(
+            statusCopy.maxMana,
+            statusCopy.mana + items[encontraItem.id].valor
+          );
+          encontraItem.txt = `🔷 Você usou ${items[encontraItem.id].nome}${
+            items[encontraItem.id].emoji
+          } e recuperou ${items[encontraItem.id].valor} de Mana!`;
+        } else if (items[encontraItem.id].tipo === "força") {
+          statusCopy.str = Math.max(
+            0,
+            statusCopy.str + items[encontraItem.id].valor
+          ); // Evita valores negativos
+          encontraItem.txt = `💪 Você usou ${items[encontraItem.id].nome}${
+            items[encontraItem.id].emoji
+          } e aumentou sua Força em ${
+            items[encontraItem.id].valor
+          } por 3 turnos!`;
         } else {
-            await client.sendMessage(message.from, "Houve um problema ao atualizar seu personagem. Por favor, tente novamente.");
+          encontraItem.txt = `🤔 Esse item não tem efeito conhecido...`;
         }
-    
-        // Enviar mensagem final ao jogador
-        await client.sendMessage(message.from, encontraItem.txt);
-    
-        // Encerrar fluxo de navegação
-        navigationFlow.encontraItemFim(message);
-    
-        break;
+      } else if (input === "2") {
+        // Criar a propriedade 'item' se não existir
+        if (!statusCopy.item) {
+          statusCopy.item = {};
+        }
+
+        // Verifica se o item já existe e atualiza a quantidade
+        statusCopy.item[encontraItem.id] =
+          (statusCopy.item[encontraItem.id] || 0) + 1;
+        encontraItem.txt = `🗃️ Você guardou 1 do item ${
+          items[encontraItem.id].nome
+        }.`;
       }
-    
 
-      case "usarItem.retorno":{
+      // Atualizar Personagem no banco de dados
+      encontraItem.updates = { status: statusCopy };
+      encontraItem.update = await updateCharacter(
+        userData[message.from],
+        encontraItem.updates
+      );
 
-        // Criar uma cópia do status do usuário antes de modificar
-        let statusCopy = structuredClone(userData[message.from].status);
+      if (encontraItem.update.success) {
+        await client.sendMessage(
+          message.from,
+          "Personagem atualizado com sucesso no banco"
+        );
 
-        let usarItem = {};
-        
-        usarItem.userItems = statusCopy.item;
-        usarItem.opcoesValidas = Object.keys(usarItem.userItems).map((_, index) => (index + 1).toString());
-        
-        if (usarItem.opcoesValidas.includes(input)) {  // Validar Input
-          usarItem.itemIDs = Object.keys(usarItem.userItems);
-          usarItem.escolhaIndex = parseInt(input, 10) - 1;
-      
-          if (usarItem.escolhaIndex >= 0 && usarItem.escolhaIndex < usarItem.itemIDs.length) {
-            usarItem.itemID = usarItem.itemIDs[usarItem.escolhaIndex];
-      
-            // Aplicar os efeitos do item no status copiado
-            if (items[usarItem.itemID].tipo === "hp") {
-              statusCopy.hp = Math.min(statusCopy.maxHP, statusCopy.hp + items[usarItem.itemID].valor);
-              usarItem.txt = `💖 Você usou ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e recuperou *${items[usarItem.itemID].valor}* de HP!`;
-            } else if (items[usarItem.itemID].tipo === "mana") {
-              statusCopy.mana = Math.min(statusCopy.maxMana, statusCopy.mana + items[usarItem.itemID].valor);
-              usarItem.txt = `🔷 Você usou ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e recuperou *${items[usarItem.itemID].valor}* de Mana!`;
-            } else if (items[usarItem.itemID].tipo === "força") {
-              statusCopy.str = Math.max(0, statusCopy.str + items[usarItem.itemID].valor);
-              usarItem.txt = `💪 Você usou ${items[usarItem.itemID].nome}${items[usarItem.itemID].emoji} e aumentou sua Força em ${items[usarItem.itemID].valor} por 3 turnos!`;
-            } else {
-              usarItem.txt = `🤔 Esse item não tem efeito conhecido...`;
-            }
-      
-            // Reduzir a quantidade do item
-            statusCopy.item[usarItem.itemID] -= 1;
-      
-            // Se a quantidade chegar a 0, remover do inventário
-            if (statusCopy.item[usarItem.itemID] <= 0) {
-              delete statusCopy.item[usarItem.itemID];
-              }
+        // Atualizar o userData com os novos dados
+        userData[message.from].status = encontraItem.update.user.status;
+      } else {
+        await client.sendMessage(
+          message.from,
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
+      }
+
+      // Enviar mensagem final ao jogador
+      await client.sendMessage(message.from, encontraItem.txt);
+
+      // Encerrar fluxo de navegação
+      navigationFlow.encontraItemFim(message);
+
+      break;
+    }
+
+    case "usarItem.retorno": {
+      // Criar uma cópia do status do usuário antes de modificar
+      let statusCopy = structuredClone(userData[message.from].status);
+
+      let usarItem = {};
+
+      usarItem.userItems = statusCopy.item;
+      usarItem.opcoesValidas = Object.keys(usarItem.userItems).map((_, index) =>
+        (index + 1).toString()
+      );
+
+      if (usarItem.opcoesValidas.includes(input)) {
+        // Validar Input
+        usarItem.itemIDs = Object.keys(usarItem.userItems);
+        usarItem.escolhaIndex = parseInt(input, 10) - 1;
+
+        if (
+          usarItem.escolhaIndex >= 0 &&
+          usarItem.escolhaIndex < usarItem.itemIDs.length
+        ) {
+          usarItem.itemID = usarItem.itemIDs[usarItem.escolhaIndex];
+
+          // Aplicar os efeitos do item no status copiado
+          if (items[usarItem.itemID].tipo === "hp") {
+            statusCopy.hp = Math.min(
+              statusCopy.maxHP,
+              statusCopy.hp + items[usarItem.itemID].valor
+            );
+            usarItem.txt = `💖 Você usou ${items[usarItem.itemID].nome}${
+              items[usarItem.itemID].emoji
+            } e recuperou *${items[usarItem.itemID].valor}* de HP!`;
+          } else if (items[usarItem.itemID].tipo === "mana") {
+            statusCopy.mana = Math.min(
+              statusCopy.maxMana,
+              statusCopy.mana + items[usarItem.itemID].valor
+            );
+            usarItem.txt = `🔷 Você usou ${items[usarItem.itemID].nome}${
+              items[usarItem.itemID].emoji
+            } e recuperou *${items[usarItem.itemID].valor}* de Mana!`;
+          } else if (items[usarItem.itemID].tipo === "força") {
+            statusCopy.str = Math.max(
+              0,
+              statusCopy.str + items[usarItem.itemID].valor
+            );
+            usarItem.txt = `💪 Você usou ${items[usarItem.itemID].nome}${
+              items[usarItem.itemID].emoji
+            } e aumentou sua Força em ${
+              items[usarItem.itemID].valor
+            } por 3 turnos!`;
+          } else {
+            usarItem.txt = `🤔 Esse item não tem efeito conhecido...`;
+          }
+
+          // Reduzir a quantidade do item
+          statusCopy.item[usarItem.itemID] -= 1;
+
+          // Se a quantidade chegar a 0, remover do inventário
+          if (statusCopy.item[usarItem.itemID] <= 0) {
+            delete statusCopy.item[usarItem.itemID];
+          }
         }
-      
+
         await client.sendMessage(message.from, usarItem.txt);
-      
+
         battle = battleController[message.from]?.battle;
         battle.player.status = statusCopy;
-        await client.sendMessage(message.from, "battle = " +  battle.player.status.hp + " statuscopy = " + statusCopy.hp);
+        await client.sendMessage(
+          message.from,
+          "battle = " +
+            battle.player.status.hp +
+            " statuscopy = " +
+            statusCopy.hp
+        );
         usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await client.sendMessage(message.from, usarItem.enemy);
-          await client.sendMessage(message.from, `Estado atual:\n${battle.displayGrid()}`);
-      
-          // Atualizar Personagem no banco de dados
-          usarItem.updates = { status: statusCopy };
-        usarItem.update = await updateCharacter(userData[message.from], usarItem.updates);
-      
-        console.log('usarItem = ' + JSON.stringify(usarItem));
-      
+        await client.sendMessage(
+          message.from,
+          `Estado atual:\n${battle.displayGrid()}`
+        );
+
+        // Atualizar Personagem no banco de dados
+        usarItem.updates = { status: statusCopy };
+        usarItem.update = await updateCharacter(
+          userData[message.from],
+          usarItem.updates
+        );
+
+        console.log("usarItem = " + JSON.stringify(usarItem));
+
         if (usarItem.update.success) {
-            await client.sendMessage(message.from, "Personagem atualizado com sucesso no banco");
-            userData[message.from].status = usarItem.update.user.status; // Atualiza os dados do personagem localmente
-            await client.sendMessage(message.from, "battle = " +  battle.player.status.hp + " statuscopy = " + statusCopy.hp);
-        } else {
-            await client.sendMessage(message.from, "Houve um problema ao atualizar seu personagem. Por favor, tente novamente.");
-        }
-        } else {
-          await client.sendMessage(message.from, "❌ Digite um item válido");
-          navigationFlow.usarItem(message);
-        }
-        navigationFlow.batalha(message);
-        break;
-      }
-
-      case "encontraFerido.retorno":{
-
-        if (input === "1") { 
-          // Escolhe aleatoriamente entre item (0) ou batalha (1)
-          const evento = Math.random() < 0.5 ? "item" : "enemy";
-
-          if (evento === "item") {
-              const item = battleController[message.from].item;
-              await client.sendMessage(
-                message.from,
-                `🎁 O viajante agradece sua ajuda e lhe entrega um presente:  
-                📜 *${items[item].nome}* ${items[item].emoji}! ${items[item].txt}`
-              );
-
-              await client.sendMessage(
-                message.from,
-                `O que deseja fazer?  
-        1️⃣ Usar agora  
-        2️⃣ Guardar para mais tarde`);
-
-        delete battleController[message.from].enemy;
-
-              // Atualiza estado para coletar o item
-              userStates[message.from] = "encontraItem.retorno"; 
-
-          } else {
-              const enemy = battleController[message.from].enemy;
-              await client.sendMessage(
-                message.from,
-                `⚔️ O viajante era uma armadilha! Você caiu em uma emboscada e precisa lutar contra *${enemy.enemyName}*!`
-              );
-
-              navigationFlow.batalha(message);
-          }
-      } else if (input === "2") { 
           await client.sendMessage(
             message.from,
-            "Você ignora o viajante e continua sua jornada sem olhar para trás."
+            "Personagem atualizado com sucesso no banco"
+          );
+          userData[message.from].status = usarItem.update.user.status; // Atualiza os dados do personagem localmente
+          await client.sendMessage(
+            message.from,
+            "battle = " +
+              battle.player.status.hp +
+              " statuscopy = " +
+              statusCopy.hp
+          );
+        } else {
+          await client.sendMessage(
+            message.from,
+            "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+          );
+        }
+      } else {
+        await client.sendMessage(message.from, "❌ Digite um item válido");
+        navigationFlow.usarItem(message);
+      }
+      navigationFlow.batalha(message);
+      break;
+    }
+
+    case "encontraFerido.retorno": {
+      if (input === "1") {
+        // Escolhe aleatoriamente entre item (0) ou batalha (1)
+        const evento = Math.random() < 0.5 ? "item" : "enemy";
+
+        if (evento === "item") {
+          const item = battleController[message.from].item;
+          await client.sendMessage(
+            message.from,
+            `🎁 O viajante agradece sua ajuda e lhe entrega um presente:  
+📜 *${items[item].nome}* ${items[item].emoji}! ${items[item].txt}`
           );
 
-          delete battleController[message.from].battle;
-          delete battleController[message.from].enemy;
-          delete battleController[message.from].item;
+          await client.sendMessage(
+            message.from,
+            `O que deseja fazer?  
+        1️⃣ Usar agora  
+        2️⃣ Guardar para mais tarde`
+          );
 
-          navigationFlow.continuarAventura(message);
+          delete battleController[message.from].enemy;
+
+          // Atualiza estado para coletar o item
+          userStates[message.from] = "encontraItem.retorno";
+        } else {
+          const enemy = battleController[message.from].enemy;
+          await client.sendMessage(
+            message.from,
+            `⚔️ O viajante era uma armadilha! Você caiu em uma emboscada e precisa lutar contra *${enemy.enemyName}*!`
+          );
+
+          navigationFlow.batalha(message);
+        }
+      } else if (input === "2") {
+        await client.sendMessage(
+          message.from,
+          "Você ignora o viajante e continua sua jornada sem olhar para trás."
+        );
+
+        delete battleController[message.from].battle;
+        delete battleController[message.from].enemy;
+        delete battleController[message.from].item;
+
+        navigationFlow.continuarAventura(message);
       } else {
-          await message.reply("Opção inválida. Escolha 1️⃣ para Resgatar ou 2️⃣ para Ignorar.");
-      }    
-        break;
-      }      
+        await message.reply(
+          "Opção inválida. Escolha 1️⃣ para Resgatar ou 2️⃣ para Ignorar."
+        );
+      }
+      break;
+    }
 
     default:
       await message.reply("Não entendi sua mensagem. Por favor, siga o fluxo.");

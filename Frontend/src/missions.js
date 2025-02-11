@@ -33,6 +33,9 @@ module.exports = {
             {
               text: "Recusar a ajuda e seguir seu caminho.",
               nextStep: "end",
+              end: {
+                xp
+              }
             },
           ],
         },
@@ -113,7 +116,12 @@ module.exports = {
           ],
         },
         {
-          text: "...",
+          text: `Missão concluída! Você recebeu:
+          10 de XP e 10 de moedas.`,
+          recomensa: {
+            xp: 10
+          }
+
           // Adicione mais etapas conforme necessário.
         },
       ],
