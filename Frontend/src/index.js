@@ -470,7 +470,7 @@ missaoFim: async (message) => {
     await client.sendMessage(message.from, respostaLevelUp.mensagem);
 
         // Atualizar Personagem no banco de dados
-        let updates = { status: statusCopy.status };
+        let updates = { status: playerCopy.status };
         const updateResult = await updateCharacter(userData[message.from], updates);
 
       if (updateResult.success) {
