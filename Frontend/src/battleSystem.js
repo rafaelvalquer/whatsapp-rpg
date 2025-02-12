@@ -149,6 +149,21 @@ Você ganhou *${xp}* de experiência! 🏆`;
     grid[this.enemyPosition] = "[🐉]";
     return grid.join("");
   }
+
+  displayHP() {
+    const getHPBar = (currentHP, maxHP) => {
+      const filledBars = Math.round((currentHP / maxHP) * 5);
+      const emptyBars = 5 - filledBars;
+      return "🟥".repeat(filledBars) + "⬜".repeat(emptyBars);
+    };
+  
+    const playerHPBar = getHPBar(this.player.status.hp, this.player.status.maxHP);
+    const enemyHPBar = getHPBar(this.enemy.enemyHP, this.enemy.enemyMaxHP);
+  
+    return `🧑 Player HP: ${playerHPBar} ${this.player.status.hp}/${this.player.status.maxHP}\n` +
+           `💀 Inimigo HP: ${enemyHPBar} ${this.enemy.enemyHP}/${this.enemy.enemyMaxHP}`;
+  }
+  
 }
 
 module.exports = BattleSystem;

@@ -151,17 +151,6 @@ function verificarLevelUp(personagem) {
   };
 }
 
-// Função para dar a arma ao jogador ao vencer
-function obterRecompensa(personagem, inimigo) {
-  if (inimigo.arma) {
-    const armaRecebida = items[inimigo.arma]; // Pega o item do inimigo
-    if (armaRecebida) {
-      personagem.status.arma1 = armaRecebida; // Adiciona ao personagem
-      return `Você derrotou ${inimigo.enemyName} e ganhou uma ${armaRecebida.nome}!`;
-    }
-  }
-  return `Você derrotou ${inimigo.enemyName}, mas ele não tinha itens valiosos.`;
-}
 
 //###############################################################
 //#region Fluxo de navegação
@@ -926,6 +915,7 @@ const handleUserResponse = async (message, state) => {
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
+        await client.sendMessage(message.from, displayHP());
         await client.sendMessage(
           message.from,
           `Estado atual:\n${battle.displayGrid()}`
@@ -944,6 +934,7 @@ const handleUserResponse = async (message, state) => {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
           await message.reply(result);
           await client.sendMessage(message.from, enemy);
+          await client.sendMessage(message.from, displayHP());
           await client.sendMessage(
             message.from,
             `Estado atual:\n${battle.displayGrid()}`
@@ -954,6 +945,7 @@ const handleUserResponse = async (message, state) => {
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
+        await client.sendMessage(message.from, displayHP());
         await client.sendMessage(
           message.from,
           `Estado atual:\n${battle.displayGrid()}`
@@ -1232,6 +1224,7 @@ const handleUserResponse = async (message, state) => {
         );
         usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await client.sendMessage(message.from, usarItem.enemy);
+        await client.sendMessage(message.from, displayHP());
         await client.sendMessage(
           message.from,
           `Estado atual:\n${battle.displayGrid()}`

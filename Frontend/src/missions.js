@@ -11,24 +11,7 @@ module.exports = {
           options: [
             {
               text: "Aceitar ajudar imediatamente.",
-              nextStep: 4,
-              event: 'encontraFerido',
-              enemy: {
-                enemyName: 'Orc',
-                enemyHP: 10,
-                enemyStr: 3,
-                enemyCon: 2,
-                position: 5,
-                enemyXP: 10,
-                arma: 1
-              },
-              item: 101
-            },
-            {
-              text: "Negociar uma recompensa antes de ajudar.",
-              nextStep: 3,
-              event: 'encontraItem',
-              item: 101
+              nextStep: 2
             },
             {
               text: "Recusar a ajuda e seguir seu caminho.",
@@ -37,65 +20,15 @@ module.exports = {
           ],
         },
         {
-          text: "Você aceitou ajudar imediatamente. Os aldeões estão aliviados e contam com você para liderar a defesa. O que você faz?",
-          options: [
-            {
-              text: "Organizar os aldeões para a defesa.",
-              nextStep: 4,
-              event: 'encontraFerido',
-              enemy: {
-                enemyName: 'Orc',
-                enemyHP: 10,
-                enemyStr: 3,
-                enemyCon: 2,
-                position: 5,
-                enemyXP: 10,
-                arma: 1
-              },
-              item: 101
-            },
-            {
-              text: "Preparar uma emboscada para os inimigos.",
-              nextStep: 5,
-            },
-          ],
-        },
-        {
-          text: "Você decidiu negociar. Os aldeões, desesperados, oferecem suas economias e comida. O que você faz?",
-          options: [
-            {
-              text: "Aceitar a recompensa e ajudar.",
-              nextStep: 2,
-            },
-            {
-              text: "Recusar e ajudar mesmo assim.",
-              nextStep: 2,
-            },
-          ],
-        },
-        {
           text: "Os aldeões se reúnem sob sua liderança. Você percebe que eles não têm experiência em combate. O que você faz?",
           options: [
             {
               text: "Treinar os aldeões rapidamente.",
-              nextStep: 6,
+              nextStep: 3,
             },
             {
               text: "Buscar ajuda de guerreiros experientes na cidade próxima.",
-              nextStep: 7,
-            },
-          ],
-        },
-        {
-          text: "Você prepara uma emboscada. Com astúcia, posiciona os aldeões em locais estratégicos. O que você faz agora?",
-          options: [
-            {
-              text: "Dar o sinal para atacar quando os bandidos chegarem.",
-              nextStep: 8,
-            },
-            {
-              text: "Esperar e observar o movimento dos bandidos primeiro.",
-              nextStep: 9,
+              nextStep: 4,
             },
           ],
         },
@@ -104,18 +37,123 @@ module.exports = {
           options: [
             {
               text: "Liderar o ataque frontal contra os bandidos.",
-              nextStep: 10,
+              nextStep: "end",
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Bandido',
+                enemyHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 3,
+                enemyXP: 15,
+                arma: 1
+              },
             },
             {
               text: "Ficar na retaguarda e coordenar as ações.",
-              nextStep: 11,
+              nextStep: "end",
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Bandido',
+                enemyHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 5,
+                enemyXP: 10,
+                arma: 1
+              },
             },
           ],
         },
         {
-          text: `Missão concluída! Você recebeu:
-          10 de XP e 10 de moedas.`,
-          recomensa: {
+          text: "Na cidade próxima, você encontra um guerreiro ferido. Ele pode ajudá-lo se você tratá-lo. O que você faz?",
+          options: [
+            {
+              text: "Ajudar o guerreiro ferido.",
+              nextStep: 5,
+              event: 'encontrarFerido',
+              enemy: {
+                enemyName: 'Guerreiro Ferido',
+                enemyHP: 15,
+                enemyStr: 5,
+                enemyCon: 5,
+                position: 5,
+                enemyXP: 10,
+                arma: 5
+              },
+              item: 101
+            },
+            {
+              text: "Deixá-lo e voltar ao vilarejo sozinho.",
+              nextStep: 5,
+            },
+          ],
+        },
+        {
+          text: "Você não teve sucesso em encontrar ajuda. No meio do caminho, você encontra um baú abandonado. O que deseja fazer?",
+          options: [
+            {
+              text: "Abrir o baú.",
+              nextStep: 6,
+              event: 'encontraItem',
+              item: 101
+            },
+            {
+              text: "Ignorar e seguir caminho.",
+              nextStep: 6,
+            },
+          ],
+        },
+        {
+          text: "Você chegou atrasado ao vilarejo, e a batalha já está começando. O que você faz?",
+          options: [
+            {
+              text: "Liderar o ataque frontal contra os bandidos.",
+              nextStep: "end",
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Bandido',
+                enemyHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 4,
+                enemyXP: 15,
+                arma: 1
+              },
+            },
+            {
+              text: "Ficar na retaguarda e coordenar as ações.",
+              nextStep: "end",
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Bandido',
+                enemyHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 5,
+                enemyXP: 10,
+                arma: 1
+              },
+            },
+            {
+              text:  "Tentar encontrar uma posição estratégica para emboscar os bandidos.",
+              nextStep: "end",
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Líder dos Bandidos',
+                enemyHP: 15,
+                enemyStr: 4,
+                enemyCon: 3,
+                position: 3,
+                enemyXP: 20,
+                arma: 1
+              },
+            },
+          ],
+        },
+        {
+          text: "A batalha termina e os bandidos recuam. O vilarejo está seguro!",
+          recompensa: {
             xp: 10
           }
 

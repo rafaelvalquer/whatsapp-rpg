@@ -19,6 +19,20 @@
     "nome": "Cajado Mágico",
     "int": 4
   },
+  "5": {
+    "nome": "Espada Longa",
+    "str": 3,
+    "con": 1,
+    "agi": 0,
+    "int": 0
+  },
+  "6": {
+    "nome": "Lâmina Sombria",
+    "str": 4,
+    "con": 2,
+    "agi": 1,
+    "int": 0
+  },
   "101": {
     "nome": "Poção",
     "tipo" : "hp",
