@@ -71,7 +71,7 @@ module.exports = {
             {
               text: "Ajudar o guerreiro ferido.",
               nextStep: 5,
-              event: 'encontrarFerido',
+              event: 'encontraFerido',
               enemy: {
                 enemyName: 'Guerreiro Ferido',
                 enemyHP: 15,

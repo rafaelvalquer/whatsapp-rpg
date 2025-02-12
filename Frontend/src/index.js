@@ -915,7 +915,7 @@ const handleUserResponse = async (message, state) => {
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
-        await client.sendMessage(message.from, displayHP());
+        await client.sendMessage(message.from, battle.displayHP());
         await client.sendMessage(
           message.from,
           `Estado atual:\n${battle.displayGrid()}`
@@ -934,7 +934,7 @@ const handleUserResponse = async (message, state) => {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
           await message.reply(result);
           await client.sendMessage(message.from, enemy);
-          await client.sendMessage(message.from, displayHP());
+          await client.sendMessage(message.from, battle.displayHP());
           await client.sendMessage(
             message.from,
             `Estado atual:\n${battle.displayGrid()}`
@@ -945,7 +945,7 @@ const handleUserResponse = async (message, state) => {
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
-        await client.sendMessage(message.from, displayHP());
+        await client.sendMessage(message.from, battle.displayHP());
         await client.sendMessage(
           message.from,
           `Estado atual:\n${battle.displayGrid()}`
@@ -1224,7 +1224,7 @@ const handleUserResponse = async (message, state) => {
         );
         usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await client.sendMessage(message.from, usarItem.enemy);
-        await client.sendMessage(message.from, displayHP());
+        await client.sendMessage(message.from, battle.displayHP());
         await client.sendMessage(
           message.from,
           `Estado atual:\n${battle.displayGrid()}`
