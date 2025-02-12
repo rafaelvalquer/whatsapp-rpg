@@ -42,6 +42,7 @@ module.exports = {
               enemy: {
                 enemyName: 'Bandido',
                 enemyHP: 10,
+                enemyMaxHP: 10,
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 3,
@@ -56,6 +57,7 @@ module.exports = {
               enemy: {
                 enemyName: 'Bandido',
                 enemyHP: 10,
+                enemyMaxHP: 10,
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 5,
@@ -66,7 +68,7 @@ module.exports = {
           ],
         },
         {
-          text: "Você está em uma trilha que leva a um vilarejo próximo. Enquanto caminha, o sol começa a se pôr, e a luz dourada do entardecer ilumina o caminho à sua frente.De repente, um som fraco rompe o silêncio da floresta. Você para, atento. Um gemido, abafado pela brisa. Algo — ou alguém — está ali, oculto pela vegetação.",
+          text: "Você está em uma trilha que leva a um vilarejo próximo. Enquanto caminha, o sol começa a se pôr, e a luz dourada do entardecer ilumina o caminho à sua frente. De repente, um som fraco rompe o silêncio da floresta. Você para, atento. Um gemido, abafado pela brisa. Algo — ou alguém — está ali, oculto pela vegetação.",
           options: [
             {
               text: "Seguir o som e investigar.",
@@ -75,6 +77,7 @@ module.exports = {
               enemy: {
                 enemyName: 'Guerreiro Ferido',
                 enemyHP: 15,
+                enemyMaxHP: 15,
                 enemyStr: 5,
                 enemyCon: 5,
                 position: 5,
@@ -114,6 +117,7 @@ module.exports = {
               enemy: {
                 enemyName: 'Bandido',
                 enemyHP: 10,
+                enemyMaxHP: 10,
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 4,
@@ -128,6 +132,7 @@ module.exports = {
               enemy: {
                 enemyName: 'Bandido',
                 enemyHP: 10,
+                enemyMaxHP: 10,
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 5,
@@ -142,6 +147,7 @@ module.exports = {
               enemy: {
                 enemyName: 'Líder dos Bandidos',
                 enemyHP: 15,
+                enemyMaxHP: 15,
                 enemyStr: 4,
                 enemyCon: 3,
                 position: 3,
