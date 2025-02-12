@@ -37,7 +37,7 @@ module.exports = {
           options: [
             {
               text: "Liderar o ataque frontal contra os bandidos.",
-              nextStep: "end",
+              nextStep: 7,
               event: 'batalha',
               enemy: {
                 enemyName: 'Bandido',
@@ -52,7 +52,7 @@ module.exports = {
             },
             {
               text: "Ficar na retaguarda e coordenar as ações.",
-              nextStep: "end",
+              nextStep: 7,
               event: 'batalha',
               enemy: {
                 enemyName: 'Bandido',
