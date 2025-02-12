@@ -15,7 +15,7 @@ module.exports = {
             },
             {
               text: "Recusar a ajuda e seguir seu caminho.",
-              nextStep: "end",
+              nextStep: "return",
             },
           ],
         },
@@ -165,6 +165,9 @@ module.exports = {
               nextStep: "end",
             }
           ],
+        },
+        {
+          text: "🚶‍♂️ Você decide seguir seu caminho e deixar o vilarejo de Eldoria à sua própria sorte. Com um último olhar, você se afasta, determinado a encontrar seu próprio destino.🌟",
         },
         {
           text: "🎉 Parabéns! Você foi recompensado com 10 de XP! 🌟",
