@@ -467,9 +467,11 @@ missaoFim: async (message) => {
     playerCopy.status.xp += recompensa.xp;
     const respostaLevelUp = verificarLevelUp(playerCopy); // Verificar se o personagem pulou de LV
     playerCopy = respostaLevelUp.personagem;
+    await client.sendMessage(message.from, respostaLevelUp.mensagem);
 
         // Atualizar Personagem no banco de dados
-        const updateResult = await updateCharacter(userData[message.from], { status: playerCopy });
+        let updates = { status: statusCopy.status };
+        const updateResult = await updateCharacter(userData[message.from], updates);
 
       if (updateResult.success) {
         await client.sendMessage(
