@@ -151,6 +151,22 @@ function verificarLevelUp(personagem) {
   };
 }
 
+// Função principal para exibir XP
+const displayXP = (xp, lv) => {
+
+  const xpNecessario = xpParaProximoNivel(lv);
+
+  const getXPBar = (xp, xpNecessario) => {
+    const filledBars = Math.round((xp / xpNecessario) * 5);
+    const emptyBars = 5 - filledBars;
+    return "🟨".repeat(filledBars) + "⬜".repeat(emptyBars);
+  };
+
+  const playerXPBar = getXPBar(xp, xpNecessario);
+
+  return `🧑 Player XP: ${playerXPBar} ${xp}/${xpNecessario}`;
+}
+
 
 //###############################################################
 //#region Fluxo de navegação
@@ -467,7 +483,8 @@ missaoFim: async (message) => {
     playerCopy.status.xp += recompensa.xp;
     const respostaLevelUp = verificarLevelUp(playerCopy); // Verificar se o personagem pulou de LV
     playerCopy = respostaLevelUp.personagem;
-    await client.sendMessage(message.from, respostaLevelUp.mensagem);
+    const displayXP = displayXP(playerCopy.status.xp, playerCopy.status.lv);
+    await client.sendMessage(message.from, respostaLevelUp.mensagem + `\n` + displayXP);
 
         // Atualizar Personagem no banco de dados
         let updates = { status: playerCopy.status };
