@@ -163,20 +163,6 @@ class BattleSystem {
            `💀 Inimigo HP: ${enemyHPBar} ${this.enemy.enemyHP}/${this.enemy.enemyMaxHP}`;
   }
 
-  displayXP() {
-    const getXPBar = (currentXP, requiredXP) => {
-      const filledBars = Math.round((currentXP / requiredXP) * 5);
-      const emptyBars = 5 - filledBars;
-      return "🟨".repeat(filledBars) + "⬜".repeat(emptyBars);
-    };
-  
-    const playerXPBar = getXPBar(this.player.status.xp, this.player.status.requiredXP);
-  
-    return `🧑 Player XP: ${playerXPBar} ${this.player.status.xp}/${this.player.status.requiredXP}`;
-  }
-
-  
-  
 }
 
 module.exports = BattleSystem;
