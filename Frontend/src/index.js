@@ -152,7 +152,7 @@ function verificarLevelUp(personagem) {
 }
 
 // Função principal para exibir XP
-const displayXP = (xp, lv) => {
+function displayXP(xp, lv) {
 
   const xpNecessario = xpParaProximoNivel(lv);
 
