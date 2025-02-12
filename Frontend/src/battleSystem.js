@@ -100,10 +100,9 @@ class BattleSystem {
     if (this.enemy.enemyHP <= 0) {
       const xp = this.enemy.enemyXP;
       this.player.status.xp += xp;
-      return `${this.player.name} atacou o inimigo e causou *${damage}* de dano! O ${this.enemy.enemyName} foi derrotado! 🎉
-Você ganhou *${xp}* de experiência! 🏆`;
+      return `🧑 ***${this.player.name}***:\n Atacou o inimigo ${this.enemy.enemyName} e causou *${damage}* de dano! 💥\nO ${this.enemy.enemyName} foi derrotado! 🎉 Parabéns, herói! 🏆`;
     }
-    return `${this.player.name} atacou o inimigo e causou *${damage}* de dano! HP do ${this.enemy.enemyName} restante: ${this.enemy.enemyHP}`;
+    return `🧑  ***${this.player.name}***:\n Atacou o inimigo ${this.enemy.enemyName} e causou *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP} 🩸`;
   }
 
   // Lógica de movimento e ataque do inimigo
@@ -126,10 +125,10 @@ Você ganhou *${xp}* de experiência! 🏆`;
       this.player.status.hp -= damage;
 
       if (this.player.status.hp <= 0) {
-        return `O ${this.enemy.enemyName} atacou o ${this.player.name} e causou *${damage}* de dano! Você morreu! ☠️`;
+        return `☠️ O ${this.enemy.enemyName} atacou o ${this.player.name} e causou *${damage}* de dano! 💥\nVocê foi derrotado! ☠️\nDescansa, guerreiro valente! 🕊️`;
     }
 
-      return `O ${this.enemy.enemyName} atacou o ${this.player.name} e causou *${damage}* de dano! HP do jogador restante: ${this.player.status.hp}`;
+      return `☠️ O ${this.enemy.enemyName} Atacou o ${this.player.name} e causou *${damage}* de dano! 💥\nHP do jogador restante: ${this.player.status.hp} 🩸`;
     }
 
     // Se o inimigo não está ao lado do jogador, ele se move em direção ao jogador
@@ -145,8 +144,8 @@ Você ganhou *${xp}* de experiência! 🏆`;
 
   displayGrid() {
     const grid = new Array(this.gridSize).fill("[0]");
-    grid[this.playerPosition] = "[🗡️]";
-    grid[this.enemyPosition] = "[🐉]";
+    grid[this.playerPosition] = "*[🗡️]*";
+    grid[this.enemyPosition] = "*[🐉]*";
     return grid.join("");
   }
 
