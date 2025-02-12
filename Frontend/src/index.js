@@ -857,7 +857,7 @@ const handleUserResponse = async (message, state) => {
         //validando se opção digitada está correta
         const option = mission.steps[step].options[input - 1]; // Pega opção
 
-        if (option.nextStep != "end") {
+        if (typeof option.nextStep == "number") {
           let nextStep = option.nextStep - 1;
           battleController[message.from].step = nextStep;
 
@@ -888,7 +888,7 @@ const handleUserResponse = async (message, state) => {
 
               break;
           }
-        } else {
+        } else if (option.nextStep == "end") {
           let nextStep = mission.steps.length - 1;
           battleController[message.from].step = nextStep;
           let text = mission.steps[nextStep].text;
@@ -896,6 +896,13 @@ const handleUserResponse = async (message, state) => {
 
           battleController[message.from].recompensa = mission.steps[nextStep].recompensa;
           navigationFlow.missaoFim(message);
+        } else if (option.nextStep == "return") {
+          let nextStep = mission.steps.length - 2; // Pega o penultimo step
+          battleController[message.from].step = nextStep; // Pega o step
+          let text = mission.steps[nextStep].text; // verbaliza a frase
+
+          await client.sendMessage(message.from, text);
+          navigationFlow.menuInicial(message);
         }
       } else {
         message.reply("Opção inválida, vamos tentar novamente");
