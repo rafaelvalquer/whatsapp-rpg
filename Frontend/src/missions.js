@@ -27,7 +27,7 @@ module.exports = {
               nextStep: 3,
             },
             {
-              text: "Buscar ajuda de guerreiros experientes na cidade próxima.",
+              text: "Buscar ajuda de guerreiros experientes no vilarejo próximo.",
               nextStep: 4,
             },
           ],
@@ -66,10 +66,10 @@ module.exports = {
           ],
         },
         {
-          text: "Na cidade próxima, você encontra um guerreiro ferido. Ele pode ajudá-lo se você tratá-lo. O que você faz?",
+          text: "Você está em uma trilha que leva a um vilarejo próximo. Enquanto caminha, o sol começa a se pôr, e a luz dourada do entardecer ilumina o caminho à sua frente.De repente, um som fraco rompe o silêncio da floresta. Você para, atento. Um gemido, abafado pela brisa. Algo — ou alguém — está ali, oculto pela vegetação.",
           options: [
             {
-              text: "Ajudar o guerreiro ferido.",
+              text: "Seguir o som e investigar.",
               nextStep: 5,
               event: 'encontraFerido',
               enemy: {
@@ -84,7 +84,7 @@ module.exports = {
               item: 101
             },
             {
-              text: "Deixá-lo e voltar ao vilarejo sozinho.",
+              text: "Ignorar e continuar seu caminho até o vilarejo.",
               nextStep: 5,
             },
           ],

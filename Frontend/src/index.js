@@ -442,7 +442,7 @@ encontraFerido: async (message) => {
   const item = battleController[message.from].item;
   await client.sendMessage(
     message.from,
-    `🩸 "Durante sua jornada, você encontra um viajante ferido caído à beira do caminho. Seu rosto está pálido e seus olhos pedem ajuda."`
+    `🩸 "Diante de você, um viajante está caído, enfraquecido e visivelmente ferido. Seu rosto demonstra exaustão, e seus olhos refletem um pedido silencioso por ajuda."`
   );
 
   await client.sendMessage(
