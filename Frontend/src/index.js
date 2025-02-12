@@ -478,7 +478,7 @@ missaoFim: async (message) => {
         );
 
         // Atualizar o userData com os novos dados
-        userData[message.from].status = recompensa.update.user.status;
+        userData[message.from].status = updateResult.user.status;
       } else {
         await client.sendMessage(
           message.from,

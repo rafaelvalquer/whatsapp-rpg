@@ -109,7 +109,7 @@ module.exports = {
           options: [
             {
               text: "Liderar o ataque frontal contra os bandidos.",
-              nextStep: "end",
+              nextStep: 7,
               event: 'batalha',
               enemy: {
                 enemyName: 'Bandido',
@@ -123,7 +123,7 @@ module.exports = {
             },
             {
               text: "Ficar na retaguarda e coordenar as ações.",
-              nextStep: "end",
+              nextStep: 7,
               event: 'batalha',
               enemy: {
                 enemyName: 'Bandido',
@@ -137,7 +137,7 @@ module.exports = {
             },
             {
               text:  "Tentar encontrar uma posição estratégica para emboscar os bandidos.",
-              nextStep: "end",
+              nextStep: 7,
               event: 'batalha',
               enemy: {
                 enemyName: 'Líder dos Bandidos',
@@ -152,7 +152,16 @@ module.exports = {
           ],
         },
         {
-          text: "A batalha termina e os bandidos recuam. O vilarejo está seguro!",
+          text: "⚔️ A batalha termina e os bandidos recuam. O vilarejo está seguro! 🏡✨",
+          options: [
+            {
+              text: "💰 Pegar sua recompensa",
+              nextStep: "end",
+            }
+          ],
+        },
+        {
+          text: "🎉 Parabéns! Você foi recompensado com 10 de XP! 🌟",
           recompensa: {
             xp: 10
           }
