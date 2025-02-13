@@ -1022,7 +1022,7 @@ const handleUserResponse = async (message, state) => {
           //falta fazer o item
           const frase = `Ao revirar os restos do ${
             battle.enemy.enemyName
-          }, você descobre um ${items[battle.enemy.arma].nome}.`;
+          }, você descobre um *${items[battle.enemy.arma].nome}*.`;
           await client.sendMessage(message.from, frase);
 
           navigationFlow.recompensa(message);

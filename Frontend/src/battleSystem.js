@@ -100,9 +100,9 @@ class BattleSystem {
     if (this.enemy.enemyHP <= 0) {
       const xp = this.enemy.enemyXP;
       this.player.status.xp += xp;
-      return `🧑 ***${this.player.name}***:\n Atacou o inimigo ${this.enemy.enemyName} e causou *${damage}* de dano! 💥\nO ${this.enemy.enemyName} foi derrotado! 🎉 Parabéns, herói! 🏆`;
+      return `🧑 *${this.player.name}*:\nAtacou o inimigo ${this.enemy.enemyName} e causou *${damage}* de dano! 💥\nO ${this.enemy.enemyName} foi derrotado! 🎉 Parabéns, herói! 🏆`;
     }
-    return `🧑  ***${this.player.name}***:\n Atacou o inimigo ${this.enemy.enemyName} e causou *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP} 🩸`;
+    return `🧑  *${this.player.name}*:\nAtacou o inimigo ${this.enemy.enemyName} e causou *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP}🩸`;
   }
 
   // Lógica de movimento e ataque do inimigo
@@ -125,10 +125,10 @@ class BattleSystem {
       this.player.status.hp -= damage;
 
       if (this.player.status.hp <= 0) {
-        return `☠️ O ${this.enemy.enemyName} atacou o ${this.player.name} e causou *${damage}* de dano! 💥\nVocê foi derrotado! ☠️\nDescansa, guerreiro valente! 🕊️`;
+        return `☠️*${this.enemy.enemyName}*:\nAtacou o ${this.player.name} e causou *${damage}* de dano! 💥\nVocê foi derrotado! ☠️\nDescansa, guerreiro valente! 🕊️`;
     }
 
-      return `☠️ O ${this.enemy.enemyName} Atacou o ${this.player.name} e causou *${damage}* de dano! 💥\nHP do jogador restante: ${this.player.status.hp} 🩸`;
+      return `☠️ *${this.enemy.enemyName}*:\nAtacou o ${this.player.name} e causou *${damage}* de dano! 💥\nHP do jogador restante: ${this.player.status.hp}🩸`;
     }
 
     // Se o inimigo não está ao lado do jogador, ele se move em direção ao jogador

@@ -297,32 +297,6 @@ module.exports = {
             }
           ]
         },
-
-        {
-          text: "Você segue pelo caminho das pedras caindo e de repente é atacado por um Goblin!",
-          event: "batalha",
-          enemy: {
-            enemyName: "Goblin das Sombras",
-            enemyHP: 8,
-            enemyStr: 2,
-            enemyCon: 1,
-            position: 4,
-            enemyXP: 10,
-            arma: 8
-          },
-          options: [
-            {
-              text: "Lutar contra o Goblin.",
-              nextStep: 10
-            },
-            {
-              text: "Tentar fugir.",
-              nextStep: 11
-            }
-          ]
-        },
-
-        
         {
           text: "Decifrando os símbolos, você descobre um padrão que parece revelar a senha para abrir a porta. Com uma pitada de mistério, você se pergunta o que está além daquela barreira.",
           options: [
