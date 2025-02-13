@@ -485,16 +485,15 @@ const opcoes = `⚔️ O que deseja fazer?
 
 encontraFerido: async (message) => {
 
-  const item = battleController[message.from].item;
   await client.sendMessage(
     message.from,
-    `🩸 "Diante de você, um viajante está caído, enfraquecido e visivelmente ferido. Seu rosto demonstra exaustão, e seus olhos refletem um pedido silencioso por ajuda."`
+    battleController[message.from].nextText
   );
 
   await client.sendMessage(
     message.from,
     `O que deseja fazer?  
-1️⃣ Resgatar o viajante  
+1️⃣ Resgatar o *${battleController[message.from].enemy.enemyName}*  
 2️⃣ Ignorar e seguir seu caminho`
   );
 
@@ -920,6 +919,7 @@ const handleUserResponse = async (message, state) => {
             case "encontraFerido":
               battleController[message.from].enemy = option.enemy;
               battleController[message.from].item = option.item;
+              battleController[message.from].nextText = option.nextText;
               navigationFlow.encontraFerido(message);
               break;
             default:
@@ -1058,7 +1058,7 @@ const handleUserResponse = async (message, state) => {
           // Seleciona aleatoriamente entre arma e item (ambos sempre existentes)
           const evento = possibilidades[Math.floor(Math.random() * possibilidades.length)];
           navigationFlow.recompensa(message, evento);
-          
+
         } else {
           navigationFlow.batalhaFim(message);
         }

@@ -75,6 +75,7 @@ module.exports = {
               text: "Seguir o som e investigar.",
               nextStep: 5,
               event: 'encontraFerido',
+              nextText: "🩸 Diante de você, um viajante está caído, enfraquecido e visivelmente ferido. Seu rosto demonstra exaustão, e seus olhos refletem um pedido silencioso por ajuda.",
               enemy: {
                 enemyName: 'Guerreiro Ferido',
                 enemyHP: 15,
@@ -357,11 +358,11 @@ module.exports = {
           options: [
             {
               text: "Examinar o pedestal em busca do artefato.",
-              nextStep: 8,
+              nextStep: 10,
             },
             {
               text: "Explorar os arredores antes de se aproximar.",
-              nextStep: 8,
+              nextStep: 16,
               event: 'encontraItem',
               item: 101
             },
@@ -388,16 +389,130 @@ module.exports = {
           ]
         },
 
+        //10
+        {
+          text: "Ao se aproximar do pedestal, uma sombra se move rapidamente. Antes que você possa reagir, um guardião esquelético se ergue, protegendo o artefato.",
+          options: [
+            {
+              text: "Enfrentar o guardião.",
+              nextStep: 11,
+              enemy: {
+                enemyName: "Guardião Esquelético",
+                enemyHP: 12,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 6,
+                enemyXP: 15,
+                arma: 3
+              }
+            },
+          ]
+        },
+
+        //11
+        {
+          text: "Após derrotar o guardião, você avança para o pedestal. Ao tocar nele, o chão treme e uma parede se move, revelando um corredor escuro. Um rugido ecoa à sua frente.",
+          options: [
+            {
+              text: "Seguir pelo corredor e enfrentar a criatura que o espera.",
+              nextStep: 12,
+              enemy: {
+                enemyName: "Serpente das Sombras",
+                enemyHP: 14,
+                enemyStr: 4,
+                enemyCon: 3,
+                position: 7,
+                enemyXP: 20,
+                arma: 4
+              }
+            },
+          ]
+        },
+
+        //12
+        {
+          text: "Com a Serpente derrotada, você atravessa o corredor e chega a uma câmara secreta. No centro, repousa um baú.",
+          options: [
+            {
+              text: "Abrir o baú.",
+              nextStep: 13,
+              event: 'encontraItem',
+              item: 101
+            },
+            {
+              text: "Voltar e pegar o artefato.",
+              nextStep: 13,
+            },
+          ]
+        },
+
+        //13
+        {
+          text: "Você retorna à sala principal, onde o artefato repousa sobre o pedestal. O ar parece mais pesado, como se algo estivesse observando você das sombras.",
+          options: [
+            {
+              text: "Pegar o artefato rapidamente.",
+              nextStep: 14,
+              event: "encontraItem",
+              item: 102
+            },
+            {
+              text: "Observar melhor os arredores antes de agir.",
+              nextStep: 15,
+              event: "encontraItem",
+              item: 102
+            }
+          ]
+        },
+
+        //14
+        {
+          text: "Você segura o artefato em mãos, sentindo uma energia pulsante emanando dele. A caverna parece estremecer levemente, como se tivesse perdido algo valioso. Agora, resta decidir o que fazer com o objeto.",
+          options: [
+            {
+              text: "Entregar o artefato ao seu verdadeiro dono.",
+              nextStep: 15,
+            },
+            {
+              text: "Ficar com o artefato para si.",
+              nextStep: 16,
+              event: "encontraItem",
+              item: 101
+            }
+          ]
+        },
+
+        //15
+        {
+          text: "O artefato agora está em boas mãos, e sua bravura foi reconhecida por todos. 🌟",
+          options: [
+            {
+              text: "💰 Pegar sua recompensa",
+              nextStep: "end",
+            },
+          ]
+        },
+
+        //16
+        {
+          text: "🔮 Com o artefato escondido, você retorna ao contratante e diz que não conseguiu encontrá-lo. Ele suspira, desapontado, mas reconhece seus esforços e ainda assim lhe concede uma recompensa por sua coragem. Enquanto isso, o poder do artefato permanece em suas mãos, seu segredo bem guardado. 🌟",
+          options: [
+            {
+              text: "💰 Pegar sua recompensa",
+              nextStep: "end",
+            },
+          ]
+        },
 
 
         //FIM
         {
-          text: "🚶‍♂️ Você decide seguir seu caminho e deixar o vilarejo de Eldoria à sua própria sorte. Com um último olhar, você se afasta, determinado a encontrar seu próprio destino.🌟",
+          text: "🚶‍♂️ Diante dos perigos desconhecidos, você decide que essa missão não vale o risco. Com um último olhar para a caverna, vira-se e retorna ao vilarejo, deixando o artefato para quem for ousado o suficiente para buscá-lo. Talvez outro desafio o aguarde na cidade... 🌆✨",
         },
         {
-          text: "🎉 Parabéns! Você foi recompensado com 10 de XP! 🌟",
+          text: "🎉 Parabéns! Você foi recompensado com 50 de XP! 🌟",
           recompensa: {
-            xp: 10
+            xp: 50
           }
 
           // Adicione mais etapas conforme necessário.
