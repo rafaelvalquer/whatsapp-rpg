@@ -198,8 +198,8 @@ module.exports = {
               nextStep: 3,
             },
             {
-              text: "Decidir não entrar e buscar ajuda em outro lugar.",
-              nextStep: "end",
+              text: "🚶‍♂️ Você decide não entrar e retorna para a cidade em busca de novos desafios. 🌆✨",
+              nextStep: "return",
             },
           ],
         },
@@ -208,11 +208,11 @@ module.exports = {
           options: [
             {
               text: "Ir para a esquerda, em direção ao som de água.",
-              nextStep: "end",
+              nextStep: 4,
             },
             {
               text: "Ir para a direita, onde o som de pedras ressoa.",
-              nextStep: "end",
+              nextStep: 5,
             },
           ],
         },
@@ -221,13 +221,211 @@ module.exports = {
           options: [
             {
               text: "Tentar decifrar os símbolos.",
-              nextStep: 2,
+              nextStep: 6,
             },
             {
               text: "Ignorar os símbolos e continuar explorando.",
-              nextStep: 2,
+              nextStep: 7,
             },
           ],
+        },
+        {
+          text: "Seguindo o som da água, você encontra um pequeno riacho subterrâneo. Perto dele, algo está encostado em uma pedra, ofegante.",
+          event: "encontroFerido",
+          options: [
+            {
+              text: "Investigar a origem do som e verificar a situação.",
+              nextStep: 8,
+              event: 'encontraFerido',
+              enemy: {
+                enemyName: 'Guardião Cansado',
+                enemyHP: 12,
+                enemyMaxHP: 12,
+                enemyStr: 4,
+                enemyCon: 6,
+                position: 4,
+                enemyXP: 8,
+                arma: 3
+              },
+              item: 102
+            },
+            {
+              text: "Ignorá-lo e seguir em frente.",
+              nextStep: 8
+            }
+          ]
+        },
+
+
+
+        {
+          text: "Você segue pelo caminho das pedras caindo e de repente é atacado por um Goblin das Sombras!",
+          options: [
+            {
+              text: "Enfrentar de frente.",
+              nextStep: 8,
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Goblin das Sombras',
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 3,
+                enemyXP: 25,
+                arma: 7
+              }              
+            },
+            {
+              text: "Tentar surprender o Goblin das Sombras",
+              nextStep: 8,
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Goblin das Sombras',
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 3,
+                enemyXP: 20,
+                arma: 8
+              }
+            },
+            {
+              text: "Tentar correr",
+              nextStep: 9,
+            }
+          ]
+        },
+
+        {
+          text: "Você segue pelo caminho das pedras caindo e de repente é atacado por um Goblin!",
+          event: "batalha",
+          enemy: {
+            enemyName: "Goblin das Sombras",
+            enemyHP: 8,
+            enemyStr: 2,
+            enemyCon: 1,
+            position: 4,
+            enemyXP: 10,
+            arma: 8
+          },
+          options: [
+            {
+              text: "Lutar contra o Goblin.",
+              nextStep: 10
+            },
+            {
+              text: "Tentar fugir.",
+              nextStep: 11
+            }
+          ]
+        },
+
+        
+        {
+          text: "Decifrando os símbolos, você descobre um padrão que parece revelar a senha para abrir a porta. Com uma pitada de mistério, você se pergunta o que está além daquela barreira.",
+          options: [
+            {
+              text: "Tentar abrir a porta com a senha.",
+              nextStep: 8,
+              event: 'encontraItem',
+              item: 101
+            },
+            {
+              text: "Seguir o seu caminho",
+              nextStep: 7,
+            }
+          ]
+        },
+        {
+          text: "Enquanto você segue seu caminho pela caverna escura, um barulho de passos ecoa pelas paredes. De repente, um Goblin hostil emerge das sombras, pronto para o combate. 🗡️",
+          options: [
+            {
+              text: "Enfrentar de frente.",
+              nextStep: 8,
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Goblin',
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 2,
+                position: 3,
+                enemyXP: 20,
+                arma: 7
+              },
+            },
+            {
+              text: "Tentar surprender o Goblin",
+              nextStep: 8,
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Goblin',
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 2,
+                position: 5,
+                enemyXP: 20,
+                arma: 7
+              },
+            },
+            {
+              text: "Tentar correr",
+              nextStep: 9,
+            }
+          ]
+        },
+        {
+          text: "Após os desafios enfrentados, você chega a uma grande câmara iluminada por cristais brilhantes. O ar é pesado, e um pedestal se destaca no centro da sala, sugerindo que o artefato pode estar próximo.",
+          options: [
+            {
+              text: "Examinar o pedestal em busca do artefato.",
+              nextStep: 8,
+            },
+            {
+              text: "Explorar os arredores antes de se aproximar.",
+              nextStep: 8,
+              event: 'encontraItem',
+              item: 101
+            },
+          ]
+        },
+        {
+          text: "Enquanto você tenta correr, um brilho ameaçador aparece à sua frente. De repente, o Rei dos Goblins surge das sombras, bloqueando seu caminho.",
+          options: [
+            {
+              text: "Enfrentar o Rei dos Goblins",
+              nextStep: 8,
+              event: 'batalha',
+              enemy: {
+                enemyName: 'Rei dos Goblin',
+                enemyHP: 30,
+                enemyMaxHP: 30,
+                enemyStr: 8,
+                enemyCon: 3,
+                position: 5,
+                enemyXP: 30,
+                arma: 9
+              },
+            }
+          ]
+        },
+
+
+
+        //FIM
+        {
+          text: "🚶‍♂️ Você decide seguir seu caminho e deixar o vilarejo de Eldoria à sua própria sorte. Com um último olhar, você se afasta, determinado a encontrar seu próprio destino.🌟",
+        },
+        {
+          text: "🎉 Parabéns! Você foi recompensado com 10 de XP! 🌟",
+          recompensa: {
+            xp: 10
+          }
+
+          // Adicione mais etapas conforme necessário.
         },
       ],
     },

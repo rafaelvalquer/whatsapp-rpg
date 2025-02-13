@@ -33,6 +33,27 @@
     "agi": 1,
     "int": 0
   },
+  "7": {
+    "nome": "Escudo Rústico",
+    "str": 1,
+    "con": 3,
+    "agi": 0,
+    "int": 0
+  },
+  "8": {
+    "nome": "Adaga Cruel",
+    "str": 3,
+    "con": 1,
+    "agi": 2,
+    "int": 0
+  },
+  "9": {
+    "nome": "Cetro de Comando",
+    "str": 6,
+    "con": 4,
+    "agi": 1,
+    "int": 3
+  },
   "101": {
     "nome": "Poção",
     "tipo" : "hp",
