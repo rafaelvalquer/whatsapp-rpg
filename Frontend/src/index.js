@@ -393,16 +393,8 @@ Escolha uma *missão* para iniciar a sua jornada:`
     userStates[message.from] = "missao";
   },
 
-  recompensa: async (message) => {
+  recompensa: async (message, evento) => {
     const battle = battleController[message.from].battle;
-
-    // Garante que haverá pelo menos uma opção válida
-    const possibilidades = [];
-    if (battle.enemy.arma !== undefined) possibilidades.push("arma");
-    if (battle.enemy.item !== undefined) possibilidades.push("item");
-
-    // Seleciona aleatoriamente entre arma e item (ambos sempre existentes)
-    const evento = possibilidades[Math.floor(Math.random() * possibilidades.length)];
 
     if (evento == "arma") {
       const frase = `📜 Atributos do ${items[battle.enemy.arma].nome}:
@@ -420,11 +412,13 @@ const opcoes = `⚔️ O que deseja fazer?
 2️⃣ Trocar a Mão Esquerda
 3️⃣ Deixar a arma no local`;
 
+      await client.sendMessage(message.from, `Ao revirar os restos do ${battle.enemy.enemyName}, você descobre um *${items[battle.enemy.arma].nome}*.`);
       await client.sendMessage(message.from, frase);
       await client.sendMessage(message.from, opcoes);
       userStates[message.from] = "recompensa.arma";
+    
     } else if (evento == "item") {
-
+      await client.sendMessage(message.from, `Ao revirar os restos do ${battle.enemy.enemyName}, você descobre um *${items[battle.enemy.item].nome}*.`);
       await client.sendMessage(
         message.from,
         `O que deseja fazer?  
@@ -1055,12 +1049,16 @@ const handleUserResponse = async (message, state) => {
       //Verifica fim da batalha
       if (battle.enemy.enemyHP <= 0) {
         if (battle.enemy.arma || battle.enemy.item) {
-          const frase = `Ao revirar os restos do ${
-            battle.enemy.enemyName
-          }, você descobre um *${items[battle.enemy.arma].nome}*.`;
-          await client.sendMessage(message.from, frase);
 
-          navigationFlow.recompensa(message);
+          // Garante que haverá pelo menos uma opção válida
+          const possibilidades = [];
+          if (battle.enemy.arma !== undefined) possibilidades.push("arma");
+          if (battle.enemy.item !== undefined) possibilidades.push("item");
+
+          // Seleciona aleatoriamente entre arma e item (ambos sempre existentes)
+          const evento = possibilidades[Math.floor(Math.random() * possibilidades.length)];
+          navigationFlow.recompensa(message, evento);
+          
         } else {
           navigationFlow.batalhaFim(message);
         }
