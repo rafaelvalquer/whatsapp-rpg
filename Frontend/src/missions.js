@@ -47,7 +47,8 @@ module.exports = {
                 enemyCon: 2,
                 position: 3,
                 enemyXP: 15,
-                arma: 1
+                arma: 1,
+                item: 101
               },
             },
             {
@@ -190,11 +191,11 @@ module.exports = {
           text: "Você chega à entrada de uma caverna envolta em névoa. Dizem que um artefato lendário está escondido lá dentro. O que você faz?",
           options: [
             {
-              text: "Entrar na caverna sem hesitação.",
+              text: "🏃‍♂️ Entrar na caverna sem hesitação.",
               nextStep: 2,
             },
             {
-              text: "Procurar pistas ao redor antes de entrar.",
+              text: "🔍 Procurar pistas ao redor antes de entrar.",
               nextStep: 3,
             },
             {
@@ -220,11 +221,11 @@ module.exports = {
           text: "Você encontra símbolos estranhos gravados nas pedras ao redor da caverna. Eles parecem conter uma pista sobre o artefato. O que você faz?",
           options: [
             {
-              text: "Tentar decifrar os símbolos.",
+              text: "🔍 Tentar decifrar os símbolos misteriosos.",
               nextStep: 6,
             },
             {
-              text: "Ignorar os símbolos e continuar explorando.",
+              text: "🚶‍♂️ Ignorar os símbolos e continuar explorando o local.",
               nextStep: 7,
             },
           ],
@@ -352,7 +353,7 @@ module.exports = {
           ]
         },
         {
-          text: "Após os desafios enfrentados, você chega a uma grande câmara iluminada por cristais brilhantes. O ar é pesado, e um pedestal se destaca no centro da sala, sugerindo que o artefato pode estar próximo.",
+          text: "Após uma longa jornada, você chega a uma grande câmara iluminada por cristais brilhantes. O ar é pesado, e um pedestal se destaca no centro da sala, sugerindo que algo importante pode estar próximo.",
           options: [
             {
               text: "Examinar o pedestal em busca do artefato.",

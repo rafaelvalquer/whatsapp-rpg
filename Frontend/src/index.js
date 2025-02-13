@@ -396,7 +396,15 @@ Escolha uma *missão* para iniciar a sua jornada:`
   recompensa: async (message) => {
     const battle = battleController[message.from].battle;
 
-    if (battle.enemy.arma) {
+    // Garante que haverá pelo menos uma opção válida
+    const possibilidades = [];
+    if (battle.enemy.arma !== undefined) possibilidades.push("arma");
+    if (battle.enemy.item !== undefined) possibilidades.push("item");
+
+    // Seleciona aleatoriamente entre arma e item (ambos sempre existentes)
+    const evento = possibilidades[Math.floor(Math.random() * possibilidades.length)];
+
+    if (evento == "arma") {
       const frase = `📜 Atributos do ${items[battle.enemy.arma].nome}:
 
 🗡 Força: +[${items[battle.enemy.arma].str}]
@@ -415,10 +423,38 @@ const opcoes = `⚔️ O que deseja fazer?
       await client.sendMessage(message.from, frase);
       await client.sendMessage(message.from, opcoes);
       userStates[message.from] = "recompensa.arma";
-    } else {
-      userStates[message.from] = "recompensa.item"; // falta fazer
+    } else if (evento == "item") {
+
+      await client.sendMessage(
+        message.from,
+        `O que deseja fazer?  
+    1️⃣ Usar agora  
+    2️⃣ Guardar para mais tarde`
+      );
+
+      userStates[message.from] = "recompensa.item";
     }
 
+  },
+
+  recompensaItemFim: async (message) => {
+    delete battleController[message.from].battle;
+    delete battleController[message.from].enemy;
+
+    const mission = structuredClone(
+      missionsData.missoes[battleController[message.from].missao]
+    );
+    const step = battleController[message.from].step;
+    let optionsText = "";
+
+    mission.steps[step].options.forEach((option, index) => {
+      optionsText += `${index + 1}. ${option.text}\n`;
+    });
+
+    client.sendMessage(message.from, mission.steps[step].text);
+    await client.sendMessage(message.from, optionsText);
+
+    userStates[message.from] = "missao";
   },
 
   encontraItem: async (message) => {
@@ -1019,7 +1055,6 @@ const handleUserResponse = async (message, state) => {
       //Verifica fim da batalha
       if (battle.enemy.enemyHP <= 0) {
         if (battle.enemy.arma || battle.enemy.item) {
-          //falta fazer o item
           const frase = `Ao revirar os restos do ${
             battle.enemy.enemyName
           }, você descobre um *${items[battle.enemy.arma].nome}*.`;
@@ -1090,6 +1125,89 @@ const handleUserResponse = async (message, state) => {
       }
 
       navigationFlow.batalhaFim(message);
+
+      break;
+    }
+
+    case "recompensa.item": {
+      const battle = battleController[message.from]?.battle;
+      const idItem = battle.enemy.item // ID do item
+      let recompensaItem = {};
+
+      // Criar uma cópia do status antes de modificar
+      let statusCopy = structuredClone(userData[message.from].status);
+
+      if (input === "1") {
+        if (items[idItem].tipo === "hp") {
+          statusCopy.hp = Math.min(
+            statusCopy.maxHP,
+            statusCopy.hp + items[idItem].valor
+          );
+          recompensaItem.txt = `💖 Você usou ${items[idItem].nome}${
+            items[idItem].emoji
+          } e recuperou *${items[idItem].valor}* de HP!`;
+        } else if (items[idItem].tipo === "mana") {
+          statusCopy.mana = Math.min(
+            statusCopy.maxMana,
+            statusCopy.mana + items[idItem].valor
+          );
+          recompensaItem.txt = `🔷 Você usou ${items[idItem].nome}${
+            items[idItem].emoji
+          } e recuperou ${items[idItem].valor} de Mana!`;
+        } else if (items[idItem].tipo === "força") {
+          statusCopy.str = Math.max(
+            0,
+            statusCopy.str + items[idItem].valor
+          ); // Evita valores negativos
+          recompensaItem.txt = `💪 Você usou ${items[idItem].nome}${
+            items[idItem].emoji
+          } e aumentou sua Força em ${
+            items[idItem].valor
+          } por 3 turnos!`;
+        } else {
+          recompensaItem.txt = `🤔 Esse item não tem efeito conhecido...`;
+        }
+      } else if (input === "2") {
+        // Criar a propriedade 'item' se não existir
+        if (!statusCopy.item) {
+          statusCopy.item = {};
+        }
+
+        // Verifica se o item já existe e atualiza a quantidade
+        statusCopy.item[idItem] =
+          (statusCopy.item[idItem] || 0) + 1;
+        recompensaItem.txt = `🗃️ Você guardou 1 do item ${
+          items[idItem].nome
+        }.`;
+      }
+
+      // Atualizar Personagem no banco de dados
+      recompensaItem.updates = { status: statusCopy };
+      recompensaItem.update = await updateCharacter(
+        userData[message.from],
+        recompensaItem.updates
+      );
+
+      if (recompensaItem.update.success) {
+        await client.sendMessage(
+          message.from,
+          "Personagem atualizado com sucesso no banco"
+        );
+
+        // Atualizar o userData com os novos dados
+        userData[message.from].status = recompensaItem.update.user.status;
+      } else {
+        await client.sendMessage(
+          message.from,
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
+      }
+
+      // Enviar mensagem final ao jogador
+      await client.sendMessage(message.from, recompensaItem.txt);
+
+      // Encerrar fluxo de navegação
+      navigationFlow.recompensaItemFim(message);
 
       break;
     }
