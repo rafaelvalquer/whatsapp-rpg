@@ -63,7 +63,8 @@ module.exports = {
                 enemyCon: 2,
                 position: 5,
                 enemyXP: 10,
-                arma: 1
+                arma: 1,
+                item: 101
               },
             },
           ],
@@ -124,7 +125,8 @@ module.exports = {
                 enemyCon: 2,
                 position: 4,
                 enemyXP: 15,
-                arma: 1
+                arma: 1,
+                item: 101
               },
             },
             {
@@ -239,6 +241,7 @@ module.exports = {
               text: "Investigar a origem do som e verificar a situação.",
               nextStep: 8,
               event: 'encontraFerido',
+              nextText: "Seguindo o som da água, você encontra um pequeno riacho subterrâneo. Perto dele, um guardião cansado está encostado em uma pedra, ofegante. 🛡️🌊😓",
               enemy: {
                 enemyName: 'Guardião Cansado',
                 enemyHP: 12,
@@ -353,6 +356,8 @@ module.exports = {
             }
           ]
         },
+
+        //8
         {
           text: "Após uma longa jornada, você chega a uma grande câmara iluminada por cristais brilhantes. O ar é pesado, e um pedestal se destaca no centro da sala, sugerindo que algo importante pode estar próximo.",
           options: [
@@ -362,12 +367,14 @@ module.exports = {
             },
             {
               text: "Explorar os arredores antes de se aproximar.",
-              nextStep: 16,
+              nextStep: 21,
               event: 'encontraItem',
               item: 101
             },
           ]
         },
+        
+        //9
         {
           text: "Enquanto você tenta correr, um brilho ameaçador aparece à sua frente. De repente, o Rei dos Goblins surge das sombras, bloqueando seu caminho.",
           options: [
@@ -394,17 +401,21 @@ module.exports = {
           text: "Ao se aproximar do pedestal, uma sombra se move rapidamente. Antes que você possa reagir, um guardião esquelético se ergue, protegendo o artefato.",
           options: [
             {
-              text: "Enfrentar o guardião.",
+              text: "⚔️ Enfrentar o guardião.",
               nextStep: 11,
               enemy: {
                 enemyName: "Guardião Esquelético",
-                enemyHP: 12,
-                enemyStr: 3,
-                enemyCon: 2,
+                enemyHP: 40,
+                enemyStr: 8,
+                enemyCon: 8,
                 position: 6,
-                enemyXP: 15,
+                enemyXP: 30,
                 arma: 3
               }
+            },
+            {
+              text: "👀 Tentar se esconder e observar os movimentos do guardião.",
+              nextStep: 17,
             },
           ]
         },
@@ -453,14 +464,10 @@ module.exports = {
             {
               text: "Pegar o artefato rapidamente.",
               nextStep: 14,
-              event: "encontraItem",
-              item: 102
             },
             {
               text: "Observar melhor os arredores antes de agir.",
-              nextStep: 15,
-              event: "encontraItem",
-              item: 102
+              nextStep: 21,
             }
           ]
         },
@@ -504,6 +511,127 @@ module.exports = {
           ]
         },
 
+        //17
+        {
+          text: "Você decide se esconder nas sombras e observar os movimentos do guardião esquelético. O guardião parece estar em uma patrulha constante, seus passos ecoando na câmara.",
+          options: [
+            {
+              text: "Aproveitar um momento de distração e tentar pegar o artefato.",
+              nextStep: 18,
+            },
+            {
+              text: "Esperar mais tempo para ver se o guardião baixa a guarda.",
+              nextStep: 23,
+            },
+          ]
+        },
+
+
+        //18
+        {
+          text: "⚡ Você aproveita um instante em que o guardião esquelético se vira para o lado oposto e avança silenciosamente até o pedestal. Suas mãos tocam o artefato... Mas antes que possa recuá-las, um brilho fantasmagórico preenche a sala. O guardião percebe sua ação e ruge com fúria, erguendo sua lâmina enferrujada!",
+          options: [
+            {
+              text: "⚔️ Lutar contra o guardião esquelético e defender sua vida.",
+              nextStep: 20,
+              enemy: {
+                enemyName: "Guardião Esquelético",
+                enemyHP: 40,
+                enemyStr: 8,
+                enemyCon: 8,
+                position: 4,
+                enemyXP: 30,
+                arma: 3,
+                item: 101
+              }
+            },
+            {
+              text: "📜 Recitar um antigo verso de um pergaminho que você encontrou.",
+              nextStep: 19,
+            },
+            {
+              text: "🚶‍♂️ Correr imediatamente para a saída e escapar com vida.",
+              nextStep: "return",
+            },
+          ]
+        },
+
+        //19
+        {
+          text: "Ao recitá-lo em voz alta, o guardião fica imóvel, como se estivesse enfeitiçado, e se afasta.",
+          options: [
+            {
+              text: "Pegar o artefato rapidamente.",
+              nextStep: 14,
+            },
+            {
+              text: "Observar melhor os arredores antes de agir.",
+              nextStep: 21,
+            }
+          ]
+        },
+
+        //20
+        {
+          text: "🔥 Após enfrentar desafios, tomar decisões difíceis e se esquivar de perigos, você finalmente chega ao centro da câmara. O artefato brilha intensamente em suas mãos, enquanto ecos sobrenaturais percorrem o ambiente. Você sente que este é o momento de decidir seu destino.",
+          options: [
+            {
+              text: "Pegar o artefato rapidamente.",
+              nextStep: 14,
+            },
+            {
+              text: "Observar melhor os arredores antes de agir.",
+              nextStep: 21,
+            }
+          ]
+        },
+
+        //21
+        {
+          text: "🔎 Você se mantém oculto nas sombras, estudando cada detalhe do ambiente. Percebe inscrições antigas nas paredes, possivelmente pistas sobre a história do local. Além disso, nota um pequeno mecanismo próximo ao pedestal, que pode ser um gatilho para uma armadilha.",
+          options: [
+            {
+              text: "Examinar as inscrições para tentar compreender seu significado.",
+              nextStep: 22,
+            },
+            {
+              text: "Ignorar os detalhes e pegar o artefato rapidamente.",
+              nextStep: 14,
+            },
+          ]
+        },
+
+        //22
+        {
+          text: "📖 As inscrições falam da 'Relíquia dos Antigos', um artefato selado há séculos. Ao decifrá-las, um painel secreto se move, revelando um baú oculto.",
+          options: [
+            {
+              text: "Abrir o baú.",
+              nextStep: 20,
+              event: "encontraItem",
+              item: 101
+            },
+            {
+              text: "Ignorar o baú e focar no artefato.",
+              nextStep: 20,
+            }
+          ]
+        },
+
+        //23
+        {
+          text: "Guardião baixa a guarda e some sobre seus olhos.",
+          options: [
+            {
+              text: "Pegar o artefato rapidamente.",
+              nextStep: 14,
+            },
+            {
+              text: "Observar melhor os arredores antes de agir.",
+              nextStep: 21,
+            }
+          ]
+        },
 
         //FIM
         {
