@@ -148,7 +148,7 @@ Seus status aumentaram:
 
     // Adiciona a mensagem de escolha de skill se o nível for divisível por 5
     if (personagem.status.lv % 5 === 0) {
-      personagem.skillPoint ++; // 
+      personagem.status.skillPoint ++; // 
       mensagem += `Parabéns! Você pode aprender uma nova *skill.* ⚔️\n`;
     }
 

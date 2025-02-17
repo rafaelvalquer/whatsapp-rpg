@@ -411,7 +411,7 @@ module.exports = {
                 enemyMaxHP: 40,
                 enemyStr: 8,
                 enemyCon: 8,
-                position: 6,
+                position: 5,
                 enemyXP: 30,
                 arma: 3
               }
