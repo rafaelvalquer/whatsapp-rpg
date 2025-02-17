@@ -368,7 +368,7 @@ module.exports = {
             },
             {
               text: "Explorar os arredores antes de se aproximar.",
-              nextStep: 21,
+              nextStep: 24,
               event: 'encontraItem',
               item: 101
             },
@@ -404,6 +404,7 @@ module.exports = {
             {
               text: "⚔️ Enfrentar o guardião.",
               nextStep: 11,
+              event: 'batalha',
               enemy: {
                 enemyName: "Guardião Esquelético",
                 enemyHP: 40,
@@ -428,6 +429,7 @@ module.exports = {
             {
               text: "Seguir pelo corredor e enfrentar a criatura que o espera.",
               nextStep: 12,
+              event: 'batalha',
               enemy: {
                 enemyName: "Serpente das Sombras",
                 enemyHP: 14,

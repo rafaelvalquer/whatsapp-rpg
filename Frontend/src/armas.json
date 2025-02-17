@@ -13,7 +13,10 @@
   },
   "3": {
     "nome": "Arco Longo",
-    "agi": 3
+    "str": 0,
+    "con": 0,
+    "agi": 3,
+    "int": 0
   },
   "4": {
     "nome": "Cajado Mágico",

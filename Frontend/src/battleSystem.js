@@ -23,7 +23,7 @@ class BattleSystem {
       }
 
       this.playerPosition = newPosition;
-      return `Jogador movido para posição ${this.playerPosition}`;
+      return `Jogador movido para posição ${this.playerPosition + 1}`;
     } else {
       return "O jogador não pode se mover nessa direção!";
     }

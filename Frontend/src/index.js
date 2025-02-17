@@ -330,14 +330,10 @@ Escolha uma *missão* para iniciar a sua jornada:`
   batalha: async (message) => {
     if (!battleController[message.from].battle) {
       const enemy = battleController[message.from].enemy;
-      await client.sendMessage(
-        message.from,
-        `Você encontrou um ${enemy.enemyName}. HP: ${enemy.enemyHP}`
-      );
 
       await client.sendMessage(
         message.from,
-        `${userData[message.from].name} hora da batalha.`
+        `${userData[message.from].name} prepare-se para a batalha! 🔥`
       );
       battleController[message.from].battle = new BattleSystem(
         6,
@@ -543,7 +539,7 @@ missaoFim: async (message) => {
   }
   await client.sendMessage(
     message.from,
- "🏡 Com a missão concluída, você retorna ao vilarejo para descansar e compartilhar sua história. O que deseja fazer agora?"
+ "🏡 Com a missão concluída, você retorna ao vilarejo para descansar e compartilhar sua história."
   );
 
   navigationFlow.menuInicial(message);
