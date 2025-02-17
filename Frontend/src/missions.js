@@ -82,7 +82,7 @@ module.exports = {
                 enemyHP: 15,
                 enemyMaxHP: 15,
                 enemyStr: 5,
-                enemyCon: 5,
+                enemyCon: 3,
                 position: 5,
                 enemyXP: 10,
                 arma: 5

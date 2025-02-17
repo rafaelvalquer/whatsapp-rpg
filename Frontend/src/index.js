@@ -765,7 +765,8 @@ const handleUserResponse = async (message, state) => {
         );
 
         if (response.status === 201 && response.data.create) {
-          await message.reply("Sua conta foi criada com sucesso!");
+
+          await client.sendMessage(message.from, `Sua conta foi criada com sucesso!!`);
 
           navigationFlow.configuracaoPersonagem(message); // Próximo passo no fluxo
         } else {
@@ -806,6 +807,8 @@ const handleUserResponse = async (message, state) => {
               arma2: 0,
               armadura: 0,
               item: {},
+              skillPoint: 0,
+              skills: []
             },
           },
           2: {
@@ -825,6 +828,8 @@ const handleUserResponse = async (message, state) => {
               arma2: 0,
               armadura: 0,
               item: {},
+              skillPoint: 0,
+              skills: []
             },
           },
           3: {
@@ -844,6 +849,8 @@ const handleUserResponse = async (message, state) => {
               arma2: 0,
               armadura: 0,
               item: {},
+              skillPoint: 0,
+              skills: []
             },
           },
         };
