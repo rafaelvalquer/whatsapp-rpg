@@ -585,7 +585,7 @@ escolherSkill: async (message) => {
 
   txtSkill += skillsDisponiveis
     .map(([id, skill], index) => 
-      `*${index + 1}.* ${skill.nome} ⚔️ (${skill.tipo})\n📜 ${skill.descricao}\n💠 *Custo:* ${skill.custo} Stamina\n`
+      `*${index + 1}.* ${skill.nome} ⚔️ (${skill.tipo})\n📜 ${skill.descricao}\n💠 *Custo:* ${skill.custo} Mana\n`
     )
     .join("\n");
 
@@ -1540,6 +1540,9 @@ const handleUserResponse = async (message, state) => {
       let statusCopy = structuredClone(userData[message.from].status);
 
       let skillsDisponiveis = battleController[message.from].battle.skillsDisponiveis
+
+      console.log('##################skillsDisponiveis');
+      console.log(JSON.stringify(skillsDisponiveis))
 
       // Verifica se o número está dentro do intervalo de habilidades disponíveis
       if (isNaN(input) || input < 1 || input > skillsDisponiveis.length) {
