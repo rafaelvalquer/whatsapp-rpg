@@ -20,6 +20,9 @@
   },
   "4": {
     "nome": "Cajado Mágico",
+    "str": 0,
+    "con": 0,
+    "agi": 3,
     "int": 4
   },
   "5": {

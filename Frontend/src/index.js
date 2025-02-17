@@ -90,7 +90,7 @@ function verificarLevelUp(personagem) {
     personagem.status.xp -= xpNecessario; // Subtrai o XP usado
 
     let mensagem = `Parabéns! Você subiu para o nível *${personagem.status.lv}*! 🎉
-    Seus status aumentaram::
+Seus status aumentaram:
     `;
 
     if (personagem.classe == "guerreiro") {
@@ -263,20 +263,20 @@ Se o inimigo estiver muito perto, ele terá que usar a Força (STR) para atacar 
 
       await client.sendMessage(
         message.from,
-        `${
+        `🌍 ${
           userData[message.from].name
-        }, bem-vindo ao mundo! Para onde deseja ir?`
+        }, bem-vindo ao mundo! 🌟 Qual é o seu próximo destino?`
       );
 
       // Exibe as opções do menu
       await client.sendMessage(
         message.from,
         `Escolha uma das opções:
-    1. Iniciar Missões
-    2. Recuperar Vida
-    3. Comprar Itens
-    4. Verificar Status
-    5. FAQ`
+    1️⃣. 🏹 Iniciar Missões
+    2️⃣. ❤️ Recuperar Vida
+    3️⃣. 🛒 Comprar Itens
+    4️⃣. 📊 Verificar Status
+    5️⃣. ❓ FAQ`
       );
 
       // Atualiza o estado interno do userStates para controle local

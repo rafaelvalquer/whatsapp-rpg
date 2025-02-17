@@ -67,7 +67,7 @@ class BattleSystem {
 
         return this.verificarInimigoDerrotado(damage);
       } else {
-        return "O inimigo está muito longe para atacar!";
+        return `O ${this.enemy.enemyName} está muito longe para atacar!`;
       }
     }
     if (this.player.classe === "arqueiro") {
@@ -138,7 +138,7 @@ class BattleSystem {
       this.enemyPosition -= 1;
     }
 
-    return "O inimigo se aproximou do jogador.";
+    return `O ${this.enemy.enemyName} se aproximou do jogador.`;
   }
 
 

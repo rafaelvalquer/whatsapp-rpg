@@ -408,6 +408,7 @@ module.exports = {
               enemy: {
                 enemyName: "Guardião Esquelético",
                 enemyHP: 40,
+                enemyMaxHP: 40,
                 enemyStr: 8,
                 enemyCon: 8,
                 position: 6,
@@ -433,9 +434,10 @@ module.exports = {
               enemy: {
                 enemyName: "Serpente das Sombras",
                 enemyHP: 14,
+                enemyMaxHP: 14,
                 enemyStr: 4,
                 enemyCon: 3,
-                position: 7,
+                position: 5,
                 enemyXP: 20,
                 arma: 4
               }
