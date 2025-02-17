@@ -212,6 +212,7 @@ const navigationFlow = {
     const options = `1 – Guerreiro 🗡️  
 Status iniciais:
 HP: 30
+Mana: 5
 Força (STR): 4  
 Resistência (CON): 3  
 Agilidade (AGI): 2  
@@ -222,6 +223,7 @@ Ele causa alto dano físico com base em sua Força (STR) e pode equipar armas pe
 
 2 – Arqueiro 🏹  
 HP: 25
+Mana: 10
 Status iniciais:  
 Força (STR): 2  
 Resistência (CON): 2  
@@ -234,6 +236,7 @@ Se o inimigo estiver muito próximo, ele usará a Força (STR) para atacar e Res
 3 – Mago 🔥  
 Status iniciais:  
 HP: 20
+Mana: 30
 Força (STR): 1  
 Resistência (CON): 2  
 Agilidade (AGI): 1  
