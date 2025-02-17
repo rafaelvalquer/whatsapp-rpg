@@ -1,0 +1,30 @@
+{
+  "101": {
+    "nome": "Golpe Brutal",
+    "descricao": "Ataque forte com dano dobrado, mas consome mais stamina.",
+    "lv": 5,
+    "tipo": "ativa",
+    "custo": 10
+  },
+  "102": {
+    "nome": "Defesa Implacável",
+    "descricao": "Aumenta a resistência e reduz o dano recebido pela metade por 3 turnos.",
+    "lv": 5,
+    "tipo": "ativa",
+    "custo": 15
+  },
+  "201": {
+    "nome": "Flecha Venenosa",
+    "descricao": "Aplica veneno, causando dano ao longo do tempo.",
+    "lv": 5,
+    "tipo": "passiva",
+    "custo": 10
+  },
+  "301": {
+    "nome": "Tempestade Arcana",
+    "descricao": "Chama relâmpagos que atingem todos os inimigos várias vezes.",
+    "lv": 5,
+    "tipo": "Ultimate",
+    "custo": 10
+  }
+}

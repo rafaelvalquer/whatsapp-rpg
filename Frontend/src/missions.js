@@ -235,13 +235,12 @@ module.exports = {
         },
         {
           text: "Seguindo o som da água, você encontra um pequeno riacho subterrâneo. Perto dele, algo está encostado em uma pedra, ofegante.",
-          event: "encontroFerido",
           options: [
             {
               text: "Investigar a origem do som e verificar a situação.",
               nextStep: 8,
               event: 'encontraFerido',
-              nextText: "Seguindo o som da água, você encontra um pequeno riacho subterrâneo. Perto dele, um guardião cansado está encostado em uma pedra, ofegante. 🛡️🌊😓",
+              nextText: "No riacho subterrâneo há um guardião cansado, ofegante, encostado em uma pedra. 🛡️🌊😓",
               enemy: {
                 enemyName: 'Guardião Cansado',
                 enemyHP: 12,
@@ -262,7 +261,7 @@ module.exports = {
         },
 
 
-
+        //5
         {
           text: "Você segue pelo caminho das pedras caindo e de repente é atacado por um Goblin das Sombras!",
           options: [
@@ -282,7 +281,7 @@ module.exports = {
               }              
             },
             {
-              text: "Tentar surprender o Goblin das Sombras",
+              text: "Tentar surprender o Goblin das Sombras.",
               nextStep: 8,
               event: 'batalha',
               enemy: {
@@ -291,7 +290,7 @@ module.exports = {
                 enemyMaxHP: 20,
                 enemyStr: 6,
                 enemyCon: 4,
-                position: 3,
+                position: 5,
                 enemyXP: 20,
                 arma: 8
               }
@@ -302,6 +301,7 @@ module.exports = {
             }
           ]
         },
+        //6
         {
           text: "Decifrando os símbolos, você descobre um padrão que parece revelar a senha para abrir a porta. Com uma pitada de mistério, você se pergunta o que está além daquela barreira.",
           options: [
@@ -317,6 +317,7 @@ module.exports = {
             }
           ]
         },
+        //7
         {
           text: "Enquanto você segue seu caminho pela caverna escura, um barulho de passos ecoa pelas paredes. De repente, um Goblin hostil emerge das sombras, pronto para o combate. 🗡️",
           options: [
@@ -437,6 +438,10 @@ module.exports = {
                 arma: 4
               }
             },
+            {
+              text: "Pegar o artefato rapidamente.",
+              nextStep: 14,
+            },
           ]
         },
 
@@ -507,6 +512,9 @@ module.exports = {
             {
               text: "💰 Pegar sua recompensa",
               nextStep: "end",
+              event: 'encontraItem',
+              item: 201
+              
             },
           ]
         },
@@ -534,6 +542,7 @@ module.exports = {
             {
               text: "⚔️ Lutar contra o guardião esquelético e defender sua vida.",
               nextStep: 20,
+              event: 'batalha',
               enemy: {
                 enemyName: "Guardião Esquelético",
                 enemyHP: 40,
@@ -566,7 +575,7 @@ module.exports = {
             },
             {
               text: "Observar melhor os arredores antes de agir.",
-              nextStep: 21,
+              nextStep: 24,
             }
           ]
         },
@@ -581,7 +590,7 @@ module.exports = {
             },
             {
               text: "Observar melhor os arredores antes de agir.",
-              nextStep: 21,
+              nextStep: 24,
             }
           ]
         },
@@ -629,6 +638,34 @@ module.exports = {
             {
               text: "Observar melhor os arredores antes de agir.",
               nextStep: 21,
+            }
+          ]
+        },
+
+        //24
+        {
+          text: "Você decide observar melhor os arredores antes de agir. O silêncio é interrompido por um gemido fraco. Em meio às sombras, algo está encostado em uma coluna, ofegante e murmurando palavras desconexas.",
+          options: [
+            {
+              text: "Investigar a origem do som e verificar a situação.",
+              nextStep: 14,
+              event: 'encontraFerido',
+              nextText: "Nas sombras, há um viajante desesperado. Seus olhos estão cheios de medo e ele parece perdido. 🧳🌑😓",
+              enemy: {
+                enemyName: 'Viajante Desesperado',
+                enemyHP: 35,
+                enemyMaxHP: 35,
+                enemyStr: 5,
+                enemyCon: 2,
+                position: 5,
+                enemyXP: 25,
+                arma: 1
+              },
+              item: 101
+            },
+            {
+              text: "Pegar o artefato rapidamente.",
+              nextStep: 14,
             }
           ]
         },

@@ -67,5 +67,12 @@
     "valor" : 10,
     "emoji" : "🔷",
     "txt" : "Recupera até 10 de Mana"
+  },
+  "201": {
+    "nome": "Artefato lendário ",
+    "tipo" : "missao",
+    "valor" : 10,
+    "emoji" : "🔷",
+    "txt" : "Item de missao"
   }
 }

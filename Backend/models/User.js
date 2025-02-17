@@ -18,6 +18,14 @@ const StatusSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  maxMana: {
+    type: Number,
+    default: 0,
+  },
+  mana: {
+    type: Number,
+    default: 0,
+  },
   str: {
     type: Number,
     default: 0,
@@ -50,6 +58,14 @@ const StatusSchema = new mongoose.Schema({
     type: Map, // Usando Map para permitir um objeto chave-valor
     of: Number, // Os valores serão números (ex.: quantidades de itens)
   },
+  skillPoint: {
+    type: Number,
+    default: 0,
+  },
+  skills: {
+    type: [Number], // Array de números (IDs das skills)
+    default: [], // Valor padrão como um array vazio
+  },
 });
 
 const UsuarioSchema = new mongoose.Schema({
@@ -74,7 +90,7 @@ const UsuarioSchema = new mongoose.Schema({
   },
   userState: {
     type: String,
-  },
+  }
 });
 
 module.exports = mongoose.model("users", UsuarioSchema);
