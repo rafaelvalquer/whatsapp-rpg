@@ -46,7 +46,7 @@ module.exports = {
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 3,
-                enemyXP: 15,
+                enemyXP: 20,
                 arma: 1,
                 item: 101
               },
@@ -62,7 +62,7 @@ module.exports = {
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 5,
-                enemyXP: 10,
+                enemyXP: 200,
                 arma: 1,
                 item: 101
               },
@@ -84,7 +84,7 @@ module.exports = {
                 enemyStr: 5,
                 enemyCon: 3,
                 position: 5,
-                enemyXP: 10,
+                enemyXP: 250,
                 arma: 5
               },
               item: 101
@@ -176,7 +176,7 @@ module.exports = {
         {
           text: "🎉 Parabéns! Você foi recompensado com 10 de XP! 🌟",
           recompensa: {
-            xp: 10
+            xp: 250
           }
 
           // Adicione mais etapas conforme necessário.
