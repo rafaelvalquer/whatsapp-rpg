@@ -1184,7 +1184,13 @@ const handleUserResponse = async (message, state) => {
           break;
       }
 
+      if(userData[message.from].status.skillPoint == 1){
+        navigationFlow.escolherSkill(message);
+      }else{
+      // Encerrar fluxo de navegação
       navigationFlow.batalhaFim(message);
+      }
+
 
       break;
     }
