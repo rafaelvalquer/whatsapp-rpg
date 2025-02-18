@@ -594,6 +594,17 @@ escolherSkill: async (message) => {
   userStates[message.from] = "escolherSkill.retorno"; // Atualize corretamente o estado
 },
 
+escapar: async (message) => {
+  // Formata a mensagem de seleção de habilidades
+  let txt = `🏃‍♂️Você escolheu escapar. Ao fugir, você abandona a missão e deixa para trás as responsabilidades e desafios que ainda estavam por vir. A segurança é prioridade, mas a missão permanece incompleta. ⚠️\n`;
+  txt += "1️⃣. Escapar\n2️⃣. Voltar para a batalha";
+
+
+  await client.sendMessage(message.from, txt);
+
+  userStates[message.from] = "escapar.retorno"; // Atualize corretamente o estado
+},
+
 
 };
 //###############################################################
@@ -1082,7 +1093,10 @@ const handleUserResponse = async (message, state) => {
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
       } else if ( (input === "item" || input === "5") && Object.keys(userData[message.from].status.item).length == 0 ) {
         await client.sendMessage(message.from, "📦 Seu inventário está vazio.");
-      } else {
+      } else if (input === "escapar" || input === "0") {
+        navigationFlow.escapar(message);
+      }
+       else {
         await client.sendMessage(
           message.from,
           "Comando inválido! Use 'avançar', 'voltar' ou 'atacar'."
@@ -1211,7 +1225,7 @@ const handleUserResponse = async (message, state) => {
           );
           recompensaItem.txt = `💖 Você usou ${items[idItem].nome}${
             items[idItem].emoji
-          } e recuperou *${items[idItem].valor}* de HP!`;
+          } e recuperou *${items[idItem].valor}* de HP!\nAgora você tem *${statusCopy.hp}* HP!`;
         } else if (items[idItem].tipo === "mana") {
           statusCopy.mana = Math.min(
             statusCopy.maxMana,
@@ -1219,7 +1233,7 @@ const handleUserResponse = async (message, state) => {
           );
           recompensaItem.txt = `🔷 Você usou ${items[idItem].nome}${
             items[idItem].emoji
-          } e recuperou ${items[idItem].valor} de Mana!`;
+          } e recuperou ${items[idItem].valor} de Mana!\nAgora você tem *${statusCopy.mana}* HP!`;
         } else if (items[idItem].tipo === "força") {
           statusCopy.str = Math.max(
             0,
@@ -1431,13 +1445,6 @@ const handleUserResponse = async (message, state) => {
 
         battle = battleController[message.from]?.battle;
         battle.player.status = statusCopy;
-        await client.sendMessage(
-          message.from,
-          "battle = " +
-            battle.player.status.hp +
-            " statuscopy = " +
-            statusCopy.hp
-        );
         usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
         await client.sendMessage(message.from, usarItem.enemy);
         await client.sendMessage(message.from, battle.displayHP());
@@ -1461,13 +1468,6 @@ const handleUserResponse = async (message, state) => {
             "Personagem atualizado com sucesso no banco"
           );
           userData[message.from].status = usarItem.update.user.status; // Atualiza os dados do personagem localmente
-          await client.sendMessage(
-            message.from,
-            "battle = " +
-              battle.player.status.hp +
-              " statuscopy = " +
-              statusCopy.hp
-          );
         } else {
           await client.sendMessage(
             message.from,
@@ -1581,6 +1581,32 @@ const handleUserResponse = async (message, state) => {
 
       navigationFlow.batalhaFim(message);
 
+      break;
+    }
+
+    case "escapar.retorno": {
+
+      const mission = structuredClone(
+        missionsData.missoes[battleController[message.from].missao]
+      );
+
+      if (input === "1") {
+        let nextStep = mission.steps.length - 2; // Pega o penultimo step
+        battleController[message.from].step = nextStep; // Pega o step
+        let text = mission.steps[nextStep].text; // verbaliza a frase
+
+        await client.sendMessage(message.from, text);
+
+        delete battleController[message.from].battle;
+        delete battleController[message.from].enemy;
+
+        navigationFlow.menuInicial(message);
+      } else if (input === "2") {
+        navigationFlow.batalha(message);
+      } else {
+        message.reply("Opção inválida, vamos tentar novamente");
+        navigationFlow.escapar(message);
+      }
       break;
     }
 

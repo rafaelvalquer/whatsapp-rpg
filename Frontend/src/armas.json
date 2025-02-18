@@ -9,7 +9,9 @@
   "2": {
     "nome": "Machado Orc",
     "str": 3,
-    "con": 2
+    "con": 2,
+    "agi": 0,
+    "int": 0
   },
   "3": {
     "nome": "Arco Longo",
