@@ -11,7 +11,7 @@ module.exports = {
           options: [
             {
               text: "Aceitar ajudar imediatamente.",
-              nextStep: 2
+              nextStep: 2,
             },
             {
               text: "Recusar a ajuda e seguir seu caminho.",
@@ -37,34 +37,50 @@ module.exports = {
           options: [
             {
               text: "Liderar o ataque frontal contra os bandidos.",
-              nextStep: 7,
-              event: 'batalha',
+              nextStep: 8,
+              event: "batalha",
               enemy: {
-                enemyName: 'Bandido',
+                enemyName: "Bandido",
                 enemyHP: 10,
                 enemyMaxHP: 10,
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 3,
-                enemyXP: 20,
+                enemyXP: 25,
                 arma: 1,
-                item: 101
+                item: 101,
               },
             },
             {
               text: "Ficar na retaguarda e coordenar as ações.",
-              nextStep: 7,
-              event: 'batalha',
+              nextStep: 9,
+              event: "batalha",
               enemy: {
-                enemyName: 'Bandido',
+                enemyName: "Bandido",
                 enemyHP: 10,
                 enemyMaxHP: 10,
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 5,
-                enemyXP: 200,
+                enemyXP: 20,
                 arma: 1,
-                item: 101
+                item: 101,
+              },
+            },
+            {
+              text: "🛡️ Formar uma linha defensiva para proteger os aldeões.",
+              nextStep: 10,
+              event: "batalha",
+              enemy: {
+                enemyName: "Bandido",
+                enemyHP: 10,
+                enemyMaxHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 2,
+                enemyXP: 30,
+                arma: 1,
+                item: 101,
               },
             },
           ],
@@ -75,19 +91,20 @@ module.exports = {
             {
               text: "Seguir o som e investigar.",
               nextStep: 5,
-              event: 'encontraFerido',
-              nextText: "🩸 Diante de você, um viajante está caído, enfraquecido e visivelmente ferido. Seu rosto demonstra exaustão, e seus olhos refletem um pedido silencioso por ajuda.",
+              event: "encontraFerido",
+              nextText:
+                "🩸 Diante de você, um viajante está caído, enfraquecido e visivelmente ferido. Seu rosto demonstra exaustão, e seus olhos refletem um pedido silencioso por ajuda.",
               enemy: {
-                enemyName: 'Guerreiro Ferido',
+                enemyName: "Guerreiro Ferido",
                 enemyHP: 15,
                 enemyMaxHP: 15,
                 enemyStr: 5,
                 enemyCon: 3,
                 position: 5,
                 enemyXP: 250,
-                arma: 5
+                arma: 5,
               },
-              item: 101
+              item: 101,
             },
             {
               text: "Ignorar e continuar seu caminho até o vilarejo.",
@@ -96,17 +113,15 @@ module.exports = {
           ],
         },
         {
-          text: "Você não teve sucesso em encontrar ajuda. No meio do caminho, você encontra um baú abandonado. O que deseja fazer?",
+          text: "Antes de morrer, o guerreiro ferido aponta na direção de um caminho pouco visível entre as árvores. 'O vilarejo está por ali', ele murmura..",
           options: [
             {
-              text: "Abrir o baú.",
-              nextStep: 6,
-              event: 'encontraItem',
-              item: 101
+              text: "Confiar no guerreiro ferido e seguir o caminho indicado.",
+              nextStep: 12,
             },
             {
-              text: "Ignorar e seguir caminho.",
-              nextStep: 6,
+              text: "Ignorar a indicação do guerreiro e seguir outro caminho.",
+              nextStep: 13,
             },
           ],
         },
@@ -116,9 +131,9 @@ module.exports = {
             {
               text: "Liderar o ataque frontal contra os bandidos.",
               nextStep: 7,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
-                enemyName: 'Bandido',
+                enemyName: "Bandido",
                 enemyHP: 10,
                 enemyMaxHP: 10,
                 enemyStr: 3,
@@ -126,58 +141,487 @@ module.exports = {
                 position: 4,
                 enemyXP: 15,
                 arma: 1,
-                item: 101
+                item: 101,
               },
             },
             {
               text: "Ficar na retaguarda e coordenar as ações.",
               nextStep: 7,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
-                enemyName: 'Bandido',
+                enemyName: "Bandido",
                 enemyHP: 10,
                 enemyMaxHP: 10,
                 enemyStr: 3,
                 enemyCon: 2,
                 position: 5,
                 enemyXP: 10,
-                arma: 1
+                arma: 1,
               },
             },
             {
-              text:  "Tentar encontrar uma posição estratégica para emboscar os bandidos.",
+              text: "Tentar encontrar uma posição estratégica para emboscar os bandidos.",
               nextStep: 7,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
-                enemyName: 'Líder dos Bandidos',
+                enemyName: "Líder dos Bandidos",
                 enemyHP: 15,
                 enemyMaxHP: 15,
                 enemyStr: 4,
                 enemyCon: 3,
                 position: 3,
                 enemyXP: 20,
-                arma: 1
+                arma: 1,
               },
             },
           ],
         },
         {
-          text: "⚔️ A batalha termina e os bandidos recuam. O vilarejo está seguro! 🏡✨",
+          text: "⚔️ A batalha final chega ao fim com uma vitória retumbante! Os bandidos, derrotados e desmoralizados, recuam rapidamente para a floresta. Os aldeões, exaustos, mas triunfantes, comemoram sua bravura e determinação. 🏡✨",
           options: [
             {
               text: "💰 Pegar sua recompensa",
               nextStep: "end",
-            }
+            },
           ],
         },
+
+        //8
+        {
+          text: "Você lidera o ataque frontal contra os bandidos com sucesso! Os aldeões, inspirados pela sua bravura, lutam com determinação e derrotam a primeira onda de inimigos. No entanto, uma nova horda mais forte está se aproximando. O que você faz?",
+          options: [
+            {
+              text: "⚔️ Continuar o ataque frontal e manter a pressão.",
+              nextStep: 11,
+              event: "batalha",
+              enemy: {
+                enemyName: "Líder dos Bandidos",
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 2,
+                enemyXP: 60,
+                arma: 2,
+                item: 101,
+              },
+            },
+            {
+              text: "🛡️ Recuar e reorganizar a defesa.",
+              nextStep: 11,
+              event: "batalha",
+              enemy: {
+                enemyName: "Líder dos Bandidos",
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 4,
+                enemyXP: 50,
+                arma: 2,
+                item: 101,
+              },
+            },
+            {
+              text: "📢 Usar a estratégia para flanquear os inimigos.",
+              nextStep: 11,
+              event: "batalha",
+              enemy: {
+                enemyName: "Líder dos Bandidos",
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 5,
+                enemyXP: 40,
+                arma: 2,
+                item: 101,
+              },
+            },
+          ],
+        },
+
+        //9
+        {
+          text: "Ficar na retaguarda e coordenar as ações foi uma decisão sábia. Os aldeões conseguiram repelir a primeira onda de bandidos com sucesso. No entanto, uma nova horda mais forte está se aproximando. O que você faz?",
+          options: [
+            {
+              text: "⚔️ Liderar um contra-ataque surpresa.",
+              nextStep: 11,
+              event: "batalha",
+              enemy: {
+                enemyName: "Líder dos Bandidos",
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 2,
+                enemyXP: 60,
+                arma: 2,
+                item: 101,
+              },
+            },
+            {
+              text: "🛡️ Fortificar as defesas e se preparar para a nova horda.",
+              nextStep: 11,
+              event: "batalha",
+              enemy: {
+                enemyName: "Líder dos Bandidos",
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 4,
+                enemyXP: 50,
+                arma: 2,
+                item: 101,
+              },
+            },
+            {
+              text: "📢 Enviar um grupo para flanquear os inimigos.",
+              nextStep: 11,
+              event: "batalha",
+              enemy: {
+                enemyName: "Líder dos Bandidos",
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 5,
+                enemyXP: 40,
+                arma: 2,
+                item: 101,
+              },
+            },
+          ],
+        },
+
+        //10
+        {
+          text: "Formar uma linha defensiva provou ser eficaz. A primeira onda de bandidos foi derrotada com sucesso. No entanto, uma nova horda mais forte está se aproximando. O que você faz?",
+          options: [
+            {
+              text: "⚔️ Liderar um ataque decisivo contra os inimigos.",
+              nextStep: 11,
+              event: "batalha",
+              enemy: {
+                enemyName: "Líder dos Bandidos",
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 2,
+                enemyXP: 60,
+                arma: 2,
+                item: 101,
+              },
+            },
+            {
+              text: "🛡️ Reforçar a linha defensiva e se preparar para a nova horda.",
+              nextStep: 11,
+              event: "batalha",
+              enemy: {
+                enemyName: "Líder dos Bandidos",
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 4,
+                enemyXP: 50,
+                arma: 2,
+                item: 101,
+              },
+            },
+            {
+              text: "📢 Coordenar um ataque conjunto com os aldeões.",
+              nextStep: 11,
+              event: "batalha",
+              enemy: {
+                enemyName: "Líder dos Bandidos",
+                enemyHP: 20,
+                enemyMaxHP: 20,
+                enemyStr: 6,
+                enemyCon: 4,
+                position: 5,
+                enemyXP: 40,
+                arma: 2,
+                item: 101,
+              },
+            },
+          ],
+        },
+
+        //11
+        {
+          text: "Após várias batalhas intensas, você e os aldeões finalmente têm um momento de alívio. No entanto, o alívio é breve, pois uma figura imponente aparece no horizonte. É o Senhor da Guerra dos bandidos, um guerreiro cruel e estrategista experiente, acompanhado por sua guarda pessoal. Esta é a última onda, e a batalha final está prestes a começar.",
+          options: [
+            {
+              text: "⚔️ Liderar o ataque final contra o Senhor da Guerra.",
+              nextStep: 7,
+              event: "batalha",
+              enemy: {
+                enemyName: "Senhor da Guerra",
+                enemyHP: 70,
+                enemyMaxHP: 70,
+                enemyStr: 12,
+                enemyCon: 10,
+                position: 2,
+                enemyXP: 150,
+                arma: 4,
+                item: 104
+              },
+            },
+            {
+              text: "🛡️ Reforçar a linha defensiva e se preparar para a nova horda.",
+              nextStep: 7,
+              event: "batalha",
+              enemy: {
+                enemyName: "Senhor da Guerra",
+                enemyHP: 70,
+                enemyMaxHP: 70,
+                enemyStr: 12,
+                enemyCon: 10,
+                position: 4,
+                enemyXP: 125,
+                arma: 4,
+                item: 104
+              },
+            },
+            {
+              text: "📢 Coordenar um ataque estratégico com os aldeões.",
+              nextStep: 7,
+              event: "batalha",
+              enemy: {
+                enemyName: "Senhor da Guerra",
+                enemyHP: 70,
+                enemyMaxHP: 70,
+                enemyStr: 12,
+                enemyCon: 10,
+                position: 5,
+                enemyXP: 110,
+                arma: 4,
+                item: 104
+              },
+            },
+          ],
+        },
+
+        //12
+        {
+          text: "Você segue o caminho indicado pelo guerreiro ferido e, após uma curta caminhada, as luzes do vilarejo começam a brilhar à distância. Ao se aproximar, você percebe uma atmosfera tranquila, mas algo parece fora do comum. Você percebe uma tensão crescente entre os aldeões, que parecem desconfiados de sua presença. Alguns deles começam a murmurar entre si, e a situação parece prestes a se transformar em um confronto. O que você faz?",
+          options: [
+            {
+              text: "⚔️ Enfrentar os aldeões e exigir respostas.",
+              nextStep: 14,
+              event: "batalha",
+              enemy: {
+                enemyName: "Aldeões",
+                enemyHP: 8,
+                enemyMaxHP: 8,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 5,
+                enemyXP: 20,
+                arma: 4,
+                item: 104
+              },
+            },
+            {
+              text: "Pedir ajuda e tentar acalmar os aldeões.",
+              nextStep: 14,
+            },
+          ],
+        },
+
+        //13
+        {
+          text: "Você decide não seguir a indicação do guerreiro e opta por seguir outro caminho. À medida que se afasta, a escuridão da floresta se torna mais densa, e os sons da noite se intensificam. Você sente uma presença estranha e percebe que algo ou alguém está te observando. O que você faz?",
+          options: [
+            {
+              text: "⚔️ Investigar a presença estranha na floresta.",
+              nextStep: 15,
+              event: "batalha",
+              enemy: {
+                enemyName: "Troll da Floresta",
+                enemyHP: 12,
+                enemyMaxHP: 12,
+                enemyStr: 5,
+                enemyCon: 1,
+                position: 5,
+                enemyXP: 25,
+                arma: 4,
+                item: 104
+              },
+            },
+            {
+              text: "Ignorar a presença e continuar caminhando rapidamente.",
+              nextStep: 15,
+            },
+          ],
+        },
+
+        //14
+        {
+          text: "Os aldeões, com olhares preocupados e exaustos, explicam que não podem oferecer ajuda. 'Temos nossos próprios problemas para resolver', diz um deles. Sem outra opção, você decide voltar para o vilarejo. Porém, ao chegar, você encontra o vilarejo em caos. A batalha já começou, e os gritos de combate ecoam pela noite. O que você faz?",
+          options: [
+            {
+              text: "Liderar o ataque frontal contra os bandidos.",
+              nextStep: 8,
+              event: "batalha",
+              enemy: {
+                enemyName: "Bandido",
+                enemyHP: 10,
+                enemyMaxHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 3,
+                enemyXP: 25,
+                arma: 1,
+                item: 101,
+              },
+            },
+            {
+              text: "Ficar na retaguarda e coordenar as ações.",
+              nextStep: 9,
+              event: "batalha",
+              enemy: {
+                enemyName: "Bandido",
+                enemyHP: 10,
+                enemyMaxHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 5,
+                enemyXP: 20,
+                arma: 1,
+                item: 101,
+              },
+            },
+            {
+              text: "🛡️ Formar uma linha defensiva para proteger os aldeões.",
+              nextStep: 10,
+              event: "batalha",
+              enemy: {
+                enemyName: "Bandido",
+                enemyHP: 10,
+                enemyMaxHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 2,
+                enemyXP: 30,
+                arma: 1,
+                item: 101,
+              },
+            },
+          ],
+        },
+
+        //15
+        {
+          text: "Sentindo o cansaço e a tensão acumulada, você decide voltar para o vilarejo. Ao chegar, percebe que a batalha já começou. Os gritos e sons de combate ecoam pelo vilarejo. O que você faz?",
+          options: [
+            {
+              text: "Liderar o ataque frontal contra os bandidos.",
+              nextStep: 8,
+              event: "batalha",
+              enemy: {
+                enemyName: "Bandido",
+                enemyHP: 10,
+                enemyMaxHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 3,
+                enemyXP: 25,
+                arma: 1,
+                item: 101,
+              },
+            },
+            {
+              text: "Ficar na retaguarda e coordenar as ações.",
+              nextStep: 9,
+              event: "batalha",
+              enemy: {
+                enemyName: "Bandido",
+                enemyHP: 10,
+                enemyMaxHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 5,
+                enemyXP: 20,
+                arma: 1,
+                item: 101,
+              },
+            },
+            {
+              text: "🛡️ Formar uma linha defensiva para proteger os aldeões.",
+              nextStep: 10,
+              event: "batalha",
+              enemy: {
+                enemyName: "Bandido",
+                enemyHP: 10,
+                enemyMaxHP: 10,
+                enemyStr: 3,
+                enemyCon: 2,
+                position: 2,
+                enemyXP: 30,
+                arma: 1,
+                item: 101,
+              },
+            },
+          ],
+        },
+
+        //16
+        {
+          text: "Enquanto você avança pela floresta, de repente você se depara com um troll da floresta. Ele é enorme e tem uma aparência ameaçadora. O troll está virado de costas para você, aparentemente sem perceber sua presença. O que você faz?",
+          options: [
+            {
+              text: "Enfrentar o Troll da floresta de frente.",
+              nextStep: 15,
+              event: "batalha",
+              enemy: {
+                enemyName: "Troll da Floresta",
+                enemyHP: 12,
+                enemyMaxHP: 12,
+                enemyStr: 5,
+                enemyCon: 1,
+                position: 3,
+                enemyXP: 25,
+                arma: 4,
+                item: 104
+              },
+            },
+            {
+              text: "Tentar pegar o Troll de surpresa",
+              nextStep: 15,
+              event: "batalha",
+              enemy: {
+                enemyName: "Troll da Floresta",
+                enemyHP: 12,
+                enemyMaxHP: 12,
+                enemyStr: 5,
+                enemyCon: 1,
+                position: 5,
+                enemyXP: 20,
+                arma: 4,
+                item: 104
+              },
+            },
+            {
+              text: "Abandonar a missão e voltar para a sua vila.",
+              nextStep: "return",
+            },
+          ],
+        },
+
+
         {
           text: "🚶‍♂️ Você decide seguir seu caminho e deixar o vilarejo de Eldoria à sua própria sorte. Com um último olhar, você se afasta, determinado a encontrar seu próprio destino.🌟",
         },
         {
-          text: "🎉 Parabéns! Você foi recompensado com 10 de XP! 🌟",
+          text: "🎉 Parabéns! Você foi recompensado com 250 de XP! 🌟",
           recompensa: {
-            xp: 250
-          }
+            xp: 250,
+          },
 
           // Adicione mais etapas conforme necessário.
         },
@@ -239,27 +683,27 @@ module.exports = {
             {
               text: "Investigar a origem do som e verificar a situação.",
               nextStep: 8,
-              event: 'encontraFerido',
-              nextText: "No riacho subterrâneo há um guardião cansado, ofegante, encostado em uma pedra. 🛡️🌊😓",
+              event: "encontraFerido",
+              nextText:
+                "No riacho subterrâneo há um guardião cansado, ofegante, encostado em uma pedra. 🛡️🌊😓",
               enemy: {
-                enemyName: 'Guardião Cansado',
+                enemyName: "Guardião Cansado",
                 enemyHP: 12,
                 enemyMaxHP: 12,
                 enemyStr: 4,
                 enemyCon: 6,
                 position: 4,
                 enemyXP: 8,
-                arma: 3
+                arma: 3,
               },
-              item: 102
+              item: 102,
             },
             {
               text: "Ignorá-lo e seguir em frente.",
-              nextStep: 8
-            }
-          ]
+              nextStep: 8,
+            },
+          ],
         },
-
 
         //5
         {
@@ -268,38 +712,38 @@ module.exports = {
             {
               text: "Enfrentar de frente.",
               nextStep: 8,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
-                enemyName: 'Goblin das Sombras',
+                enemyName: "Goblin das Sombras",
                 enemyHP: 20,
                 enemyMaxHP: 20,
                 enemyStr: 6,
                 enemyCon: 4,
                 position: 3,
                 enemyXP: 25,
-                arma: 7
-              }              
+                arma: 7,
+              },
             },
             {
               text: "Tentar surprender o Goblin das Sombras.",
               nextStep: 8,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
-                enemyName: 'Goblin das Sombras',
+                enemyName: "Goblin das Sombras",
                 enemyHP: 20,
                 enemyMaxHP: 20,
                 enemyStr: 6,
                 enemyCon: 4,
                 position: 5,
                 enemyXP: 20,
-                arma: 8
-              }
+                arma: 8,
+              },
             },
             {
               text: "Tentar correr",
               nextStep: 9,
-            }
-          ]
+            },
+          ],
         },
         //6
         {
@@ -308,14 +752,14 @@ module.exports = {
             {
               text: "Tentar abrir a porta com a senha.",
               nextStep: 8,
-              event: 'encontraItem',
-              item: 101
+              event: "encontraItem",
+              item: 101,
             },
             {
               text: "Seguir o seu caminho",
               nextStep: 7,
-            }
-          ]
+            },
+          ],
         },
         //7
         {
@@ -324,38 +768,38 @@ module.exports = {
             {
               text: "Enfrentar de frente.",
               nextStep: 8,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
-                enemyName: 'Goblin',
+                enemyName: "Goblin",
                 enemyHP: 20,
                 enemyMaxHP: 20,
                 enemyStr: 6,
                 enemyCon: 2,
                 position: 3,
                 enemyXP: 20,
-                arma: 7
+                arma: 7,
               },
             },
             {
               text: "Tentar surprender o Goblin",
               nextStep: 8,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
-                enemyName: 'Goblin',
+                enemyName: "Goblin",
                 enemyHP: 20,
                 enemyMaxHP: 20,
                 enemyStr: 6,
                 enemyCon: 2,
                 position: 5,
                 enemyXP: 20,
-                arma: 7
+                arma: 7,
               },
             },
             {
               text: "Tentar correr",
               nextStep: 9,
-            }
-          ]
+            },
+          ],
         },
 
         //8
@@ -369,12 +813,12 @@ module.exports = {
             {
               text: "Explorar os arredores antes de se aproximar.",
               nextStep: 24,
-              event: 'encontraItem',
-              item: 101
+              event: "encontraItem",
+              item: 101,
             },
-          ]
+          ],
         },
-        
+
         //9
         {
           text: "Enquanto você tenta correr, um brilho ameaçador aparece à sua frente. De repente, o Rei dos Goblins surge das sombras, bloqueando seu caminho.",
@@ -382,19 +826,19 @@ module.exports = {
             {
               text: "Enfrentar o Rei dos Goblins",
               nextStep: 8,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
-                enemyName: 'Rei dos Goblin',
+                enemyName: "Rei dos Goblin",
                 enemyHP: 30,
                 enemyMaxHP: 30,
                 enemyStr: 8,
                 enemyCon: 3,
                 position: 5,
                 enemyXP: 30,
-                arma: 9
+                arma: 9,
               },
-            }
-          ]
+            },
+          ],
         },
 
         //10
@@ -404,7 +848,7 @@ module.exports = {
             {
               text: "⚔️ Enfrentar o guardião.",
               nextStep: 11,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
                 enemyName: "Guardião Esquelético",
                 enemyHP: 40,
@@ -413,14 +857,14 @@ module.exports = {
                 enemyCon: 8,
                 position: 5,
                 enemyXP: 30,
-                arma: 3
-              }
+                arma: 3,
+              },
             },
             {
               text: "👀 Tentar se esconder e observar os movimentos do guardião.",
               nextStep: 17,
             },
-          ]
+          ],
         },
 
         //11
@@ -430,7 +874,7 @@ module.exports = {
             {
               text: "Seguir pelo corredor e enfrentar a criatura que o espera.",
               nextStep: 12,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
                 enemyName: "Serpente das Sombras",
                 enemyHP: 14,
@@ -439,14 +883,14 @@ module.exports = {
                 enemyCon: 3,
                 position: 5,
                 enemyXP: 20,
-                arma: 4
-              }
+                arma: 4,
+              },
             },
             {
               text: "Pegar o artefato rapidamente.",
               nextStep: 14,
             },
-          ]
+          ],
         },
 
         //12
@@ -456,14 +900,14 @@ module.exports = {
             {
               text: "Abrir o baú.",
               nextStep: 13,
-              event: 'encontraItem',
-              item: 101
+              event: "encontraItem",
+              item: 101,
             },
             {
               text: "Voltar e pegar o artefato.",
               nextStep: 13,
             },
-          ]
+          ],
         },
 
         //13
@@ -477,8 +921,8 @@ module.exports = {
             {
               text: "Observar melhor os arredores antes de agir.",
               nextStep: 21,
-            }
-          ]
+            },
+          ],
         },
 
         //14
@@ -493,9 +937,9 @@ module.exports = {
               text: "Ficar com o artefato para si.",
               nextStep: 16,
               event: "encontraItem",
-              item: 101
-            }
-          ]
+              item: 101,
+            },
+          ],
         },
 
         //15
@@ -506,7 +950,7 @@ module.exports = {
               text: "💰 Pegar sua recompensa",
               nextStep: "end",
             },
-          ]
+          ],
         },
 
         //16
@@ -516,11 +960,10 @@ module.exports = {
             {
               text: "💰 Pegar sua recompensa",
               nextStep: "end",
-              event: 'encontraItem',
-              item: 201
-              
+              event: "encontraItem",
+              item: 201,
             },
-          ]
+          ],
         },
 
         //17
@@ -535,9 +978,8 @@ module.exports = {
               text: "Esperar mais tempo para ver se o guardião baixa a guarda.",
               nextStep: 23,
             },
-          ]
+          ],
         },
-
 
         //18
         {
@@ -546,7 +988,7 @@ module.exports = {
             {
               text: "⚔️ Lutar contra o guardião esquelético e defender sua vida.",
               nextStep: 20,
-              event: 'batalha',
+              event: "batalha",
               enemy: {
                 enemyName: "Guardião Esquelético",
                 enemyHP: 40,
@@ -555,8 +997,8 @@ module.exports = {
                 position: 4,
                 enemyXP: 30,
                 arma: 3,
-                item: 101
-              }
+                item: 101,
+              },
             },
             {
               text: "📜 Recitar um antigo verso de um pergaminho que você encontrou.",
@@ -566,7 +1008,7 @@ module.exports = {
               text: "🚶‍♂️ Correr imediatamente para a saída e escapar com vida.",
               nextStep: "return",
             },
-          ]
+          ],
         },
 
         //19
@@ -580,8 +1022,8 @@ module.exports = {
             {
               text: "Observar melhor os arredores antes de agir.",
               nextStep: 24,
-            }
-          ]
+            },
+          ],
         },
 
         //20
@@ -595,8 +1037,8 @@ module.exports = {
             {
               text: "Observar melhor os arredores antes de agir.",
               nextStep: 24,
-            }
-          ]
+            },
+          ],
         },
 
         //21
@@ -611,7 +1053,7 @@ module.exports = {
               text: "Ignorar os detalhes e pegar o artefato rapidamente.",
               nextStep: 14,
             },
-          ]
+          ],
         },
 
         //22
@@ -622,13 +1064,13 @@ module.exports = {
               text: "Abrir o baú.",
               nextStep: 20,
               event: "encontraItem",
-              item: 101
+              item: 101,
             },
             {
               text: "Ignorar o baú e focar no artefato.",
               nextStep: 20,
-            }
-          ]
+            },
+          ],
         },
 
         //23
@@ -642,8 +1084,8 @@ module.exports = {
             {
               text: "Observar melhor os arredores antes de agir.",
               nextStep: 21,
-            }
-          ]
+            },
+          ],
         },
 
         //24
@@ -653,25 +1095,26 @@ module.exports = {
             {
               text: "Investigar a origem do som e verificar a situação.",
               nextStep: 14,
-              event: 'encontraFerido',
-              nextText: "Nas sombras, há um viajante desesperado. Seus olhos estão cheios de medo e ele parece perdido. 🧳🌑😓",
+              event: "encontraFerido",
+              nextText:
+                "Nas sombras, há um viajante desesperado. Seus olhos estão cheios de medo e ele parece perdido. 🧳🌑😓",
               enemy: {
-                enemyName: 'Viajante Desesperado',
+                enemyName: "Viajante Desesperado",
                 enemyHP: 35,
                 enemyMaxHP: 35,
                 enemyStr: 5,
                 enemyCon: 2,
                 position: 5,
                 enemyXP: 25,
-                arma: 1
+                arma: 1,
               },
-              item: 101
+              item: 101,
             },
             {
               text: "Pegar o artefato rapidamente.",
               nextStep: 14,
-            }
-          ]
+            },
+          ],
         },
 
         //FIM
@@ -681,8 +1124,8 @@ module.exports = {
         {
           text: "🎉 Parabéns! Você foi recompensado com 50 de XP! 🌟",
           recompensa: {
-            xp: 50
-          }
+            xp: 50,
+          },
 
           // Adicione mais etapas conforme necessário.
         },
