@@ -1538,9 +1538,6 @@ const handleUserResponse = async (message, state) => {
 
       let skillsDisponiveis = battleController[message.from].battle.skillsDisponiveis
 
-      console.log('##################skillsDisponiveis');
-      console.log(JSON.stringify(skillsDisponiveis))
-
       // Verifica se o número está dentro do intervalo de habilidades disponíveis
       if (isNaN(input) || input < 1 || input > skillsDisponiveis.length) {
         await client.sendMessage(message.from, "Escolha inválida. Por favor, digite um número válido.");
@@ -1580,7 +1577,7 @@ const handleUserResponse = async (message, state) => {
       }
 
       // Envia a confirmação ao usuário com o nome da skill e o custo
-      await client.sendMessage(message.from, `Você escolheu a habilidade *${skillSelecionada.nome}* ⚔️`);
+      await client.sendMessage(message.from, `Você escolheu a habilidade *${skillData.nome}* ⚔️`);
 
       navigationFlow.batalhaFim(message);
 
