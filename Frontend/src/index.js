@@ -1536,9 +1536,6 @@ const handleUserResponse = async (message, state) => {
 
     case "escolherSkill.retorno": {
 
-      // Criar uma cópia do status do usuário antes de modificar
-      let statusCopy = structuredClone(userData[message.from].status);
-
       let skillsDisponiveis = battleController[message.from].battle.skillsDisponiveis
 
       console.log('##################skillsDisponiveis');
@@ -1551,15 +1548,17 @@ const handleUserResponse = async (message, state) => {
         return;
       }
 
-      // Identifica a skill selecionada
-      const skillSelecionada = skillsDisponiveis[input - 1]; // Subtraímos 1 porque a lista começa do índice 0
-      const idSkillSelecionada = Object.keys(skills)[Object.values(skills).indexOf(skillSelecionada)];
+      // Identifica a skill selecionada corretamente
+      const [idSkillSelecionada, skillData] = skillsDisponiveis[input - 1]; // Obtém ID e objeto da skill
+
 
       // Atualiza o status do usuário (armazenando apenas o ID da skill)
       if (!userData[message.from].status.skills) {
         userData[message.from].status.skills = [];
       }
-      userData[message.from].status.skills.push(idSkillSelecionada);  // Aqui estamos salvando o ID
+      userData[message.from].status.skills.push(idSkillSelecionada); // Salvando apenas o ID
+
+      userData[message.from].status.skillPoint --; //Zera os skillPoints
 
         // Atualizar Personagem no banco de dados
         let updates = { status: userData[message.from].status };
