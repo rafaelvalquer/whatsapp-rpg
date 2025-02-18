@@ -597,7 +597,7 @@ escolherSkill: async (message) => {
 escapar: async (message) => {
   // Formata a mensagem de seleção de habilidades
   let txt = `🏃‍♂️Você escolheu escapar. Ao fugir, você abandona a missão e deixa para trás as responsabilidades e desafios que ainda estavam por vir. A segurança é prioridade, mas a missão permanece incompleta. ⚠️\n`;
-  txt += "1️⃣. Escapar\n2️⃣. Voltar para a batalha";
+  txt += "1️⃣ Escapar\n2️⃣ Voltar para a batalha";
 
 
   await client.sendMessage(message.from, txt);
@@ -1095,6 +1095,7 @@ const handleUserResponse = async (message, state) => {
         await client.sendMessage(message.from, "📦 Seu inventário está vazio.");
       } else if (input === "escapar" || input === "0") {
         navigationFlow.escapar(message);
+        return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
       }
        else {
         await client.sendMessage(
