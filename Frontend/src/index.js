@@ -1746,11 +1746,6 @@ const handleUserResponse = async (message, state) => {
         if (response.data.exists) {
           Object.assign(userData[message.from], response.data.user);
 
-          await client.sendMessage(
-            message.from, displayStatus(userData[message.from].status.hp, userData[message.from].status.maxHP, userData[message.from].status.mana, userData[message.from].status.maxMana)
-          );
-
-
         } else {
           await message.reply("Usuario não encontrado");
           navigationFlow.criacaoConta(message);
