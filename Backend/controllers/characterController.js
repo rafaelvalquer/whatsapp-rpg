@@ -11,6 +11,7 @@ async function regenerarSantuario() {
         const jogadoresNoSantuario = await getPlayersInSantuario();
 
         console.log(`Regenerando santuário para ${jogadoresNoSantuario.length} jogadores.`);
+        console.log("Resultado da consulta dos usuarios:", jogadoresNoSantuario);
 
     
         for (const jogador of jogadoresNoSantuario) {
