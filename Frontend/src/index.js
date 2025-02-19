@@ -1765,12 +1765,29 @@ const handleUserResponse = async (message, state) => {
 
       if (input === "1") {
 
-        await client.sendMessage(
-          message.from, "👋 Você saiu do Santuário. Volte sempre!"
-        );
+        userData[message.from].status.santuario = false;
 
-        userData[message.from].userState = "menuInicial";
-        navigationFlow.menuInicial(message);
+        //Atualizar Personagem no banco
+        const updates = {
+          status: userData[message.from].status,
+        };
+
+        const update = await updateCharacter(userData[message.from], updates);
+        if (update.success) {
+
+          await client.sendMessage(
+            message.from, "👋 Você saiu do Santuário. Volte sempre!"
+          );
+
+          userData[message.from].userState = "menuInicial";
+          navigationFlow.menuInicial(message);
+        } else {
+          client.sendMessage(
+            message.from,
+            "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+          );
+          navigationFlow.santuario(message);
+        }
 
       } else if (input === "2") {
         navigationFlow.santuario(message);
