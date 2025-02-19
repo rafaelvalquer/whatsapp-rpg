@@ -667,7 +667,14 @@ santuario: async (message) => {
   if (result.success) {
     Object.assign(userData[message.from], result.user); // Atualiza os dados do personagem localmente
 
-    userData[message.from].status.santuario = true;
+    if (userData[message.from].status.santuario == false){
+      userData[message.from].status.santuario = true;
+      await client.sendMessage(
+        message.from,
+        "Você entrou no Santuário. Seu HP e Mana serão regenerados automaticamente."
+      );
+    }
+
 
     //Atualizar Personagem no banco
     const updates = {
@@ -676,10 +683,7 @@ santuario: async (message) => {
 
     const update = await updateCharacter(userData[message.from], updates);
     if (update.success) {
-      await client.sendMessage(
-        message.from,
-        "Você entrou no Santuário. Seu HP e Mana serão regenerados automaticamente."
-      );
+
       await client.sendMessage(
         message.from, displayStatus(userData[message.from].status.hp, userData[message.from].status.maxHP, userData[message.from].status.mana, userData[message.from].status.maxMana)
       );
@@ -688,8 +692,7 @@ santuario: async (message) => {
         message.from,
         `Escolha uma das opções:
     1️⃣. Sair do Santuário 🚪
-    2️⃣. Verificar Status Atual 📜
-    3️⃣. Tempo Restante para Recuperação Total ⏳`
+    2️⃣. Verificar Status Atual 📜`
       );
 
       // Atualiza o estado interno para aguardar a escolha da missão
@@ -1731,6 +1734,7 @@ const handleUserResponse = async (message, state) => {
 
     case "santuario.retorno": {
 
+      // Atualizar personagem Localmente.
       try {
         const response = await axios.post(
           "http://localhost:5000/api/check-user",
@@ -1769,17 +1773,6 @@ const handleUserResponse = async (message, state) => {
         navigationFlow.menuInicial(message);
 
       } else if (input === "2") {
-        navigationFlow.santuario(message);
-      }  else if (input === "3") {
-        const hpRestante = userData[message.from].status.maxHP - userData[message.from].status.hp;
-        const manaRestante = userData[message.from].status.maxMana - userData[message.from].status.mana;
-        const tempoTotal = Math.max(hpRestante, manaRestante); // Tempo em minutos
-      
-        await client.sendMessage(
-          message.from, 
-          `⏳ Para recuperar totalmente HP e Mana, levará aproximadamente *${tempoTotal} minutos* no santuário.`
-        );
-      
         navigationFlow.santuario(message);
       } else {
         await message.reply("⚠ Opção inválida, tente novamente.");
