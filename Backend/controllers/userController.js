@@ -145,7 +145,7 @@ exports.updateUserState = async (req, res) => {
 
 // Função que busca todos os jogadores no Santuário
 async function getPlayersInSantuario() {
-    return await User.find({ "status.santuario": true });
+    return await User.find({ santuario : true });
 }
 
 // Função que recupera HP/Mana dos jogadores no Santuário
