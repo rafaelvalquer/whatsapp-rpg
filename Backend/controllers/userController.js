@@ -112,6 +112,35 @@ exports.createAccount = async (req, res) => {
     }
 };
 
+// Atualiza o estado do personagem
+exports.updateUserState = async (req, res) => {
+    const { ID, ...updates } = req.body;
+
+    // Verifica se todos os campos obrigatórios estão presentes
+    if (!ID) {
+        return res.status(400).json({ message: "ID, classe, userState e status são obrigatórios." });
+    }
+
+    try {
+        // Atualiza os dados do usuário no banco de dados
+        const updatedUser = await User.findOneAndUpdate(
+            { ID }, // Busca pelo ID do usuário
+            { $set: updates }, // Atualiza apenas os campos enviados
+            { new: true } // Retorna o documento atualizado
+        );
+
+        // Verifica se o usuário foi encontrado
+        if (!updatedUser) {
+            return res.status(404).json({ message: "Usuário não encontrado." });
+        }
+
+        console.log("Usuário atualizado com sucesso:", updatedUser);
+        return res.status(200).json({ success: true, user: updatedUser });
+    } catch (error) {
+        console.error("Erro ao atualizar o estado do usuário:", error);
+        return res.status(500).json({ message: "Erro interno do servidor." });
+    }
+};
 
 
 
