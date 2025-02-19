@@ -368,7 +368,7 @@ module.exports = {
                 position: 2,
                 enemyXP: 150,
                 arma: 4,
-                item: 104
+                item: 101
               },
             },
             {
@@ -384,7 +384,7 @@ module.exports = {
                 position: 4,
                 enemyXP: 125,
                 arma: 4,
-                item: 104
+                item: 101
               },
             },
             {
@@ -400,7 +400,7 @@ module.exports = {
                 position: 5,
                 enemyXP: 110,
                 arma: 4,
-                item: 104
+                item: 101
               },
             },
           ],
@@ -423,7 +423,7 @@ module.exports = {
                 position: 5,
                 enemyXP: 20,
                 arma: 4,
-                item: 104
+                item: 102
               },
             },
             {
@@ -450,7 +450,7 @@ module.exports = {
                 position: 5,
                 enemyXP: 25,
                 arma: 4,
-                item: 104
+                item: 101
               },
             },
             {
@@ -587,7 +587,7 @@ module.exports = {
                 position: 3,
                 enemyXP: 25,
                 arma: 4,
-                item: 104
+                item: 102
               },
             },
             {
@@ -603,7 +603,7 @@ module.exports = {
                 position: 5,
                 enemyXP: 20,
                 arma: 4,
-                item: 104
+                item: 102
               },
             },
             {

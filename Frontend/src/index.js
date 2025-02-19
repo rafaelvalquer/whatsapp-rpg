@@ -1159,10 +1159,6 @@ const handleUserResponse = async (message, state) => {
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
-        await client.sendMessage(
-          message.from,
-          `Estado atual:\n${battle.displayGrid()}`
-        );
       } else if (input === "atacar" || input === "2") {
         const result = battle.playerAttack(); // Realiza um ataque
 
@@ -1179,10 +1175,6 @@ const handleUserResponse = async (message, state) => {
           await message.reply(result);
           await client.sendMessage(message.from, enemy);
           await client.sendMessage(message.from, battle.displayHP());
-          await client.sendMessage(
-            message.from,
-            `Estado atual:\n${battle.displayGrid()}`
-          );
         }
       } else if (input === "recuar" || input === "3") {
         const result = battle.movePlayer(-1); // Move o jogador para trás
@@ -1190,10 +1182,6 @@ const handleUserResponse = async (message, state) => {
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
-        await client.sendMessage(
-          message.from,
-          `Estado atual:\n${battle.displayGrid()}`
-        );
       } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.item).length > 0) {
         navigationFlow.usarSkill(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
