@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const dbConfig = require("./db");
 const userRoutes = require("./routes/userRoutes"); // Importe as rotas do usuário
-const { regenerarSantuario } = require("./controllers/userController");
+const { regenerarSantuario } = require("./controllers/characterController.js");
 
 const app = express();
 app.use(bodyParser.json());
