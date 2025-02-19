@@ -1205,6 +1205,8 @@ const handleUserResponse = async (message, state) => {
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
       } else if ( (input === "item" || input === "5") && Object.keys(userData[message.from].status.item).length == 0 ) {
         await client.sendMessage(message.from, "📦 Seu inventário está vazio.");
+        navigationFlow.batalha(message);
+        return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
       } else if (input === "escapar" || input === "0") {
         navigationFlow.escapar(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
@@ -1262,6 +1264,10 @@ const handleUserResponse = async (message, state) => {
         navigationFlow.santuario(message);
 
       } else {
+        await client.sendMessage(
+          message.from,
+          `Estado atual:\n${battle.displayGrid()}`
+        );
         navigationFlow.batalha(message);
       }
 
@@ -1771,8 +1777,8 @@ const handleUserResponse = async (message, state) => {
       if (input === "1") {
 
         if (userData[message.from].status.hp <= 0){
-          await client.sendMessage(
-            message.from, "🩸 Você ainda está muito fraco para partir... Recupere suas forças antes de deixar o Santuário! ⚔️"
+          await message.reply(
+            "🩸 Você ainda está muito fraco para partir... Recupere suas forças antes de deixar o Santuário! ⚔️"
           );
           navigationFlow.santuario(message);
         } else {
