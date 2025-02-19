@@ -19,8 +19,8 @@ async function regenerarSantuario() {
             const manaAntiga = jogador.status.mana;
             
             // Regenera HP e Mana
-            jogador.status.hp = Math.min(jogador.status.hp + 1, jogador.status.hpMax);
-            jogador.status.mana = Math.min(jogador.status.mana + 1, jogador.status.manaMax);
+            jogador.status.hp = Math.min(jogador.status.hp + 1, jogador.status.maxHP);
+            jogador.status.mana = Math.min(jogador.status.mana + 1, jogador.status.maxMana);
 
                         // Log para mostrar os detalhes do jogador e se houve alteração
                         if (jogador.status.hp > hpAntigo || jogador.status.mana > manaAntiga) {
