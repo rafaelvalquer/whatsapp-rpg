@@ -1,8 +1,7 @@
 const express = require("express");
-const router = express.Router();
 const userController = require("../controllers/userController");
 
-
+const router = express.Router();
 
 router.post("/check-number", userController.checkUserByPhone);
 router.post("/check-user", userController.checkUserByName);
