@@ -183,6 +183,35 @@ function displayXP(xp, lv) {
   return `🧑 Player XP: ${playerXPBar} ${xp}/${xpNecessario}`;
 }
 
+// Função para exibir recuperação do HP e Mana
+function displayStatus(currentHP, maxHP, currentMana, maxMana) {
+  const getBar = (current, max, filledIcon) => {
+    const filledBars = Math.round((current / max) * 5);
+    const emptyBars = 5 - filledBars;
+    return filledIcon.repeat(filledBars) + "⬜".repeat(emptyBars);
+  };
+
+  const hpBar = getBar(currentHP, maxHP, "🟥"); // HP em vermelho
+  const manaBar = getBar(currentMana, maxMana, "🟦"); // Mana em azul
+
+  // Cálculo do tempo necessário para recuperação total (1 por minuto)
+  const hpFaltando = maxHP - currentHP;
+  const manaFaltando = maxMana - currentMana;
+  const tempoHP = hpFaltando; // 1 HP por minuto
+  const tempoMana = manaFaltando; // 1 Mana por minuto
+  const tempoTotal = Math.max(tempoHP, tempoMana); // O maior tempo entre HP e Mana
+
+  let tempoRecuperacao = tempoTotal > 0 
+    ? `⏳ Tempo para recuperação total: ${tempoTotal} minutos.` 
+    : "✅ HP e Mana já estão no máximo!";
+
+  return `🧑 *Status do Jogador*\n` +
+         `❤️ HP: ${hpBar} ${currentHP}/${maxHP}\n` +
+         `🔵 Mana: ${manaBar} ${currentMana}/${maxMana}\n\n` +
+         `${tempoRecuperacao}`;
+}
+
+
 
 //###############################################################
 //#region Fluxo de navegação
@@ -305,15 +334,15 @@ Se o inimigo estiver muito perto, ele terá que usar a Força (STR) para atacar 
       // Mensagem de introdução ao menu de missões
       await client.sendMessage(
         message.from,
-        `Você chega a um quadro de avisos no centro da vila, onde estão listadas missões disponíveis. 
-Cada uma delas promete desafios e recompensas.
-Escolha uma *missão* para iniciar a sua jornada:`
+        `Você chega a um quadro de avisos no centro da vila 🏘️, onde estão listadas missões disponíveis 📜. 
+Cada uma delas promete desafios e recompensas 🌟.
+Escolha uma missão para iniciar a sua jornada 🗺️:`
       );
 
       // Exibe as missões disponíveis
       let missionsMessage = "Missões disponíveis:\n";
       missionsData.missoes.forEach((mission) => {
-        missionsMessage += `\n${mission.id}. ${mission.name}\n📜 ${mission.description}\n⚔️ Dificuldade: ${mission.difficulty}\n`;
+        missionsMessage += `\n${mission.id}. *${mission.name}*\n📜 ${mission.description}\n⚔️ Dificuldade: ${mission.difficulty}\n`;
       });
       missionsMessage += `\n0. Voltar ao menu.`;
 
@@ -605,6 +634,83 @@ escapar: async (message) => {
   userStates[message.from] = "escapar.retorno"; // Atualize corretamente o estado
 },
 
+recuperarVida: async (message) => {
+  const result = await updateState(userData[message.from], "recuperarVida"); // Atualiza no banco e localmente
+
+  if (result.success) {
+    Object.assign(userData[message.from], result.user); // Atualiza os dados do personagem localmente
+
+    // Mensagem de introdução ao menu de missões
+    await client.sendMessage(
+      message.from,
+      `🔹 Onde deseja recuperar suas energias?
+1️⃣ ⛪*Santuário da Luz Eterna* (+1 HP e +1 Mana por minuto – Gratuito)
+2️⃣ 🍻*Taverna do Dragão Adormecido* (Recuperação instantânea – Pago)
+3️⃣ Voltar ao Menu`
+    );
+
+    // Atualiza o estado interno para aguardar a escolha da missão
+    userStates[message.from] = "recuperarVida.retorno";
+  } else {
+    client.sendMessage(
+      message.from,
+      "Houve um problema. Por favor, tente novamente mais tarde."
+    );
+    navigationFlow.inicio(message);
+  }
+},
+
+
+santuario: async (message) => {
+  const result = await updateState(userData[message.from], "santuario"); // Atualiza no banco e localmente
+
+  if (result.success) {
+    Object.assign(userData[message.from], result.user); // Atualiza os dados do personagem localmente
+
+    userData[message.from].status.santuario = true;
+
+    //Atualizar Personagem no banco
+    const updates = {
+      status: userData[message.from].status,
+    };
+
+    const update = await updateCharacter(userData[message.from], updates);
+    if (update.success) {
+      await client.sendMessage(
+        message.from,
+        "Você entrou no Santuário. Seu HP e Mana serão regenerados automaticamente."
+      );
+      await client.sendMessage(
+        message.from, displayStatus(userData[message.from].status.hp, userData[message.from].status.maxHP, userData[message.from].status.mana, userData[message.from].status.maxMana)
+      );
+      // Exibe as opções do menu
+      await client.sendMessage(
+        message.from,
+        `Escolha uma das opções:
+    1️⃣. Sair do Santuário 🚪
+    2️⃣. Verificar Status Atual 📜
+    3️⃣. Tempo Restante para Recuperação Total ⏳`
+      );
+
+      // Atualiza o estado interno para aguardar a escolha da missão
+      userStates[message.from] = "santuario.retorno";
+    } else {
+      client.sendMessage(
+        message.from,
+        "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+      );
+      navigationFlow.inicio(message);
+    }
+  } else {
+    client.sendMessage(
+      message.from,
+      "Houve um problema. Por favor, tente novamente mais tarde."
+    );
+    navigationFlow.inicio(message);
+  }
+},
+
+
 
 };
 //###############################################################
@@ -822,7 +928,8 @@ const handleUserResponse = async (message, state) => {
               armadura: 0,
               item: {},
               skillPoint: 0,
-              skills: []
+              skills: [],
+              santuario: false,
             },
           },
           2: {
@@ -843,7 +950,8 @@ const handleUserResponse = async (message, state) => {
               armadura: 0,
               item: {},
               skillPoint: 0,
-              skills: []
+              skills: [],
+              santuario: false,
             },
           },
           3: {
@@ -864,7 +972,8 @@ const handleUserResponse = async (message, state) => {
               armadura: 0,
               item: {},
               skillPoint: 0,
-              skills: []
+              skills: [],
+              santuario: false,
             },
           },
         };
@@ -915,7 +1024,7 @@ const handleUserResponse = async (message, state) => {
         if (input === "1") {
           navigationFlow.quadroDeMissoes(message);
         } else if (input === "2") {
-          navigationFlow.faq(message);
+          navigationFlow.recuperarVida(message);
         } else if (input === "3") {
           navigationFlow.faq(message);
         } else if (input === "4") {
@@ -1270,18 +1379,13 @@ const handleUserResponse = async (message, state) => {
       );
 
       if (recompensaItem.update.success) {
-        await client.sendMessage(
-          message.from,
-          "Personagem atualizado com sucesso no banco"
-        );
+
+        console.log("Personagem atualizado com sucesso no banco");
 
         // Atualizar o userData com os novos dados
         userData[message.from].status = recompensaItem.update.user.status;
       } else {
-        await client.sendMessage(
-          message.from,
-          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-        );
+        console.log("Houve um problema ao atualizar seu personagem. Por favor, tente novamente.");
       }
 
       // Enviar mensagem final ao jogador
@@ -1313,7 +1417,7 @@ const handleUserResponse = async (message, state) => {
           );
           encontraItem.txt = `💖 Você usou ${items[encontraItem.id].nome}${
             items[encontraItem.id].emoji
-          } e recuperou *${items[encontraItem.id].valor}* de HP!`;
+          } e recuperou *${items[encontraItem.id].valor}* de HP!\nAgora você tem *${statusCopy.hp}* HP!`;
         } else if (items[encontraItem.id].tipo === "mana") {
           statusCopy.mana = Math.min(
             statusCopy.maxMana,
@@ -1321,7 +1425,7 @@ const handleUserResponse = async (message, state) => {
           );
           encontraItem.txt = `🔷 Você usou ${items[encontraItem.id].nome}${
             items[encontraItem.id].emoji
-          } e recuperou ${items[encontraItem.id].valor} de Mana!`;
+          } e recuperou ${items[encontraItem.id].valor} de Mana!\nAgora você tem *${statusCopy.mana}* HP!`;
         } else if (items[encontraItem.id].tipo === "força") {
           statusCopy.str = Math.max(
             0,
@@ -1603,10 +1707,83 @@ const handleUserResponse = async (message, state) => {
 
         navigationFlow.menuInicial(message);
       } else if (input === "2") {
+        message.reply("Você pensou melhor e decidiu enfrentar seus medos.");
         navigationFlow.batalha(message);
       } else {
         message.reply("Opção inválida, vamos tentar novamente");
         navigationFlow.escapar(message);
+      }
+      break;
+    }
+
+    case "recuperarVida.retorno": {
+
+      if (input === "1") {
+        navigationFlow.santuario(message);
+      } else if (input === "2") {
+        navigationFlow.taverna(message);
+      } else {
+        message.reply("Opção inválida, vamos tentar novamente");
+        navigationFlow.recuperarVida(message);
+      }
+      break;
+    }
+
+    case "santuario.retorno": {
+
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/check-user",
+          {
+            userName: userData[message.from].name,
+          }
+        );
+
+        if (response.data.exists) {
+          Object.assign(userData[message.from], response.data.user);
+
+          await client.sendMessage(
+            message.from, displayStatus(userData[message.from].status.hp, userData[message.from].status.maxHP, userData[message.from].status.mana, userData[message.from].status.maxMana)
+          );
+
+
+        } else {
+          await message.reply("Usuario não encontrado");
+          navigationFlow.criacaoConta(message);
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar conta:", error.message);
+        await message.reply(
+          "Erro ao atualizar conta."
+        );
+        navigationFlow.menuInicial(message);
+      }
+
+      if (input === "1") {
+
+        await client.sendMessage(
+          message.from, "👋 Você saiu do Santuário. Volte sempre!"
+        );
+
+        userData[message.from].userState = "menuInicial";
+        navigationFlow.menuInicial(message);
+
+      } else if (input === "2") {
+        navigationFlow.santuario(message);
+      }  else if (input === "3") {
+        const hpRestante = userData[message.from].status.maxHP - userData[message.from].status.hp;
+        const manaRestante = userData[message.from].status.maxMana - userData[message.from].status.mana;
+        const tempoTotal = Math.max(hpRestante, manaRestante); // Tempo em minutos
+      
+        await client.sendMessage(
+          message.from, 
+          `⏳ Para recuperar totalmente HP e Mana, levará aproximadamente *${tempoTotal} minutos* no santuário.`
+        );
+      
+        navigationFlow.santuario(message);
+      } else {
+        await message.reply("⚠ Opção inválida, tente novamente.");
+        navigationFlow.recuperarVida(message);
       }
       break;
     }

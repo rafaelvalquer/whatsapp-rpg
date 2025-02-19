@@ -936,8 +936,6 @@ module.exports = {
             {
               text: "Ficar com o artefato para si.",
               nextStep: 16,
-              event: "encontraItem",
-              item: 101,
             },
           ],
         },
@@ -1094,7 +1092,7 @@ module.exports = {
           options: [
             {
               text: "Investigar a origem do som e verificar a situação.",
-              nextStep: 14,
+              nextStep: 20,
               event: "encontraFerido",
               nextText:
                 "Nas sombras, há um viajante desesperado. Seus olhos estão cheios de medo e ele parece perdido. 🧳🌑😓",

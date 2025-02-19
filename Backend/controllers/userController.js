@@ -143,3 +143,33 @@ exports.updateUserState = async (req, res) => {
     }
 };
 
+// Função que busca todos os jogadores no Santuário
+async function getPlayersInSantuario() {
+    return await User.find({ "status.santuario": true });
+}
+
+// Função que recupera HP/Mana dos jogadores no Santuário
+async function regenerarSantuario() {
+    try {
+        const jogadoresNoSantuario = await getPlayersInSantuario();
+
+        for (const jogador of jogadoresNoSantuario) {
+            // Recupera HP e Mana
+            jogador.status.hp = Math.min(jogador.status.hp + 1, jogador.status.maxHP);
+            jogador.status.mana = Math.min(jogador.status.mana + 1, jogador.status.maxMana);
+
+            // Salva a atualização no banco de dados
+            await jogador.save();
+        }
+
+        console.log(`Regeneração do Santuário concluída para ${jogadoresNoSantuario.length} jogadores.`);
+    } catch (error) {
+        console.error("Erro ao regenerar jogadores no Santuário:", error);
+    }
+}
+
+// Exporta as funções
+module.exports = {
+    regenerarSantuario
+};
+

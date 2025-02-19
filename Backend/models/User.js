@@ -66,6 +66,10 @@ const StatusSchema = new mongoose.Schema({
     type: [Number], // Array de números (IDs das skills)
     default: [], // Valor padrão como um array vazio
   },
+  santuario: {
+    type: Boolean,
+    default: false, // Inicialmente, o jogador não está no santuário
+  },
 });
 
 const UsuarioSchema = new mongoose.Schema({

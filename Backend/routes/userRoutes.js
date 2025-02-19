@@ -1,12 +1,20 @@
 const express = require("express");
+const router = express.Router();
 const userController = require("../controllers/userController");
 
-const router = express.Router();
+// Rota para verificar usuário por telefone
+router.post("/checkUserByPhone", userController.checkUserByPhone);
 
-router.post("/check-number", userController.checkUserByPhone);
-router.post("/check-user", userController.checkUserByName);
-router.post("/check-email", userController.checkUserByEmail);
-router.post("/create-account", userController.createAccount);
+// Rota para verificar usuário por nome
+router.post("/checkUserByName", userController.checkUserByName);
+
+// Rota para verificar usuário por email
+router.post("/checkUserByEmail", userController.checkUserByEmail);
+
+// Rota para criar um novo usuário
+router.post("/createAccount", userController.createAccount);
+
+// Rota para atualizar o estado do usuário
 router.post("/updateUserState", userController.updateUserState);
 
 module.exports = router;
