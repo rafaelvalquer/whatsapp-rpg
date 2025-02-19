@@ -1251,6 +1251,16 @@ const handleUserResponse = async (message, state) => {
         } else {
           navigationFlow.batalhaFim(message);
         }
+        //Verificar se o Player foi derrotado
+      } else if (battle.player.status.hp <= 0) {
+
+        delete battleController[message.from].battle;
+        delete battleController[message.from].enemy;
+        
+        await message.reply('⚔️ Mas seu destino ainda não acabou... Você foi encontrado e levado ao Santuário. 🏰');
+
+        navigationFlow.santuario(message);
+
       } else {
         navigationFlow.batalha(message);
       }
@@ -1760,28 +1770,35 @@ const handleUserResponse = async (message, state) => {
 
       if (input === "1") {
 
-        userData[message.from].status.santuario = false;
-
-        //Atualizar Personagem no banco
-        const updates = {
-          status: userData[message.from].status,
-        };
-
-        const update = await updateCharacter(userData[message.from], updates);
-        if (update.success) {
-
+        if (userData[message.from].status.hp <= 0){
           await client.sendMessage(
-            message.from, "👋 Você saiu do Santuário. Volte sempre!"
-          );
-
-          userData[message.from].userState = "menuInicial";
-          navigationFlow.menuInicial(message);
-        } else {
-          client.sendMessage(
-            message.from,
-            "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+            message.from, "🩸 Você ainda está muito fraco para partir... Recupere suas forças antes de deixar o Santuário! ⚔️"
           );
           navigationFlow.santuario(message);
+        } else {
+          userData[message.from].status.santuario = false;
+
+          //Atualizar Personagem no banco
+          const updates = {
+            status: userData[message.from].status,
+          };
+  
+          const update = await updateCharacter(userData[message.from], updates);
+          if (update.success) {
+  
+            await client.sendMessage(
+              message.from, "👋 Você saiu do Santuário. Volte sempre!"
+            );
+  
+            userData[message.from].userState = "menuInicial";
+            navigationFlow.menuInicial(message);
+          } else {
+            client.sendMessage(
+              message.from,
+              "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+            );
+            navigationFlow.santuario(message);
+          }
         }
 
       } else if (input === "2") {
