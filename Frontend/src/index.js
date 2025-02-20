@@ -369,7 +369,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       );
 
       await client.sendMessage(
-        message.from, MessageMedia.fromFilePath(path.resolve(__dirname, 'assets/bandido.jpeg')), { caption: 'Bandido' });
+        message.from, MessageMedia.fromFilePath(path.resolve(__dirname, `assets/${enemy.enemyName}.jpeg`)));
       
 
       battleController[message.from].battle = new BattleSystem(
