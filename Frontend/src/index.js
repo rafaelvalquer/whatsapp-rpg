@@ -90,8 +90,7 @@ function verificarLevelUp(personagem) {
     personagem.status.xp -= xpNecessario; // Subtrai o XP usado
 
     let mensagem = `Parabéns! Você subiu para o nível *${personagem.status.lv}*! 🎉
-Seus status aumentaram:
-    `;
+Seus status aumentaram:`;
 
     if (personagem.classe == "guerreiro") {
       mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${personagem.status.maxHP + 10}
@@ -1280,10 +1279,6 @@ const handleUserResponse = async (message, state) => {
         let update = await updateCharacter(userData[message.from], updates);
 
         if (update.success) {
-          await client.sendMessage(
-            message.from,
-            "✅ Personagem atualizado com sucesso no banco."
-          );
           userData[message.from] = update.user; // Atualiza os dados localmente
         } else {
           await client.sendMessage(
@@ -1729,6 +1724,8 @@ const handleUserResponse = async (message, state) => {
         navigationFlow.santuario(message);
       } else if (input === "2") {
         navigationFlow.taverna(message);
+      } else if (input === "3") {
+        navigationFlow.menuInicial(message);
       } else {
         message.reply("Opção inválida, vamos tentar novamente");
         navigationFlow.recuperarVida(message);
