@@ -364,7 +364,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
 
       await client.sendMessage(
         message.from,
-        `${userData[message.from].name} prepare-se para a batalha! 🔥`
+        `${userData[message.from].name} prepare-se para a batalha! 🔥\nDiante de você, surge um *${enemy.enemyName}*, pronto para lutar.\n *HP*❤️ *${enemy.enemyHP}*`
       );
       battleController[message.from].battle = new BattleSystem(
         6,
