@@ -459,10 +459,25 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
 🔹 Mão Direita: [${(items[userData[message.from]?.status?.arma1] || { nome: 'Vazio' }).nome}]
 🔹 Mão Esquerda: [${(items[userData[message.from]?.status?.arma2] || { nome: 'Vazio' }).nome}]`;
 
-const opcoes = `⚔️ O que deseja fazer?
-1️⃣ Trocar a Mão Direita
-2️⃣ Trocar a Mão Esquerda
-3️⃣ Deixar a arma no local`;
+
+      let opcoes = `⚔️ O que deseja fazer?\n`;
+
+      const arma1Vazia = !userData[message.from]?.status?.arma1;
+      const arma2Vazia = !userData[message.from]?.status?.arma2;
+
+      if (arma1Vazia) {
+        opcoes += `1️⃣ Empunhar na Mão Direita\n`;
+      } else {
+        opcoes += `1️⃣ Trocar a Mão Direita\n`;
+      }
+
+      if (arma2Vazia) {
+        opcoes += `2️⃣ Empunhar na Mão Esquerda\n`;
+      } else {
+        opcoes += `2️⃣ Trocar a Mão Esquerda\n`;
+      }
+
+      opcoes += `3️⃣ Deixar a arma no local`;
 
       await client.sendMessage(message.from, `Ao revirar os restos do ${battle.enemy.enemyName}, você descobre um *${items[battle.enemy.arma].nome}*.`);
       await client.sendMessage(message.from, frase);
