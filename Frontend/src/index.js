@@ -1,4 +1,4 @@
-const { Client, LocalAuth, Buttons } = require("whatsapp-web.js");
+const { Client, LocalAuth, MessageMedia  } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const axios = require("axios");
 const BattleSystem = require("./battleSystem");
@@ -366,6 +366,11 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
         message.from,
         `${userData[message.from].name} prepare-se para a batalha! 🔥\nDiante de você, surge um *${enemy.enemyName}*, pronto para lutar.\n HP: ❤️ *${enemy.enemyHP}*`
       );
+
+      await client.sendMessage(
+        message.from, MessageMedia.fromFilePath('./assests/bandido.jpeg'), { caption: 'Bandido' });
+      
+
       battleController[message.from].battle = new BattleSystem(
         6,
         0,
@@ -375,7 +380,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       const battle = battleController[message.from].battle;
 
       // Exibir o grid inicial
-      await message.reply(`Estado inicial:\n${battle.displayGrid()}`);
+      await client.sendMessage(message.from, `Estado inicial:\n${battle.displayGrid()}`);
     }
     let txt = `Escolha uma das opções:
 1. Avançar
