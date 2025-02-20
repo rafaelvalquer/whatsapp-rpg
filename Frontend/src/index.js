@@ -1179,8 +1179,7 @@ const handleUserResponse = async (message, state) => {
           navigationFlow.menuInicial(message);
         }
       } else {
-        message.reply("Opção inválida, vamos tentar novamente");
-        //navigationFlow.quadroDeMissoes(message);
+        await client.sendMessage(message.from,"Opção inválida, vamos tentar novamente");
 
         let text = mission.steps[step].text;
         let optionsText = "";
@@ -1190,7 +1189,7 @@ const handleUserResponse = async (message, state) => {
         });
 
         await client.sendMessage(message.from, text);
-        client.sendMessage(message.from, optionsText);
+        await client.sendMessage(message.from, optionsText);
       }
       break;
 
