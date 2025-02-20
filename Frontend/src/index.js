@@ -1,11 +1,11 @@
-const { Client, LocalAuth, MessageMedia  } = require("whatsapp-web.js");
+const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const axios = require("axios");
 const BattleSystem = require("./battleSystem");
 const missionsData = require("./missions"); // Importa o JSON
 const items = require("./armas.json"); // Importa o JSON
 const skills = require("./skills.json"); // Importa o JSON
-const path = require('path');
+const path = require("path");
 
 //#region whatsapp-web.js
 // Inicializa o cliente com autenticação local
@@ -94,13 +94,15 @@ function verificarLevelUp(personagem) {
 Seus status aumentaram:`;
 
     if (personagem.classe == "guerreiro") {
-      mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${personagem.status.maxHP + 10}
+      mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${
+        personagem.status.maxHP + 10
+      }
 🔹 Mana (MANA): ${personagem.status.maxMana} ➡️ ${personagem.status.maxMana + 2}
 🔹 Força (STR): ${personagem.status.str} ➡️ ${personagem.status.str + 3}
 🔹 Resistência (CON): ${personagem.status.con} ➡️ ${personagem.status.con + 2}
-🔹 Agilidade (AGI): ${personagem.status.agi} ➡️ ${personagem.status.agi +1}
+🔹 Agilidade (AGI): ${personagem.status.agi} ➡️ ${personagem.status.agi + 1}
 🔹 Inteligência (INT): ${personagem.status.int} ➡️ ${personagem.status.int + 1}
-`
+`;
       personagem.status.maxHP += 10; // Aumenta HP ao subir de nível
       personagem.status.hp = personagem.status.maxHP; // Recupera todo HP
       personagem.status.maxMana += 2; // Pouca mana, usada para golpes especiais
@@ -109,9 +111,10 @@ Seus status aumentaram:`;
       personagem.status.con += 2; // Aumenta defesa
       personagem.status.agi += 1; // Aumenta agilidade
       personagem.status.int += 1; // Aumenta inteligência (leve crescimento)
-
     } else if (personagem.classe == "arqueiro") {
-      mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${personagem.status.maxHP + 6}
+      mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${
+        personagem.status.maxHP + 6
+      }
 🔹 Mana (MANA): ${personagem.status.maxMana} ➡️ ${personagem.status.maxMana + 5}
 🔹 Força (STR): ${personagem.status.str} ➡️ ${personagem.status.str + 2}
 🔹 Resistência (CON): ${personagem.status.con} ➡️ ${personagem.status.con + 1}
@@ -127,10 +130,13 @@ Seus status aumentaram:`;
       personagem.status.con += 1; // Pouco aumento na defesa
       personagem.status.agi += 3; // Agilidade é o foco principal
       personagem.status.int += 2; // Inteligência cresce um pouco para habilidades de mira/tática
-
     } else if (personagem.classe == "mago") {
-      mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${personagem.status.maxHP + 5}
-🔹 Mana (MANA): ${personagem.status.maxMana} ➡️ ${personagem.status.maxMana + 10}
+      mensagem += `🔹 Vida (HP): ${personagem.status.maxHP} ➡️ ${
+        personagem.status.maxHP + 5
+      }
+🔹 Mana (MANA): ${personagem.status.maxMana} ➡️ ${
+        personagem.status.maxMana + 10
+      }
 🔹 Força (STR): ${personagem.status.str} ➡️ ${personagem.status.str + 1}
 🔹 Resistência (CON): ${personagem.status.con} ➡️ ${personagem.status.con + 1}
 🔹 Agilidade (AGI): ${personagem.status.agi} ➡️ ${personagem.status.agi + 2}
@@ -148,11 +154,11 @@ Seus status aumentaram:`;
 
     // Adiciona a mensagem de escolha de skill se o nível for divisível por 5
     if (personagem.status.lv % 5 === 0) {
-      personagem.status.skillPoint ++; // 
+      personagem.status.skillPoint++; //
       mensagem += `Parabéns! Você pode aprender uma nova *skill.* ⚔️\n`;
     }
 
-    mensagem += "Parabéns! Continue evoluindo! 💪🔥"
+    mensagem += "Parabéns! Continue evoluindo! 💪🔥";
     return {
       personagem,
       mensagem: mensagem,
@@ -169,7 +175,6 @@ Seus status aumentaram:`;
 
 // Função principal para exibir XP
 function displayXP(xp, lv) {
-
   const xpNecessario = xpParaProximoNivel(lv);
 
   const getXPBar = (xp, xpNecessario) => {
@@ -201,14 +206,17 @@ function displayStatus(currentHP, maxHP, currentMana, maxMana) {
   const tempoMana = manaFaltando; // 1 Mana por minuto
   const tempoTotal = Math.max(tempoHP, tempoMana); // O maior tempo entre HP e Mana
 
-  let tempoRecuperacao = tempoTotal > 0 
-    ? `⏳ Tempo para recuperação total: ${tempoTotal} minutos.` 
-    : "✅ HP e Mana já estão no máximo!";
+  let tempoRecuperacao =
+    tempoTotal > 0
+      ? `⏳ Tempo para recuperação total: ${tempoTotal} minutos.`
+      : "✅ HP e Mana já estão no máximo!";
 
-  return `🧑 *Status do Jogador*\n` +
-         `❤️ HP: ${hpBar} ${currentHP}/${maxHP}\n` +
-         `🔵 Mana: ${manaBar} ${currentMana}/${maxMana}\n\n` +
-         `${tempoRecuperacao}`;
+  return (
+    `🧑 *Status do Jogador*\n` +
+    `❤️ HP: ${hpBar} ${currentHP}/${maxHP}\n` +
+    `🔵 Mana: ${manaBar} ${currentMana}/${maxMana}\n\n` +
+    `${tempoRecuperacao}`
+  );
 }
 
 // Função para verificar se a arma do jogador é mais forte que a do inimigo
@@ -225,8 +233,6 @@ function displayWeaponStrength(playerWeapon, enemyWeapon) {
 function calculateWeaponStrength(weapon) {
   return weapon.str + weapon.con + weapon.agi + weapon.int;
 }
-
-
 
 //###############################################################
 //#region Fluxo de navegação
@@ -380,12 +386,19 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
 
       await client.sendMessage(
         message.from,
-        `${userData[message.from].name} prepare-se para a batalha! 🔥\nDiante de você, surge um *${enemy.enemyName}*, pronto para lutar.\n HP: ❤️ *${enemy.enemyHP}*`
+        `${
+          userData[message.from].name
+        } prepare-se para a batalha! 🔥\nDiante de você, surge um *${
+          enemy.enemyName
+        }*, pronto para lutar.\n HP: ❤️ *${enemy.enemyHP}*`
       );
 
       await client.sendMessage(
-        message.from, MessageMedia.fromFilePath(path.resolve(__dirname, `./assets/${enemy.enemyName}.jpeg`)));
-      
+        message.from,
+        MessageMedia.fromFilePath(
+          path.resolve(__dirname, `./assets/${enemy.enemyName}.jpeg`)
+        )
+      );
 
       battleController[message.from].battle = new BattleSystem(
         6,
@@ -396,7 +409,10 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       const battle = battleController[message.from].battle;
 
       // Exibir o grid inicial
-      await client.sendMessage(message.from, `Estado inicial:\n${battle.displayGrid()}`);
+      await client.sendMessage(
+        message.from,
+        `Estado inicial:\n${battle.displayGrid()}`
+      );
     }
     let txt = `Escolha uma das opções:
 1. Avançar
@@ -404,19 +420,18 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
 3. Recuar
 4. Skill`;
 
-    if(Object.keys(userData[message.from].status.item).length > 0){
+    if (Object.keys(userData[message.from].status.item).length > 0) {
       txt += `
-5. Usar item`
+5. Usar item`;
     } else {
       txt += `
-5. Nenhum item disponível!`
+5. Nenhum item disponível!`;
     }
 
     txt += `
 0. Escapar`;
 
-
-    await client.sendMessage(message.from, txt );
+    await client.sendMessage(message.from, txt);
 
     userStates[message.from] = "batalha.retorno"; // Atualize corretamente o estado
     console.log("Estado atualizado:", JSON.stringify(userStates, null, 2)); // Log final para validar
@@ -464,10 +479,9 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
     const battle = battleController[message.from].battle;
 
     if (evento == "arma") {
-
-      playerWeapon1 = items[userData[message.from]?.status?.arma1]
-      playerWeapon2 = items[userData[message.from]?.status?.arma2]
-      enemyWeapon = items[battle.enemy.arma]
+      playerWeapon1 = items[userData[message.from]?.status?.arma1];
+      playerWeapon2 = items[userData[message.from]?.status?.arma2];
+      enemyWeapon = items[battle.enemy.arma];
 
       const frase = `📜 Atributos do ${items[battle.enemy.arma].nome}:
 
@@ -476,9 +490,12 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
 🎯 Agilidade: +[${items[battle.enemy.arma].agi}]
 📖 Inteligência: +[${items[battle.enemy.arma].int}]
 🎒 Armas atuais:
-🔹 Mão Direita: [${(items[userData[message.from]?.status?.arma1] || { nome: 'Vazio' }).nome}]  ${displayWeaponStrength(playerWeapon1, enemyWeapon)}
-🔹 Mão Esquerda: [${(items[userData[message.from]?.status?.arma2] || { nome: 'Vazio' }).nome}] ${displayWeaponStrength(playerWeapon2, enemyWeapon)}`;
-
+🔹 Mão Direita: [${
+        (items[userData[message.from]?.status?.arma1] || { nome: "Vazio" }).nome
+      }]  ${displayWeaponStrength(playerWeapon1, enemyWeapon)}
+🔹 Mão Esquerda: [${
+        (items[userData[message.from]?.status?.arma2] || { nome: "Vazio" }).nome
+      }] ${displayWeaponStrength(playerWeapon2, enemyWeapon)}`;
 
       let opcoes = `⚔️ O que deseja fazer?\n`;
 
@@ -499,13 +516,22 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
 
       opcoes += `3️⃣ Deixar a arma no local`;
 
-      await client.sendMessage(message.from, `Ao revirar os restos do ${battle.enemy.enemyName}, você descobre um *${items[battle.enemy.arma].nome}*.`);
+      await client.sendMessage(
+        message.from,
+        `Ao revirar os restos do ${battle.enemy.enemyName}, você descobre um *${
+          items[battle.enemy.arma].nome
+        }*.`
+      );
       await client.sendMessage(message.from, frase);
       await client.sendMessage(message.from, opcoes);
       userStates[message.from] = "recompensa.arma";
-    
-    } else if (evento == "item") {
-      await client.sendMessage(message.from, `Ao revirar os restos do ${battle.enemy.enemyName}, você descobre um *${items[battle.enemy.item].nome}*.`);
+    } else if (evento == "item" && items[battle.enemy.item].tipo != "buff") {
+      await client.sendMessage(
+        message.from,
+        `Ao revirar os restos do ${battle.enemy.enemyName}, você descobre um *${
+          items[battle.enemy.item].nome
+        }*.`
+      );
       await client.sendMessage(
         message.from,
         `O que deseja fazer?  
@@ -514,84 +540,97 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       );
 
       userStates[message.from] = "recompensa.item";
+    } else if (items[battle.enemy.item].tipo == "buff") {
+      await client.sendMessage(
+        message.from,
+        `Ao revirar os restos do ${battle.enemy.enemyName}, você descobre um *${
+          items[battle.enemy.item].nome
+        }*.`
+      );
+      await client.sendMessage(
+        message.from,
+        `Este item só pode ser usado durante uma batalha.
+    1️⃣ Guardar para mais tarde  `
+      );
     }
-
   },
 
   encontraItem: async (message) => {
+    const item = battleController[message.from].item;
+    await client.sendMessage(
+      message.from,
+      `📜 "Você encontrou uma ${items[item].nome}${items[item].emoji}! ${items[item].txt}."`
+    );
 
-      const item = battleController[message.from].item;
+    if (items[item].tipo == "missao") {
+      await client.sendMessage(message.from, `1️⃣ Guardar para mais tarde`);
+    } else {
       await client.sendMessage(
         message.from,
-        `📜 "Você encontrou uma ${items[item].nome}${items[item].emoji}! ${items[item].txt}."`
-      );
-
-      if (items[item].tipo == "missao"){
-        await client.sendMessage(
-          message.from,
-          `1️⃣ Guardar para mais tarde`);
-      }else {
-        await client.sendMessage(
-          message.from,
-          `O que deseja fazer?  
+        `O que deseja fazer?  
   1️⃣ Usar agora  
-  2️⃣ Guardar para mais tarde`);
-      }
+  2️⃣ Guardar para mais tarde`
+      );
+    }
 
-
-      userStates[message.from] = "encontraItem.retorno"; // Atualize corretamente o estado
-    
+    userStates[message.from] = "encontraItem.retorno"; // Atualize corretamente o estado
   },
 
   usarItem: async (message) => {
-
     let txtItem = `🎒 *Inventário de Itens*\n\n`;
     txtItem += "Qual item deseja usar? Digite o número correspondente:\n\n";
     txtItem += Object.entries(userData[message.from].status.item)
-    .map(([id, quantidade], index) => `*${index + 1}.* ${items[id].nome} ${items[id].emoji}  (x${quantidade})`)
-    .join("\n");
+      .map(
+        ([id, quantidade], index) =>
+          `*${index + 1}.* ${items[id].nome} ${
+            items[id].emoji
+          }  (x${quantidade})`
+      )
+      .join("\n");
 
     await client.sendMessage(message.from, txtItem);
 
     userStates[message.from] = "usarItem.retorno"; // Atualize corretamente o estado
-  
-},
+  },
 
-encontraFerido: async (message) => {
+  encontraFerido: async (message) => {
+    await client.sendMessage(
+      message.from,
+      battleController[message.from].nextText
+    );
 
-  await client.sendMessage(
-    message.from,
-    battleController[message.from].nextText
-  );
-
-  await client.sendMessage(
-    message.from,
-    `O que deseja fazer?  
+    await client.sendMessage(
+      message.from,
+      `O que deseja fazer?  
 1️⃣ Resgatar o *${battleController[message.from].enemy.enemyName}*  
 2️⃣ Ignorar e seguir seu caminho`
-  );
+    );
 
-  userStates[message.from] = "encontraFerido.retorno"; // Atualize corretamente o estado
+    userStates[message.from] = "encontraFerido.retorno"; // Atualize corretamente o estado
+  },
 
-},
+  missaoFim: async (message) => {
+    const recompensa = battleController[message.from].recompensa;
 
-missaoFim: async (message) => {
+    // Criar uma cópia do status do usuário antes de modificar
+    let playerCopy = structuredClone(userData[message.from]);
 
-  const recompensa = battleController[message.from].recompensa;
-  
-  // Criar uma cópia do status do usuário antes de modificar
-  let playerCopy = structuredClone(userData[message.from]);
+    if (recompensa?.xp) {
+      playerCopy.status.xp += recompensa.xp;
+      const respostaLevelUp = verificarLevelUp(playerCopy); // Verificar se o personagem pulou de LV
+      playerCopy = respostaLevelUp.personagem;
+      const XP = displayXP(playerCopy.status.xp, playerCopy.status.lv);
+      await client.sendMessage(
+        message.from,
+        respostaLevelUp.mensagem + `\n${XP}`
+      );
 
-  if(recompensa?.xp){
-    playerCopy.status.xp += recompensa.xp;
-    const respostaLevelUp = verificarLevelUp(playerCopy); // Verificar se o personagem pulou de LV
-    playerCopy = respostaLevelUp.personagem;
-    const XP = displayXP(playerCopy.status.xp, playerCopy.status.lv);
-    await client.sendMessage(message.from, respostaLevelUp.mensagem + `\n${XP}`);
-
-        // Atualizar Personagem no banco de dados
-        let updates = { status: playerCopy.status };
-        const updateResult = await updateCharacter(userData[message.from], updates);
+      // Atualizar Personagem no banco de dados
+      let updates = { status: playerCopy.status };
+      const updateResult = await updateCharacter(
+        userData[message.from],
+        updates
+      );
 
       if (updateResult.success) {
         await client.sendMessage(
@@ -607,154 +646,159 @@ missaoFim: async (message) => {
           "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
         );
       }
+    }
+    await client.sendMessage(
+      message.from,
+      "🏡 Com a missão concluída, você retorna ao vilarejo para descansar e compartilhar sua história."
+    );
 
-  }
-  await client.sendMessage(
-    message.from,
- "🏡 Com a missão concluída, você retorna ao vilarejo para descansar e compartilhar sua história."
-  );
+    navigationFlow.menuInicial(message);
+  },
 
-  navigationFlow.menuInicial(message);
-},
+  escolherSkill: async (message) => {
+    const classe = userData[message.from].classe;
+    const nivel = userData[message.from].status.lv;
 
-escolherSkill: async (message) => {
+    let prefixo = "";
 
-  const classe = userData[message.from].classe;
-  const nivel = userData[message.from].status.lv;
+    switch (classe) {
+      case "guerreiro":
+        prefixo = "1";
+        break;
+      case "arqueiro":
+        prefixo = "2";
+        break;
+      case "mago":
+        prefixo = "3";
+        break;
+      default:
+        return "Classe inválida.";
+    }
 
-  let prefixo = "";
-
-  switch (classe) {
-    case "guerreiro":
-      prefixo = "1";
-      break;
-    case "arqueiro":
-      prefixo = "2";
-      break;
-    case "mago":
-      prefixo = "3";
-      break;
-    default:
-      return "Classe inválida.";
-  }
-
-  // Filtra as skills disponíveis com base no prefixo e nível do jogador
-  const skillsDisponiveis = Object.entries(skills)
-    .filter(([id, skill]) => id.startsWith(prefixo) && skill.lv == nivel);
+    // Filtra as skills disponíveis com base no prefixo e nível do jogador
+    const skillsDisponiveis = Object.entries(skills).filter(
+      ([id, skill]) => id.startsWith(prefixo) && skill.lv == nivel
+    );
 
     battleController[message.from].battle.skillsDisponiveis = skillsDisponiveis;
 
-  if (skillsDisponiveis.length === 0) {
-    await client.sendMessage(message.from, "Nenhuma habilidade disponível no momento.");
-  }
+    if (skillsDisponiveis.length === 0) {
+      await client.sendMessage(
+        message.from,
+        "Nenhuma habilidade disponível no momento."
+      );
+    }
 
-  // Formata a mensagem de seleção de habilidades
-  let txtSkill = `🛡️ *Escolha sua Nova Habilidade*\n\n`;
-  txtSkill += "Digite o número correspondente à skill que deseja aprender:\n\n";
+    // Formata a mensagem de seleção de habilidades
+    let txtSkill = `🛡️ *Escolha sua Nova Habilidade*\n\n`;
+    txtSkill +=
+      "Digite o número correspondente à skill que deseja aprender:\n\n";
 
-  txtSkill += skillsDisponiveis
-    .map(([id, skill], index) => 
-      `*${index + 1}.* ${skill.nome} ⚔️ (${skill.tipo})\n📜 ${skill.descricao}\n💠 *Custo:* ${skill.custo} Mana\n`
-    )
-    .join("\n");
+    txtSkill += skillsDisponiveis
+      .map(
+        ([id, skill], index) =>
+          `*${index + 1}.* ${skill.nome} ⚔️ (${skill.tipo})\n📜 ${
+            skill.descricao
+          }\n💠 *Custo:* ${skill.custo} Mana\n`
+      )
+      .join("\n");
 
-  await client.sendMessage(message.from, txtSkill);
+    await client.sendMessage(message.from, txtSkill);
 
-  userStates[message.from] = "escolherSkill.retorno"; // Atualize corretamente o estado
-},
+    userStates[message.from] = "escolherSkill.retorno"; // Atualize corretamente o estado
+  },
 
-escapar: async (message) => {
-  // Formata a mensagem de seleção de habilidades
-  let txt = `🏃‍♂️Você escolheu escapar. Ao fugir, você abandona a missão e deixa para trás as responsabilidades e desafios que ainda estavam por vir. A segurança é prioridade, mas a missão permanece incompleta. ⚠️\n`;
-  txt += "1️⃣ Escapar\n2️⃣ Voltar para a batalha";
+  escapar: async (message) => {
+    // Formata a mensagem de seleção de habilidades
+    let txt = `🏃‍♂️Você escolheu escapar. Ao fugir, você abandona a missão e deixa para trás as responsabilidades e desafios que ainda estavam por vir. A segurança é prioridade, mas a missão permanece incompleta. ⚠️\n`;
+    txt += "1️⃣ Escapar\n2️⃣ Voltar para a batalha";
 
+    await client.sendMessage(message.from, txt);
 
-  await client.sendMessage(message.from, txt);
+    userStates[message.from] = "escapar.retorno"; // Atualize corretamente o estado
+  },
 
-  userStates[message.from] = "escapar.retorno"; // Atualize corretamente o estado
-},
+  recuperarVida: async (message) => {
+    const result = await updateState(userData[message.from], "recuperarVida"); // Atualiza no banco e localmente
 
-recuperarVida: async (message) => {
-  const result = await updateState(userData[message.from], "recuperarVida"); // Atualiza no banco e localmente
+    if (result.success) {
+      Object.assign(userData[message.from], result.user); // Atualiza os dados do personagem localmente
 
-  if (result.success) {
-    Object.assign(userData[message.from], result.user); // Atualiza os dados do personagem localmente
-
-    // Mensagem de introdução ao menu de missões
-    await client.sendMessage(
-      message.from,
-      `🔹 Onde deseja recuperar suas energias?
+      // Mensagem de introdução ao menu de missões
+      await client.sendMessage(
+        message.from,
+        `🔹 Onde deseja recuperar suas energias?
 1️⃣ ⛪*Santuário da Luz Eterna* (+1 HP e +1 Mana por minuto – Gratuito)
 2️⃣ 🍻*Taverna do Dragão Adormecido* (Recuperação instantânea – Pago)
 3️⃣ Voltar ao Menu`
-    );
-
-    // Atualiza o estado interno para aguardar a escolha da missão
-    userStates[message.from] = "recuperarVida.retorno";
-  } else {
-    client.sendMessage(
-      message.from,
-      "Houve um problema. Por favor, tente novamente mais tarde."
-    );
-    navigationFlow.inicio(message);
-  }
-},
-
-
-santuario: async (message) => {
-  const result = await updateState(userData[message.from], "santuario"); // Atualiza no banco e localmente
-
-  if (result.success) {
-    Object.assign(userData[message.from], result.user); // Atualiza os dados do personagem localmente
-
-    if (userData[message.from].status.santuario == false){
-      userData[message.from].status.santuario = true;
-      await client.sendMessage(
-        message.from,
-        "Você entrou no Santuário. Seu HP e Mana serão regenerados automaticamente."
-      );
-    }
-
-
-    //Atualizar Personagem no banco
-    const updates = {
-      status: userData[message.from].status,
-    };
-
-    const update = await updateCharacter(userData[message.from], updates);
-    if (update.success) {
-
-      await client.sendMessage(
-        message.from, displayStatus(userData[message.from].status.hp, userData[message.from].status.maxHP, userData[message.from].status.mana, userData[message.from].status.maxMana)
-      );
-      // Exibe as opções do menu
-      await client.sendMessage(
-        message.from,
-        `Escolha uma das opções:
-    1️⃣. Sair do Santuário 🚪
-    2️⃣. Verificar Status Atual 📜`
       );
 
       // Atualiza o estado interno para aguardar a escolha da missão
-      userStates[message.from] = "santuario.retorno";
+      userStates[message.from] = "recuperarVida.retorno";
     } else {
       client.sendMessage(
         message.from,
-        "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        "Houve um problema. Por favor, tente novamente mais tarde."
       );
       navigationFlow.inicio(message);
     }
-  } else {
-    client.sendMessage(
-      message.from,
-      "Houve um problema. Por favor, tente novamente mais tarde."
-    );
-    navigationFlow.inicio(message);
-  }
-},
+  },
 
+  santuario: async (message) => {
+    const result = await updateState(userData[message.from], "santuario"); // Atualiza no banco e localmente
 
+    if (result.success) {
+      Object.assign(userData[message.from], result.user); // Atualiza os dados do personagem localmente
 
+      if (userData[message.from].status.santuario == false) {
+        userData[message.from].status.santuario = true;
+        await client.sendMessage(
+          message.from,
+          "Você entrou no Santuário. Seu HP e Mana serão regenerados automaticamente."
+        );
+      }
+
+      //Atualizar Personagem no banco
+      const updates = {
+        status: userData[message.from].status,
+      };
+
+      const update = await updateCharacter(userData[message.from], updates);
+      if (update.success) {
+        await client.sendMessage(
+          message.from,
+          displayStatus(
+            userData[message.from].status.hp,
+            userData[message.from].status.maxHP,
+            userData[message.from].status.mana,
+            userData[message.from].status.maxMana
+          )
+        );
+        // Exibe as opções do menu
+        await client.sendMessage(
+          message.from,
+          `Escolha uma das opções:
+    1️⃣. Sair do Santuário 🚪
+    2️⃣. Verificar Status Atual 📜`
+        );
+
+        // Atualiza o estado interno para aguardar a escolha da missão
+        userStates[message.from] = "santuario.retorno";
+      } else {
+        client.sendMessage(
+          message.from,
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
+        navigationFlow.inicio(message);
+      }
+    } else {
+      client.sendMessage(
+        message.from,
+        "Houve um problema. Por favor, tente novamente mais tarde."
+      );
+      navigationFlow.inicio(message);
+    }
+  },
 };
 //###############################################################
 // FIM Fluxo de navegação
@@ -928,8 +972,10 @@ const handleUserResponse = async (message, state) => {
         );
 
         if (response.status === 201 && response.data.create) {
-
-          await client.sendMessage(message.from, `Sua conta foi criada com sucesso!!`);
+          await client.sendMessage(
+            message.from,
+            `Sua conta foi criada com sucesso!!`
+          );
 
           navigationFlow.configuracaoPersonagem(message); // Próximo passo no fluxo
         } else {
@@ -1168,7 +1214,8 @@ const handleUserResponse = async (message, state) => {
           let text = mission.steps[nextStep].text;
           await client.sendMessage(message.from, text);
 
-          battleController[message.from].recompensa = mission.steps[nextStep].recompensa;
+          battleController[message.from].recompensa =
+            mission.steps[nextStep].recompensa;
           navigationFlow.missaoFim(message);
         } else if (option.nextStep == "return") {
           let nextStep = mission.steps.length - 2; // Pega o penultimo step
@@ -1179,7 +1226,10 @@ const handleUserResponse = async (message, state) => {
           navigationFlow.menuInicial(message);
         }
       } else {
-        await client.sendMessage(message.from,"Opção inválida, vamos tentar novamente");
+        await client.sendMessage(
+          message.from,
+          "Opção inválida, vamos tentar novamente"
+        );
 
         let text = mission.steps[step].text;
         let optionsText = "";
@@ -1211,8 +1261,14 @@ const handleUserResponse = async (message, state) => {
 
           const respostaLevelUp = verificarLevelUp(battle.player); // Verificar se o personagem pulou de LV
           battle.player = respostaLevelUp.personagem; // Atualiza os dados do usuário
-          const XP = displayXP(battle.player.status.xp, battle.player.status.lv);
-          await client.sendMessage(message.from, respostaLevelUp.mensagem + `\n${XP}`);
+          const XP = displayXP(
+            battle.player.status.xp,
+            battle.player.status.lv
+          );
+          await client.sendMessage(
+            message.from,
+            respostaLevelUp.mensagem + `\n${XP}`
+          );
         } else {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
           await message.reply(result);
@@ -1225,24 +1281,38 @@ const handleUserResponse = async (message, state) => {
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
-      } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.item).length > 0) {
+      } else if (
+        (input === "skill" || input === "4") &&
+        Object.keys(userData[message.from].status.item).length > 0
+      ) {
         navigationFlow.usarSkill(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
-      } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.item).length == 0) {
-        await client.sendMessage(message.from, "❌ Você ainda não aprendeu nenhuma habilidade.");
+      } else if (
+        (input === "skill" || input === "4") &&
+        Object.keys(userData[message.from].status.item).length == 0
+      ) {
+        await client.sendMessage(
+          message.from,
+          "❌ Você ainda não aprendeu nenhuma habilidade."
+        );
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
-      }  else if ((input === "item" || input === "5") && Object.keys(userData[message.from].status.item).length > 0 ) {
+      } else if (
+        (input === "item" || input === "5") &&
+        Object.keys(userData[message.from].status.item).length > 0
+      ) {
         navigationFlow.usarItem(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
-      } else if ( (input === "item" || input === "5") && Object.keys(userData[message.from].status.item).length == 0 ) {
+      } else if (
+        (input === "item" || input === "5") &&
+        Object.keys(userData[message.from].status.item).length == 0
+      ) {
         await client.sendMessage(message.from, "📦 Seu inventário está vazio.");
         navigationFlow.batalha(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
       } else if (input === "escapar" || input === "0") {
         navigationFlow.escapar(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
-      }
-       else {
+      } else {
         await client.sendMessage(
           message.from,
           "Comando inválido! Use 'avançar', 'voltar' ou 'atacar'."
@@ -1271,29 +1341,28 @@ const handleUserResponse = async (message, state) => {
       //Verifica fim da batalha
       if (battle.enemy.enemyHP <= 0) {
         if (battle.enemy.arma || battle.enemy.item) {
-
           // Garante que haverá pelo menos uma opção válida
           const possibilidades = [];
           if (battle.enemy.arma !== undefined) possibilidades.push("arma");
           if (battle.enemy.item !== undefined) possibilidades.push("item");
 
           // Seleciona aleatoriamente entre arma e item (ambos sempre existentes)
-          const evento = possibilidades[Math.floor(Math.random() * possibilidades.length)];
+          const evento =
+            possibilidades[Math.floor(Math.random() * possibilidades.length)];
           navigationFlow.recompensa(message, evento);
-
         } else {
           navigationFlow.batalhaFim(message);
         }
         //Verificar se o Player foi derrotado
       } else if (battle.player.status.hp <= 0) {
-
         delete battleController[message.from].battle;
         delete battleController[message.from].enemy;
-        
-        await message.reply('⚔️ Mas seu destino ainda não acabou... Você foi encontrado e levado ao Santuário. 🏰');
+
+        await message.reply(
+          "⚔️ Mas seu destino ainda não acabou... Você foi encontrado e levado ao Santuário. 🏰"
+        );
 
         navigationFlow.santuario(message);
-
       } else {
         await client.sendMessage(
           message.from,
@@ -1354,67 +1423,52 @@ const handleUserResponse = async (message, state) => {
           break;
       }
 
-      if(userData[message.from].status.skillPoint == 1){
+      if (userData[message.from].status.skillPoint == 1) {
         navigationFlow.escolherSkill(message);
-      }else{
-      // Encerrar fluxo de navegação
-      navigationFlow.batalhaFim(message);
+      } else {
+        // Encerrar fluxo de navegação
+        navigationFlow.batalhaFim(message);
       }
-
 
       break;
     }
 
     case "recompensa.item": {
       const battle = battleController[message.from]?.battle;
-      const idItem = battle.enemy.item // ID do item
+      const idItem = battle.enemy.item; // ID do item
       let recompensaItem = {};
 
       // Criar uma cópia do status antes de modificar
       let statusCopy = structuredClone(userData[message.from].status);
 
-      if (input === "1") {
+      if (input === "1" && items[idItem].tipo != "buff") {
         if (items[idItem].tipo === "hp") {
           statusCopy.hp = Math.min(
             statusCopy.maxHP,
             statusCopy.hp + items[idItem].valor
           );
-          recompensaItem.txt = `💖 Você usou ${items[idItem].nome}${
-            items[idItem].emoji
-          } e recuperou *${items[idItem].valor}* de HP!\nAgora você tem *${statusCopy.hp}* HP!`;
+          recompensaItem.txt = `💖 Você usou ${items[idItem].nome}${items[idItem].emoji} e recuperou *${items[idItem].valor}* de HP!\nAgora você tem *${statusCopy.hp}* HP!`;
         } else if (items[idItem].tipo === "mana") {
           statusCopy.mana = Math.min(
             statusCopy.maxMana,
             statusCopy.mana + items[idItem].valor
           );
-          recompensaItem.txt = `🔷 Você usou ${items[idItem].nome}${
-            items[idItem].emoji
-          } e recuperou ${items[idItem].valor} de Mana!\nAgora você tem *${statusCopy.mana}* HP!`;
-        } else if (items[idItem].tipo === "força") {
-          statusCopy.str = Math.max(
-            0,
-            statusCopy.str + items[idItem].valor
-          ); // Evita valores negativos
-          recompensaItem.txt = `💪 Você usou ${items[idItem].nome}${
-            items[idItem].emoji
-          } e aumentou sua Força em ${
-            items[idItem].valor
-          } por 3 turnos!`;
+          recompensaItem.txt = `🔷 Você usou ${items[idItem].nome}${items[idItem].emoji} e recuperou ${items[idItem].valor} de Mana!\nAgora você tem *${statusCopy.mana}* HP!`;
         } else {
           recompensaItem.txt = `🤔 Esse item não tem efeito conhecido...`;
         }
-      } else if (input === "2") {
+      } else if (
+        input === "2" ||
+        (input === "1" && items[idItem].tipo == "buff")
+      ) {
         // Criar a propriedade 'item' se não existir
         if (!statusCopy.item) {
           statusCopy.item = {};
         }
 
         // Verifica se o item já existe e atualiza a quantidade
-        statusCopy.item[idItem] =
-          (statusCopy.item[idItem] || 0) + 1;
-        recompensaItem.txt = `🗃️ Você guardou 1 do item ${
-          items[idItem].nome
-        }.`;
+        statusCopy.item[idItem] = (statusCopy.item[idItem] || 0) + 1;
+        recompensaItem.txt = `🗃️ Você guardou 1 do item ${items[idItem].nome}.`;
       }
 
       // Atualizar Personagem no banco de dados
@@ -1425,25 +1479,25 @@ const handleUserResponse = async (message, state) => {
       );
 
       if (recompensaItem.update.success) {
-
         console.log("Personagem atualizado com sucesso no banco");
 
         // Atualizar o userData com os novos dados
         userData[message.from].status = recompensaItem.update.user.status;
       } else {
-        console.log("Houve um problema ao atualizar seu personagem. Por favor, tente novamente.");
+        console.log(
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
       }
 
       // Enviar mensagem final ao jogador
       await client.sendMessage(message.from, recompensaItem.txt);
 
-      if(userData[message.from].status.skillPoint == 1){
+      if (userData[message.from].status.skillPoint == 1) {
         navigationFlow.escolherSkill(message);
-      }else{
-      // Encerrar fluxo de navegação
-      navigationFlow.batalhaFim(message);
+      } else {
+        // Encerrar fluxo de navegação
+        navigationFlow.batalhaFim(message);
       }
-
 
       break;
     }
@@ -1463,7 +1517,9 @@ const handleUserResponse = async (message, state) => {
           );
           encontraItem.txt = `💖 Você usou ${items[encontraItem.id].nome}${
             items[encontraItem.id].emoji
-          } e recuperou *${items[encontraItem.id].valor}* de HP!\nAgora você tem *${statusCopy.hp}* HP!`;
+          } e recuperou *${
+            items[encontraItem.id].valor
+          }* de HP!\nAgora você tem *${statusCopy.hp}* HP!`;
         } else if (items[encontraItem.id].tipo === "mana") {
           statusCopy.mana = Math.min(
             statusCopy.maxMana,
@@ -1471,7 +1527,9 @@ const handleUserResponse = async (message, state) => {
           );
           encontraItem.txt = `🔷 Você usou ${items[encontraItem.id].nome}${
             items[encontraItem.id].emoji
-          } e recuperou ${items[encontraItem.id].valor} de Mana!\nAgora você tem *${statusCopy.mana}* HP!`;
+          } e recuperou ${
+            items[encontraItem.id].valor
+          } de Mana!\nAgora você tem *${statusCopy.mana}* HP!`;
         } else if (items[encontraItem.id].tipo === "força") {
           statusCopy.str = Math.max(
             0,
@@ -1569,16 +1627,31 @@ const handleUserResponse = async (message, state) => {
             usarItem.txt = `🔷 Você usou ${items[usarItem.itemID].nome}${
               items[usarItem.itemID].emoji
             } e recuperou *${items[usarItem.itemID].valor}* de Mana!`;
-          } else if (items[usarItem.itemID].tipo === "força") {
-            statusCopy.str = Math.max(
-              0,
-              statusCopy.str + items[usarItem.itemID].valor
-            );
+          } else if (items[usarItem.itemID].tipo === "buff") {
             usarItem.txt = `💪 Você usou ${items[usarItem.itemID].nome}${
               items[usarItem.itemID].emoji
-            } e aumentou sua Força em ${
-              items[usarItem.itemID].valor
-            } por 3 turnos!`;
+            } e aumentou sua Força em ${items[usarItem.itemID].valor} por ${
+              items[usarItem.itemID].duração
+            } turnos!`;
+
+            // Verifica se não existe buffs ativos
+            if (!battleController[message.from].battle.buffsAtivos) {
+              // Cria a propriedade buffsAtivos como um array e adiciona o primeiro buff
+              battleController[message.from].battle.buffsAtivos = [
+                {
+                  valor: items[usarItem.itemID].valor,
+                  duração: items[usarItem.itemID].duração,
+                  efeito: items[usarItem.itemID].efeito,
+                },
+              ];
+            } else {
+              // Adiciona o novo buff ao array de buffs
+              battleController[message.from].battle.buffsAtivos.push({
+                valor: items[usarItem.itemID].valor,
+                duração: items[usarItem.itemID].duração,
+                efeito: items[usarItem.itemID].efeito,
+              });
+            }
           } else {
             usarItem.txt = `🤔 Esse item não tem efeito conhecido...`;
           }
@@ -1686,12 +1759,15 @@ const handleUserResponse = async (message, state) => {
     }
 
     case "escolherSkill.retorno": {
-
-      let skillsDisponiveis = battleController[message.from].battle.skillsDisponiveis
+      let skillsDisponiveis =
+        battleController[message.from].battle.skillsDisponiveis;
 
       // Verifica se o número está dentro do intervalo de habilidades disponíveis
       if (isNaN(input) || input < 1 || input > skillsDisponiveis.length) {
-        await client.sendMessage(message.from, "Escolha inválida. Por favor, digite um número válido.");
+        await client.sendMessage(
+          message.from,
+          "Escolha inválida. Por favor, digite um número válido."
+        );
         navigationFlow.escolherSkill(message);
         return;
       }
@@ -1699,18 +1775,20 @@ const handleUserResponse = async (message, state) => {
       // Identifica a skill selecionada corretamente
       const [idSkillSelecionada, skillData] = skillsDisponiveis[input - 1]; // Obtém ID e objeto da skill
 
-
       // Atualiza o status do usuário (armazenando apenas o ID da skill)
       if (!userData[message.from].status.skills) {
         userData[message.from].status.skills = [];
       }
       userData[message.from].status.skills.push(idSkillSelecionada); // Salvando apenas o ID
 
-      userData[message.from].status.skillPoint --; //Zera os skillPoints
+      userData[message.from].status.skillPoint--; //Zera os skillPoints
 
-        // Atualizar Personagem no banco de dados
-        let updates = { status: userData[message.from].status };
-        const updateResult = await updateCharacter(userData[message.from], updates);
+      // Atualizar Personagem no banco de dados
+      let updates = { status: userData[message.from].status };
+      const updateResult = await updateCharacter(
+        userData[message.from],
+        updates
+      );
 
       if (updateResult.success) {
         await client.sendMessage(
@@ -1728,7 +1806,10 @@ const handleUserResponse = async (message, state) => {
       }
 
       // Envia a confirmação ao usuário com o nome da skill e o custo
-      await client.sendMessage(message.from, `Você escolheu a habilidade *${skillData.nome}* ⚔️`);
+      await client.sendMessage(
+        message.from,
+        `Você escolheu a habilidade *${skillData.nome}* ⚔️`
+      );
 
       navigationFlow.batalhaFim(message);
 
@@ -1736,7 +1817,6 @@ const handleUserResponse = async (message, state) => {
     }
 
     case "escapar.retorno": {
-
       const mission = structuredClone(
         missionsData.missoes[battleController[message.from].missao]
       );
@@ -1763,7 +1843,6 @@ const handleUserResponse = async (message, state) => {
     }
 
     case "recuperarVida.retorno": {
-
       if (input === "1") {
         navigationFlow.santuario(message);
       } else if (input === "2") {
@@ -1778,7 +1857,6 @@ const handleUserResponse = async (message, state) => {
     }
 
     case "santuario.retorno": {
-
       // Atualizar personagem Localmente.
       try {
         const response = await axios.post(
@@ -1790,22 +1868,18 @@ const handleUserResponse = async (message, state) => {
 
         if (response.data.exists) {
           Object.assign(userData[message.from], response.data.user);
-
         } else {
           await message.reply("Usuario não encontrado");
           navigationFlow.criacaoConta(message);
         }
       } catch (error) {
         console.error("Erro ao atualizar conta:", error.message);
-        await message.reply(
-          "Erro ao atualizar conta."
-        );
+        await message.reply("Erro ao atualizar conta.");
         navigationFlow.menuInicial(message);
       }
 
       if (input === "1") {
-
-        if (userData[message.from].status.hp <= 0){
+        if (userData[message.from].status.hp <= 0) {
           await message.reply(
             "🩸 Você ainda está muito fraco para partir... Recupere suas forças antes de deixar o Santuário! ⚔️"
           );
@@ -1817,14 +1891,14 @@ const handleUserResponse = async (message, state) => {
           const updates = {
             status: userData[message.from].status,
           };
-  
+
           const update = await updateCharacter(userData[message.from], updates);
           if (update.success) {
-  
             await client.sendMessage(
-              message.from, "👋 Você saiu do Santuário. Volte sempre!"
+              message.from,
+              "👋 Você saiu do Santuário. Volte sempre!"
             );
-  
+
             userData[message.from].userState = "menuInicial";
             navigationFlow.menuInicial(message);
           } else {
@@ -1835,7 +1909,6 @@ const handleUserResponse = async (message, state) => {
             navigationFlow.santuario(message);
           }
         }
-
       } else if (input === "2") {
         navigationFlow.santuario(message);
       } else {
@@ -1844,7 +1917,6 @@ const handleUserResponse = async (message, state) => {
       }
       break;
     }
-
 
     default:
       await message.reply("Não entendi sua mensagem. Por favor, siga o fluxo.");
