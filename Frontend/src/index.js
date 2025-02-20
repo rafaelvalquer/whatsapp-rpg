@@ -5,6 +5,7 @@ const BattleSystem = require("./battleSystem");
 const missionsData = require("./missions"); // Importa o JSON
 const items = require("./armas.json"); // Importa o JSON
 const skills = require("./skills.json"); // Importa o JSON
+const path = require('path');
 
 //#region whatsapp-web.js
 // Inicializa o cliente com autenticação local
@@ -368,7 +369,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       );
 
       await client.sendMessage(
-        message.from, MessageMedia.fromFilePath('./assets/bandido.jpeg'), { caption: 'Bandido' });
+        message.from, MessageMedia.fromFilePath(path.resolve(__dirname, 'assets/bandido.jpeg')), { caption: 'Bandido' });
       
 
       battleController[message.from].battle = new BattleSystem(
