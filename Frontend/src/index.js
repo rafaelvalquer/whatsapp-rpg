@@ -211,6 +211,21 @@ function displayStatus(currentHP, maxHP, currentMana, maxMana) {
          `${tempoRecuperacao}`;
 }
 
+// Função para verificar se a arma do jogador é mais forte que a do inimigo
+function displayWeaponStrength(playerWeapon, enemyWeapon) {
+  // Calculando o total de atributos de cada arma
+  const playerWeaponStrength = calculateWeaponStrength(playerWeapon);
+  const enemyWeaponStrength = calculateWeaponStrength(enemyWeapon);
+
+  // Comparando os totais e retornando o símbolo correspondente
+  return playerWeaponStrength > enemyWeaponStrength ? `⬆️` : `⬇️`;
+}
+
+// Função auxiliar para calcular o poder de uma arma com base em seus atributos
+function calculateWeaponStrength(weapon) {
+  return weapon.str + weapon.con + weapon.agi + weapon.int;
+}
+
 
 
 //###############################################################
@@ -449,6 +464,11 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
     const battle = battleController[message.from].battle;
 
     if (evento == "arma") {
+
+      playerWeapon1 = items[userData[message.from]?.status?.arma1]
+      playerWeapon2 = items[userData[message.from]?.status?.arma2]
+      enemyWeapon = items[battle.enemy.arma]
+
       const frase = `📜 Atributos do ${items[battle.enemy.arma].nome}:
 
 🗡 Força: +[${items[battle.enemy.arma].str}]
@@ -456,8 +476,8 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
 🎯 Agilidade: +[${items[battle.enemy.arma].agi}]
 📖 Inteligência: +[${items[battle.enemy.arma].int}]
 🎒 Armas atuais:
-🔹 Mão Direita: [${(items[userData[message.from]?.status?.arma1] || { nome: 'Vazio' }).nome}]
-🔹 Mão Esquerda: [${(items[userData[message.from]?.status?.arma2] || { nome: 'Vazio' }).nome}]`;
+🔹 Mão Direita: [${(items[userData[message.from]?.status?.arma1] || { nome: 'Vazio' }).nome}]  ${displayWeaponStrength(playerWeapon1, enemyWeapon)}
+🔹 Mão Esquerda: [${(items[userData[message.from]?.status?.arma2] || { nome: 'Vazio' }).nome}] ${displayWeaponStrength(playerWeapon2, enemyWeapon)}`;
 
 
       let opcoes = `⚔️ O que deseja fazer?\n`;
