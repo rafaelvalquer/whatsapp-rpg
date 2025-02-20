@@ -368,7 +368,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       );
 
       await client.sendMessage(
-        message.from, MessageMedia.fromFilePath('./assests/bandido.jpeg'), { caption: 'Bandido' });
+        message.from, MessageMedia.fromFilePath('../assests/bandido.jpeg'), { caption: 'Bandido' });
       
 
       battleController[message.from].battle = new BattleSystem(
