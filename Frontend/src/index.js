@@ -1182,6 +1182,9 @@ const handleUserResponse = async (message, state) => {
         message.reply("Opção inválida, vamos tentar novamente");
         //navigationFlow.quadroDeMissoes(message);
 
+        let text = mission.steps[step].text;
+        let optionsText = "";
+
         mission.steps[step].options.forEach((option, index) => {
           optionsText += `${index + 1}. ${option.text}\n`;
         });
