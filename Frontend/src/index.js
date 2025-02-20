@@ -1180,7 +1180,7 @@ const handleUserResponse = async (message, state) => {
         }
       } else {
         message.reply("Opção inválida, vamos tentar novamente");
-        navigationFlow.quadroDeMissoes(message);
+        //navigationFlow.quadroDeMissoes(message);
 
         battleController[message.from].step.options.forEach((option, index) => {
           optionsText += `${index + 1}. ${option.text}\n`;
