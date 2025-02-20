@@ -1182,11 +1182,12 @@ const handleUserResponse = async (message, state) => {
         message.reply("Opção inválida, vamos tentar novamente");
         //navigationFlow.quadroDeMissoes(message);
 
-        battleController[message.from].step.options.forEach((option, index) => {
+        mission.steps[nextStep].options.forEach((option, index) => {
           optionsText += `${index + 1}. ${option.text}\n`;
         });
 
-        await client.sendMessage(message.from, optionsText);
+        await client.sendMessage(message.from, text);
+        client.sendMessage(message.from, optionsText);
       }
       break;
 
