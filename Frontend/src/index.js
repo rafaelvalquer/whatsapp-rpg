@@ -390,7 +390,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
           userData[message.from].name
         } prepare-se para a batalha! 🔥\nDiante de você, surge um *${
           enemy.enemyName
-        }*, pronto para lutar.\n HP: ❤️ *${enemy.enemyHP}*`
+        }*, pronto para lutar.\nHP: ❤️ *${enemy.enemyHP}*`
       );
 
       await client.sendMessage(
@@ -1273,7 +1273,7 @@ const handleUserResponse = async (message, state) => {
             }
           });
           // Remover buffs expirados
-          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao == 0);  
+          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
         }
 
       } else if (input === "atacar" || input === "2") {
@@ -1293,7 +1293,7 @@ const handleUserResponse = async (message, state) => {
               }
             });
             // Remover buffs expirados
-            battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao == 0);  
+            battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
           }  
 
           const respostaLevelUp = verificarLevelUp(battle.player); // Verificar se o personagem pulou de LV
@@ -1323,7 +1323,7 @@ const handleUserResponse = async (message, state) => {
               }
             });
             // Remover buffs expirados
-            battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao == 0);  
+            battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
           }
 
         }
@@ -1344,9 +1344,9 @@ const handleUserResponse = async (message, state) => {
             }
           });
           // Remover buffs expirados
-          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao == 0);  
+          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
         }
-        
+
       } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.item).length > 0) {
         navigationFlow.usarSkill(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
