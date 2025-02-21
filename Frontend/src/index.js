@@ -1289,7 +1289,7 @@ const handleUserResponse = async (message, state) => {
             // Enviar mensagem para cada buff expirado
             battle.buffsAtivos.forEach(buff => {
               if (buff.duracao === 0) {
-                client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+                client.sendMessage(message.from, `${buff.emoji} Seu Buff ${buff.nome} acabou.`);
               }
             });
             // Remover buffs expirados
