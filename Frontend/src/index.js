@@ -1705,7 +1705,8 @@ const handleUserResponse = async (message, state) => {
               battleController[message.from].battle.buffsAtivos.push({
                 valor: items[usarItem.itemID].valor,
                 duracao: items[usarItem.itemID].duracao,
-                efeito: items[usarItem.itemID].efeito
+                efeito: items[usarItem.itemID].efeito,
+                emoji: items[usarItem.itemID].emoji
               });
             }
           } else {
