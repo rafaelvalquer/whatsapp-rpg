@@ -1246,9 +1246,28 @@ const handleUserResponse = async (message, state) => {
     case "batalha.retorno":
       battle = battleController[message.from]?.battle;
 
+      if (battle.buffsAtivos) {
+        // Aplicar buffs e reduzir duração
+        battle.buffsAtivos.forEach(buff => {
+            battle.applyBuffs(buff);
+            buff.duracao--; 
+        });
+    }
+
+
       if (input === "avançar" || input === "1") {
         const result = battle.movePlayer(1); // Move o jogador para frente
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
+        // Apenas remover buffs expirados, sem remover todos os buffs ativos
+        battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
+        // Enviar mensagem para cada buff expirado
+        battle.buffsAtivos.forEach(buff => {
+          if (buff.duracao === 0) {
+            client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+          }
+        });
+        // Remover buffs expirados
+        battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
@@ -1269,8 +1288,19 @@ const handleUserResponse = async (message, state) => {
             message.from,
             respostaLevelUp.mensagem + `\n${XP}`
           );
+          
         } else {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
+          // Apenas remover buffs expirados, sem remover todos os buffs ativos
+          battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
+          // Enviar mensagem para cada buff expirado
+          battle.buffsAtivos.forEach(buff => {
+            if (buff.duracao === 0) {
+              client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+            }
+          });          
+          // Remover buffs expirados
+          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);          
           await message.reply(result);
           await client.sendMessage(message.from, enemy);
           await client.sendMessage(message.from, battle.displayHP());
@@ -1278,34 +1308,33 @@ const handleUserResponse = async (message, state) => {
       } else if (input === "recuar" || input === "3") {
         const result = battle.movePlayer(-1); // Move o jogador para trás
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
+        // Apenas remover buffs expirados, sem remover todos os buffs ativos
+        battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
+        // Enviar mensagem para cada buff expirado
+        battle.buffsAtivos.forEach(buff => {
+          if (buff.duracao === 0) {
+            client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+          }
+        });
+        // Remover buffs expirados
+        battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);        
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
-      } else if (
-        (input === "skill" || input === "4") &&
-        Object.keys(userData[message.from].status.item).length > 0
-      ) {
+      } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.item).length > 0) {
         navigationFlow.usarSkill(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
-      } else if (
-        (input === "skill" || input === "4") &&
-        Object.keys(userData[message.from].status.item).length == 0
-      ) {
+      } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.item).length == 0) {
         await client.sendMessage(
           message.from,
           "❌ Você ainda não aprendeu nenhuma habilidade."
         );
+        navigationFlow.batalha(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
-      } else if (
-        (input === "item" || input === "5") &&
-        Object.keys(userData[message.from].status.item).length > 0
-      ) {
+      } else if ((input === "item" || input === "5") && Object.keys(userData[message.from].status.item).length > 0) {
         navigationFlow.usarItem(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
-      } else if (
-        (input === "item" || input === "5") &&
-        Object.keys(userData[message.from].status.item).length == 0
-      ) {
+      } else if ((input === "item" || input === "5") && Object.keys(userData[message.from].status.item).length == 0) {
         await client.sendMessage(message.from, "📦 Seu inventário está vazio.");
         navigationFlow.batalha(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
@@ -1631,7 +1660,7 @@ const handleUserResponse = async (message, state) => {
             usarItem.txt = `💪 Você usou ${items[usarItem.itemID].nome}${
               items[usarItem.itemID].emoji
             } e aumentou sua Força em ${items[usarItem.itemID].valor} por ${
-              items[usarItem.itemID].duração
+              items[usarItem.itemID].duracao
             } turnos!`;
 
             // Verifica se não existe buffs ativos
@@ -1639,8 +1668,9 @@ const handleUserResponse = async (message, state) => {
               // Cria a propriedade buffsAtivos como um array e adiciona o primeiro buff
               battleController[message.from].battle.buffsAtivos = [
                 {
+                  nome: items[usarItem.itemID].nome,
                   valor: items[usarItem.itemID].valor,
-                  duração: items[usarItem.itemID].duração,
+                  duracao: items[usarItem.itemID].duracao,
                   efeito: items[usarItem.itemID].efeito,
                 },
               ];
@@ -1648,8 +1678,8 @@ const handleUserResponse = async (message, state) => {
               // Adiciona o novo buff ao array de buffs
               battleController[message.from].battle.buffsAtivos.push({
                 valor: items[usarItem.itemID].valor,
-                duração: items[usarItem.itemID].duração,
-                efeito: items[usarItem.itemID].efeito,
+                duracao: items[usarItem.itemID].duracao,
+                efeito: items[usarItem.itemID].efeito
               });
             }
           } else {
@@ -1670,6 +1700,16 @@ const handleUserResponse = async (message, state) => {
         battle = battleController[message.from]?.battle;
         battle.player.status = statusCopy;
         usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
+        // Apenas remover buffs expirados, sem remover todos os buffs ativos
+        battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
+        // Enviar mensagem para cada buff expirado
+        battle.buffsAtivos.forEach(buff => {
+          if (buff.duracao === 0) {
+            client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+          }
+        });        
+        // Remover buffs expirados
+        battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0); 
         await client.sendMessage(message.from, usarItem.enemy);
         await client.sendMessage(message.from, battle.displayHP());
         await client.sendMessage(

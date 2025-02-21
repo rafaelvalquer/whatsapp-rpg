@@ -76,6 +76,15 @@
     "emoji" : "🔷",
     "txt" : "Recupera até 10 de Mana"
   },
+  "103": {
+    "nome": "Elixir da Força",
+    "tipo" : "buff",
+    "valor" : 5,
+    "duracao" : 3,
+    "efeito" : "str",
+    "emoji" : "⚡",
+    "txt" : "Aumenta a força do personagem em 5 pontos por 3 rodadas"
+  },
   "201": {
     "nome": "Artefato lendário ",
     "tipo" : "missao",

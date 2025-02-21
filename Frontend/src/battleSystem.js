@@ -164,6 +164,22 @@ class BattleSystem {
            `💀 Inimigo HP: ${enemyHPBar} ${this.enemy.enemyHP}/${this.enemy.enemyMaxHP}`;
   }
 
+  applyBuffs(buff) {
+    if (buff.efeito === "str") this.player.status.str += buff.valor;
+    if (buff.efeito === "con") this.player.status.con += buff.valor;
+    if (buff.efeito === "agi") this.player.status.agi += buff.valor;
+    if (buff.efeito === "int") this.player.status.int += buff.valor;
+  }
+
+  removeBuffs(buffs) {
+    buffs.forEach(buff => {
+      if (buff.efeito === "str") this.player.status.str -= buff.valor;
+      if (buff.efeito === "con") this.player.status.con -= buff.valor;
+      if (buff.efeito === "agi") this.player.status.agi -= buff.valor;
+      if (buff.efeito === "int") this.player.status.int -= buff.valor;
+    });
+  }
+
 }
 
 module.exports = BattleSystem;
