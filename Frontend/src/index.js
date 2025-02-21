@@ -1714,19 +1714,6 @@ const handleUserResponse = async (message, state) => {
         battle.player.status = statusCopy;
         usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
 
-        if (battle.buffsAtivos) {
-          // Apenas remover buffs expirados, sem remover todos os buffs ativos
-          battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao > 0));
-          // Enviar mensagem para cada buff expirado
-          battle.buffsAtivos.forEach(buff => {
-            if (buff.duracao === 0) {
-              client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
-            }
-          });
-          // Remover buffs expirados
-          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
-        }
-
         await client.sendMessage(message.from, usarItem.enemy);
         await client.sendMessage(message.from, battle.displayHP());
         await client.sendMessage(
