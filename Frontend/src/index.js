@@ -1283,6 +1283,19 @@ const handleUserResponse = async (message, state) => {
         if (battle.enemy.enemyHP <= 0) {
           await message.reply(result);
 
+          if (battle.buffsAtivos) {
+            // Apenas remover buffs expirados, sem remover todos os buffs ativos
+            battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao > 0));
+            // Enviar mensagem para cada buff expirado
+            battle.buffsAtivos.forEach(buff => {
+              if (buff.duracao === 0) {
+                client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+              }
+            });
+            // Remover buffs expirados
+            battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
+          }  
+          
           const respostaLevelUp = verificarLevelUp(battle.player); // Verificar se o personagem pulou de LV
           battle.player = respostaLevelUp.personagem; // Atualiza os dados do usuário
           const XP = displayXP(
