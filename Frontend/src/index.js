@@ -1258,16 +1258,20 @@ const handleUserResponse = async (message, state) => {
       if (input === "avançar" || input === "1") {
         const result = battle.movePlayer(1); // Move o jogador para frente
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-        // Apenas remover buffs expirados, sem remover todos os buffs ativos
-        battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
-        // Enviar mensagem para cada buff expirado
-        battle.buffsAtivos.forEach(buff => {
-          if (buff.duracao === 0) {
-            client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
-          }
-        });
-        // Remover buffs expirados
-        battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
+
+        if (battle.buffsAtivos) {
+          // Apenas remover buffs expirados, sem remover todos os buffs ativos
+          battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
+          // Enviar mensagem para cada buff expirado
+          battle.buffsAtivos.forEach(buff => {
+            if (buff.duracao === 0) {
+              client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+            }
+          });
+          // Remover buffs expirados
+          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
+        }
+
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
@@ -1291,16 +1295,20 @@ const handleUserResponse = async (message, state) => {
           
         } else {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-          // Apenas remover buffs expirados, sem remover todos os buffs ativos
-          battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
-          // Enviar mensagem para cada buff expirado
-          battle.buffsAtivos.forEach(buff => {
-            if (buff.duracao === 0) {
-              client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
-            }
-          });          
-          // Remover buffs expirados
-          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);          
+
+          if (battle.buffsAtivos) {
+            // Apenas remover buffs expirados, sem remover todos os buffs ativos
+            battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
+            // Enviar mensagem para cada buff expirado
+            battle.buffsAtivos.forEach(buff => {
+              if (buff.duracao === 0) {
+                client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+              }
+            });
+            // Remover buffs expirados
+            battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
+          }        
+          
           await message.reply(result);
           await client.sendMessage(message.from, enemy);
           await client.sendMessage(message.from, battle.displayHP());
@@ -1308,16 +1316,20 @@ const handleUserResponse = async (message, state) => {
       } else if (input === "recuar" || input === "3") {
         const result = battle.movePlayer(-1); // Move o jogador para trás
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-        // Apenas remover buffs expirados, sem remover todos os buffs ativos
-        battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
-        // Enviar mensagem para cada buff expirado
-        battle.buffsAtivos.forEach(buff => {
-          if (buff.duracao === 0) {
-            client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
-          }
-        });
-        // Remover buffs expirados
-        battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);        
+
+        if (battle.buffsAtivos) {
+          // Apenas remover buffs expirados, sem remover todos os buffs ativos
+          battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
+          // Enviar mensagem para cada buff expirado
+          battle.buffsAtivos.forEach(buff => {
+            if (buff.duracao === 0) {
+              client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+            }
+          });
+          // Remover buffs expirados
+          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
+        }
+
         await message.reply(result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
@@ -1700,16 +1712,20 @@ const handleUserResponse = async (message, state) => {
         battle = battleController[message.from]?.battle;
         battle.player.status = statusCopy;
         usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-        // Apenas remover buffs expirados, sem remover todos os buffs ativos
-        battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
-        // Enviar mensagem para cada buff expirado
-        battle.buffsAtivos.forEach(buff => {
-          if (buff.duracao === 0) {
-            client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
-          }
-        });        
-        // Remover buffs expirados
-        battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0); 
+
+        if (battle.buffsAtivos) {
+          // Apenas remover buffs expirados, sem remover todos os buffs ativos
+          battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao === 0));
+          // Enviar mensagem para cada buff expirado
+          battle.buffsAtivos.forEach(buff => {
+            if (buff.duracao === 0) {
+              client.sendMessage(message.from, `Seu Buff ${buff.nome} acabou.`);
+            }
+          });
+          // Remover buffs expirados
+          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
+        }
+
         await client.sendMessage(message.from, usarItem.enemy);
         await client.sendMessage(message.from, battle.displayHP());
         await client.sendMessage(
