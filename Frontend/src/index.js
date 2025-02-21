@@ -1807,7 +1807,7 @@ const handleUserResponse = async (message, state) => {
         delete battleController[message.from].enemy;
         delete battleController[message.from].item;
 
-        navigationFlow.continuarAventura(message);
+        handleUserResponse(message, "missao");
       } else {
         await message.reply(
           "Opção inválida. Escolha 1️⃣ para Resgatar ou 2️⃣ para Ignorar."
