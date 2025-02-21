@@ -552,6 +552,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
         `Este item só pode ser usado durante uma batalha.
     1️⃣ Guardar para mais tarde  `
       );
+      userStates[message.from] = "recompensa.item";
     }
   },
 
@@ -1308,7 +1309,7 @@ const handleUserResponse = async (message, state) => {
             // Remover buffs expirados
             battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
           }        
-          
+
           await message.reply(result);
           await client.sendMessage(message.from, enemy);
           await client.sendMessage(message.from, battle.displayHP());
