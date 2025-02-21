@@ -10,7 +10,6 @@ class BattleSystem {
 
     console.log('Player = ' + JSON.stringify(player))
     console.log('Enemy = ' + JSON.stringify(enemy))
-    console.log('battleController = ' + JSON.stringify(battleController[message.from].battle))
   }
 
   movePlayer(direction) {
