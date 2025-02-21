@@ -1381,10 +1381,7 @@ const handleUserResponse = async (message, state) => {
 
       const update = await updateCharacter(userData[message.from], updates);
       if (update.success) {
-        await client.sendMessage(
-          message.from,
-          "Personagem atualizado com sucesso no banco"
-        );
+        console.log("batalha.retorno: Personagem atualizado com sucesso no banco")
         userData[message.from] = update.user; // Atualiza os dados do personagem localmente
       } else {
         client.sendMessage(
@@ -1704,6 +1701,7 @@ const handleUserResponse = async (message, state) => {
             } else {
               // Adiciona o novo buff ao array de buffs
               battleController[message.from].battle.buffsAtivos.push({
+                nome: items[usarItem.itemID].nome,
                 valor: items[usarItem.itemID].valor,
                 duracao: items[usarItem.itemID].duracao,
                 efeito: items[usarItem.itemID].efeito,
