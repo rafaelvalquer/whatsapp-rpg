@@ -1698,6 +1698,7 @@ const handleUserResponse = async (message, state) => {
                   valor: items[usarItem.itemID].valor,
                   duracao: items[usarItem.itemID].duracao,
                   efeito: items[usarItem.itemID].efeito,
+                  emoji: items[usarItem.itemID].emoji
                 },
               ];
             } else {
