@@ -1270,7 +1270,7 @@ const handleUserResponse = async (message, state) => {
             battle.applyBuffs(buff);
             buff.duracao--; 
         });
-    }
+      }
 
 
       if (input === "avançar" || input === "1") {
@@ -2016,8 +2016,24 @@ const handleUserResponse = async (message, state) => {
         navigationFlow.usarSkill(message);
       }
 
-      // Reduz a mana do jogador
-      userData[message.from].status.mana -= skill.custo;
+      battle = battleController[message.from]?.battle;
+
+      if (battle.buffsAtivos) {
+        // Aplicar buffs e reduzir duração
+        battle.buffsAtivos.forEach(buff => {
+            battle.applyBuffs(buff);
+            buff.duracao--; 
+        });
+      }
+
+      let result = "";
+      if (skillId === "101") {
+        result = battle.golpeBrutal(skill); // Move o jogador para frente;
+      } else if (skillId === "102") {
+        result = `${userData[message.from].name} ativou *Defesa Implacável* 🛡️ e reduzirá o dano recebido nos próximos turnos!`;
+      }
+
+      await message.reply(result);
 
       //Atualizar Personagem no banco
       const updates = {
@@ -2037,6 +2053,8 @@ const handleUserResponse = async (message, state) => {
         );
       }
 
+      navigationFlow.batalha(message);
+      
       break;
     }
 
