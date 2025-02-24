@@ -800,6 +800,23 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       navigationFlow.inicio(message);
     }
   },
+
+  usarSkill: async (message) => {
+
+    const skillsPersonagem = userData[message.from].status.skills;
+    const listaSkills = skillsPersonagem
+      .map((id, index) => {
+        const skill = skills[id];
+        return `${index + 1}. *${skill.nome}* - 💠 ${skill.custo} Mana`;
+      })
+      .join("\n");
+    
+    const mensagem = `🎭 *Selecione sua habilidade:*\n\n${listaSkills}`;
+    await client.sendMessage(message.from, mensagem);
+
+    userStates[message.from] = "usarSkill.retorno"; // Atualize corretamente o estado
+  },
+
 };
 //###############################################################
 // FIM Fluxo de navegação
@@ -1972,6 +1989,54 @@ const handleUserResponse = async (message, state) => {
         await message.reply("⚠ Opção inválida, tente novamente.");
         navigationFlow.recuperarVida(message);
       }
+      break;
+    }
+
+    case "usarSkill.retorno": {
+
+      const skillSelecionadaIndex = parseInt(input) - 1; // Converte a escolha para índice de array
+      const skillId = userData[message.from].status.skillsW[skillSelecionadaIndex];
+
+      if (!skillId) {
+        await client.sendMessage(
+          message.from,
+          "❌ Escolha inválida! Selecione uma das habilidades listadas."
+        );
+        navigationFlow.usarSkill(message);
+      }
+
+      const skill = skills[skillId];
+
+      // Verificar se o jogador tem mana suficiente para usar a skill
+      if (userData[message.from].status.mana < skill.custo) {
+        await client.sendMessage(
+          message.from,
+          `💠 Mana insuficiente! Você precisa de ${skill.custo} Mana para usar *${skill.nome}*`
+        );
+        navigationFlow.usarSkill(message);
+      }
+
+      // Reduz a mana do jogador
+      userData[message.from].status.mana -= skill.custo;
+
+      //Atualizar Personagem no banco
+      const updates = {
+        status: battle.player.status,
+      };
+
+      const update = await updateCharacter(userData[message.from], updates);
+      if (update.success) {
+        console.log(
+          "batalha.retorno: Personagem atualizado com sucesso no banco"
+        );
+        userData[message.from] = update.user; // Atualiza os dados do personagem localmente
+      } else {
+        client.sendMessage(
+          message.from,
+          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+        );
+      }
+
       break;
     }
 

@@ -1,7 +1,7 @@
 {
   "101": {
     "nome": "Golpe Brutal",
-    "descricao": "Ataque forte com dano dobrado, mas consome mais stamina.",
+    "descricao": "Ataque forte com dano dobrado, mas consome stamina.",
     "lv": 5,
     "tipo": "ativa",
     "custo": 10

@@ -179,6 +179,52 @@ class BattleSystem {
     });
   }
 
+  //#region Skills
+  golpeBrutal(skill) {
+        //Verificar distancia do Player com o inimigo
+        const distancia = Math.abs(this.playerPosition - this.enemyPosition);
+
+        // Pegando as armas equipadas pelo jogador
+        const arma1 = this.player.status.arma1 ? items[this.player.status.arma1] : null;
+        const arma2 = this.player.status.arma2 ? items[this.player.status.arma2] : null;
+    
+        // Declarando as variáveis corretamente
+        let poderArma1 = 0;
+        let poderArma2 = 0;
+    
+
+        poderArma1 = arma1 ? arma1.str : 0;
+        poderArma2 = arma2 ? arma2.str : 0;
+    
+        if (distancia === 1) {
+    
+          // Dano base + dano das armas
+          const danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1);
+          const damage = (danoBase + poderArma1 + poderArma2) * 2;
+  
+          // Reduzindo HP do inimigo
+          this.enemy.enemyHP -= damage;
+          
+          if (this.enemy.enemyHP <= 0) {
+            const xp = this.enemy.enemyXP;
+            this.player.status.xp += xp;
+            return `🧑 *${this.player.name}*:\nUsou *${skill.nome}* e desferiu um golpe devastador! ⚡🔥\nO *${this.enemy.enemyName}* não resistiu e foi derrotado! 🎉\n🏆 Você ganhou *${xp}* XP! 🌟`;
+          }
+          return `🧑 *${this.player.name}*:\nUtilizou *${skill.nome}* causando *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP}🩸`;
+        } else {
+          return `O ${this.enemy.enemyName} está muito longe para atacar!`;
+        }
+  }
+
+  verificarInimigoDerrotado(damage) {
+    if (this.enemy.enemyHP <= 0) {
+      const xp = this.enemy.enemyXP;
+      this.player.status.xp += xp;
+      return `🧑 *${this.player.name}*:\nAtacou o inimigo *${this.enemy.enemyName}* e causou *${damage}* de dano! 💥\nO ${this.enemy.enemyName} foi derrotado! 🎉 Parabéns, herói! 🏆\nVocê ganhou *${this.enemy.enemyXP}* XP! 🌟`;
+    }
+    return `🧑  *${this.player.name}*:\nAtacou o inimigo *${this.enemy.enemyName}* e causou *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP}🩸`;
+  }
+
 }
 
 module.exports = BattleSystem;
