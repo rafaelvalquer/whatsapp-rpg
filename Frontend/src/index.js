@@ -1982,7 +1982,7 @@ const handleUserResponse = async (message, state) => {
 
     case "usarSkill.retorno": {
       const skillSelecionadaIndex = parseInt(input) - 1;
-      const skillId = userData[message.from].status.skillsW[skillSelecionadaIndex];
+      const skillId = userData[message.from].status.skills[skillSelecionadaIndex];
   
       if (!skillId) {
           await client.sendMessage(
