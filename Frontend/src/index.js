@@ -393,9 +393,9 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       // Exibe as missões disponíveis
       let missionsMessage = "Missões disponíveis:\n";
       missionsData.missoes.forEach((mission) => {
-        missionsMessage += `\n${mission.id}️⃣ *${mission.name}*\n📜 ${mission.description}\n⚔️ Dificuldade: ${mission.difficulty}\n`;
+        missionsMessage += `\n${mission.id}️⃣ .*${mission.name}*\n📜 ${mission.description}\n⚔️ Dificuldade: ${mission.difficulty}\n`;
       });
-      missionsMessage += `\n0️⃣ Voltar ao menu.`;
+      missionsMessage += `\n0️⃣. Voltar ao menu.`;
 
       await client.sendMessage(message.from, missionsMessage);
 
@@ -509,23 +509,20 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
     const battle = battleController[message.from].battle;
 
     if (evento == "arma") {
-      playerWeapon1 = items[userData[message.from]?.status?.arma1];
-      playerWeapon2 = items[userData[message.from]?.status?.arma2];
-      enemyWeapon = items[battle.enemy.arma];
+  // Garantir que as armas do jogador sejam objetos válidos
+  playerWeapon1 = items[userData[message.from]?.status?.arma1] || { nome: "Vazio", str: 0, con: 0, agi: 0, int: 0 };
+  playerWeapon2 = items[userData[message.from]?.status?.arma2] || { nome: "Vazio", str: 0, con: 0, agi: 0, int: 0 };
+  enemyWeapon = items[battle.enemy.arma] || { nome: "Desconhecido", str: 0, con: 0, agi: 0, int: 0 };
 
       const frase = `📜 Atributos do ${items[battle.enemy.arma].nome}:
 
-🗡 Força: +[${items[battle.enemy.arma].str}]
-🛡 Resistência: +[${items[battle.enemy.arma].con}]
-🎯 Agilidade: +[${items[battle.enemy.arma].agi}]
-📖 Inteligência: +[${items[battle.enemy.arma].int}]
+🗡 Força: +[${enemyWeapon.str}]
+🛡 Resistência: +[${enemyWeapon.con}]
+🎯 Agilidade: +[${enemyWeapon.agi}]
+📖 Inteligência: +[${enemyWeapon.int}]
 🎒 Armas atuais:
-🔹 Mão Direita: [${
-        (items[userData[message.from]?.status?.arma1] || { nome: "Vazio" }).nome
-      }]  ${displayWeaponStrength(playerWeapon1, enemyWeapon)}
-🔹 Mão Esquerda: [${
-        (items[userData[message.from]?.status?.arma2] || { nome: "Vazio" }).nome
-      }] ${displayWeaponStrength(playerWeapon2, enemyWeapon)}`;
+🔹 Mão Direita: [${playerWeapon1.nome}] ${displayWeaponStrength(playerWeapon1, enemyWeapon)}
+🔹 Mão Esquerda: [${playerWeapon2.nome}] ${displayWeaponStrength(playerWeapon2, enemyWeapon)}`;
 
       let opcoes = `⚔️ O que deseja fazer?\n`;
 
