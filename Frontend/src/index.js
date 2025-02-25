@@ -1828,6 +1828,7 @@ const handleUserResponse = async (message, state) => {
             `⚔️ O ${enemy.enemyName} era uma armadilha! Você caiu em uma emboscada e precisa lutar contra *${enemy.enemyName}*!`
           );
 
+          delete battleController[message.from].item;
           navigationFlow.batalha(message);
         }
       } else if (input === "2") {
@@ -1835,7 +1836,7 @@ const handleUserResponse = async (message, state) => {
           message.from,
           "Você ignora o viajante e continua sua jornada sem olhar para trás."
         );
-        
+
         delete battleController[message.from].enemy;
         delete battleController[message.from].item;
 
