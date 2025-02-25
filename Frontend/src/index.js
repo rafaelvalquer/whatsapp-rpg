@@ -445,21 +445,21 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       );
     }
     let txt = `Escolha uma das opções:
-1. Avançar
-2. Atacar
-3. Recuar
-4. Skill`;
+1️⃣ 🚶 Avançar
+2️⃣ ⚔️ Atacar
+3️⃣ 🛡️ Recuar
+4️⃣ 🔥 Skill`;
 
     if (Object.keys(userData[message.from].status.item).length > 0) {
       txt += `
-5. Usar item`;
+5️⃣ 🧪 Usar item`;
     } else {
       txt += `
-5. Nenhum item disponível!`;
+5️⃣ 🧪 Nenhum item disponível!`;
     }
 
     txt += `
-0. Escapar`;
+0️⃣ 🏃 Escapar`;
 
     await client.sendMessage(message.from, txt);
 
