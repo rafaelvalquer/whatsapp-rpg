@@ -1835,8 +1835,7 @@ const handleUserResponse = async (message, state) => {
           message.from,
           "Você ignora o viajante e continua sua jornada sem olhar para trás."
         );
-
-        delete battleController[message.from].battle;
+        
         delete battleController[message.from].enemy;
         delete battleController[message.from].item;
 
