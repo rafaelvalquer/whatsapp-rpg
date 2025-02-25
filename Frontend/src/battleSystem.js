@@ -216,13 +216,16 @@ class BattleSystem {
         }
   }
 
-  verificarInimigoDerrotado(damage) {
-    if (this.enemy.enemyHP <= 0) {
-      const xp = this.enemy.enemyXP;
-      this.player.status.xp += xp;
-      return `🧑 *${this.player.name}*:\nAtacou o inimigo *${this.enemy.enemyName}* e causou *${damage}* de dano! 💥\nO ${this.enemy.enemyName} foi derrotado! 🎉 Parabéns, herói! 🏆\nVocê ganhou *${this.enemy.enemyXP}* XP! 🌟`;
-    }
-    return `🧑  *${this.player.name}*:\nAtacou o inimigo *${this.enemy.enemyName}* e causou *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP}🩸`;
+  defesaImplacável(skill) {
+    // Pegando os atributos das armas (se existirem)
+    const defesaArma1 = this.player.status.arma1 ? this.player.status.arma1.con : 0;
+    const defesaArma2 = this.player.status.arma2 ? this.player.status.arma2.con : 0;
+
+    const con = this.player.status.con
+
+
+
+      return defesaArma1 + defesaArma2 + con;
   }
 
 }

@@ -10,7 +10,7 @@
     "nome": "Defesa Implacável",
     "descricao": "Aumenta a resistência e reduz o dano recebido pela metade por 3 turnos.",
     "lv": 5,
-    "tipo": "ativa",
+    "tipo": "passiva",
     "custo": 15
   },
   "201": {

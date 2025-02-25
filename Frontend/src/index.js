@@ -1300,19 +1300,6 @@ const handleUserResponse = async (message, state) => {
         if (battle.enemy.enemyHP <= 0) {
           await message.reply(result);
 
-          if (battle.buffsAtivos) {
-            // Apenas remover buffs expirados, sem remover todos os buffs ativos
-            battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao >= 0));
-            // Enviar mensagem para cada buff expirado
-            battle.buffsAtivos.forEach(buff => {
-              if (buff.duracao === 0) {
-                client.sendMessage(message.from, `${buff.emoji} Seu Buff ${buff.nome} acabou.`);
-              }
-            });
-            // Remover buffs expirados
-            battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
-          }  
-
           const respostaLevelUp = verificarLevelUp(battle.player); // Verificar se o personagem pulou de LV
           battle.player = respostaLevelUp.personagem; // Atualiza os dados do usuário
           const XP = displayXP(
@@ -1330,20 +1317,21 @@ const handleUserResponse = async (message, state) => {
           await client.sendMessage(message.from, enemy);
           await client.sendMessage(message.from, battle.displayHP());
 
-          if (battle.buffsAtivos) {
-            // Apenas remover buffs expirados, sem remover todos os buffs ativos
-            battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao >= 0));
-            // Enviar mensagem para cada buff expirado
-            battle.buffsAtivos.forEach(buff => {
-              if (buff.duracao === 0) {
-                client.sendMessage(message.from, `${buff.emoji} Seu Buff ${buff.nome} acabou.`);
-              }
-            });
-            // Remover buffs expirados
-            battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
-          }
-
         }
+
+        if (battle.buffsAtivos) {
+          // Apenas remover buffs expirados, sem remover todos os buffs ativos
+          battle.removeBuffs(battle.buffsAtivos.filter(buff => buff.duracao >= 0));
+          // Enviar mensagem para cada buff expirado
+          battle.buffsAtivos.forEach(buff => {
+            if (buff.duracao === 0) {
+              client.sendMessage(message.from, `${buff.emoji} Seu Buff ${buff.nome} acabou.`);
+            }
+          });
+          // Remover buffs expirados
+          battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
+        }
+
       } else if (input === "recuar" || input === "3") {
         const result = battle.movePlayer(-1); // Move o jogador para trás
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
@@ -1993,70 +1981,131 @@ const handleUserResponse = async (message, state) => {
     }
 
     case "usarSkill.retorno": {
-
-      const skillSelecionadaIndex = parseInt(input) - 1; // Converte a escolha para índice de array
+      const skillSelecionadaIndex = parseInt(input) - 1;
       const skillId = userData[message.from].status.skillsW[skillSelecionadaIndex];
-
+  
       if (!skillId) {
-        await client.sendMessage(
-          message.from,
-          "❌ Escolha inválida! Selecione uma das habilidades listadas."
-        );
-        navigationFlow.usarSkill(message);
+          await client.sendMessage(
+              message.from,
+              "❌ Escolha inválida! Selecione uma das habilidades listadas."
+          );
+          return navigationFlow.usarSkill(message);
       }
-
+  
       const skill = skills[skillId];
-
-      // Verificar se o jogador tem mana suficiente para usar a skill
+  
       if (userData[message.from].status.mana < skill.custo) {
-        await client.sendMessage(
-          message.from,
-          `💠 Mana insuficiente! Você precisa de ${skill.custo} Mana para usar *${skill.nome}*`
-        );
-        navigationFlow.usarSkill(message);
+          await client.sendMessage(
+              message.from,
+              `💠 Mana insuficiente! Você precisa de ${skill.custo} Mana para usar *${skill.nome}*`
+          );
+          return navigationFlow.usarSkill(message);
       }
-
-      battle = battleController[message.from]?.battle;
-
-      if (battle.buffsAtivos) {
-        // Aplicar buffs e reduzir duração
-        battle.buffsAtivos.forEach(buff => {
-            battle.applyBuffs(buff);
-            buff.duracao--; 
-        });
-      }
-
+  
+      const battle = battleController[message.from]?.battle;
       let result = "";
-      if (skillId === "101") {
-        result = battle.golpeBrutal(skill); // Move o jogador para frente;
-      } else if (skillId === "102") {
-        result = `${userData[message.from].name} ativou *Defesa Implacável* 🛡️ e reduzirá o dano recebido nos próximos turnos!`;
+  
+      // Aplicar buffs antes de atacar
+      if (battle.buffsAtivos?.length) {
+          battle.buffsAtivos.forEach(buff => {
+              battle.applyBuffs(buff);
+              buff.duracao--;
+          });
       }
-
+  
+      // Usar a skill correta
+      switch (skillId) {
+          case "101":
+              result = battle.golpeBrutal(skill);
+              break;
+          case "102":
+              valor = battle.defesaImplacável();
+              result = `🛡️ *Defesa Implacável ativada!* Você receberá metade do dano pelos próximos 3 turnos!`
+            // Adiciona o Buff "Redução de Dano por 3 turnos"
+            battle.buffsAtivos.push({
+              nome: "Defesa Implacável",
+              valor: battle.player.status.con ,
+              efeito: "con",
+              duracao: 3,
+              emoji: "🛡️",
+          });
+            break;
+          default:
+              await client.sendMessage(message.from, "❌ Skill inválida.");
+              return navigationFlow.usarSkill(message);
+      }
+  
       await message.reply(result);
-
-      //Atualizar Personagem no banco
-      const updates = {
-        status: battle.player.status,
-      };
-
-      const update = await updateCharacter(userData[message.from], updates);
-      if (update.success) {
-        console.log(
-          "batalha.retorno: Personagem atualizado com sucesso no banco"
-        );
-        userData[message.from] = update.user; // Atualiza os dados do personagem localmente
-      } else {
-        client.sendMessage(
-          message.from,
-          "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-        );
+  
+      // Se o inimigo foi derrotado
+      if (battle.enemy.enemyHP <= 0) {
+          const respostaLevelUp = verificarLevelUp(battle.player);
+          battle.player = respostaLevelUp.personagem;
+          const XP = displayXP(battle.player.status.xp, battle.player.status.lv);
+  
+          await client.sendMessage(
+              message.from,
+              `${respostaLevelUp.mensagem}\n${XP}`
+          );
+  
+          if (battle.enemy.arma || battle.enemy.item) {
+              const possibilidades = [];
+              if (battle.enemy.arma) possibilidades.push("arma");
+              if (battle.enemy.item) possibilidades.push("item");
+              const evento = possibilidades[Math.floor(Math.random() * possibilidades.length)];
+              return navigationFlow.recompensa(message, evento);
+          }
+  
+          return navigationFlow.batalhaFim(message);
       }
-
-      navigationFlow.batalha(message);
-      
-      break;
-    }
+  
+      // Se o jogador foi derrotado
+      if (battle.player.status.hp <= 0) {
+          delete battleController[message.from].battle;
+          delete battleController[message.from].enemy;
+  
+          await message.reply(
+              "⚔️ Mas seu destino ainda não acabou... Você foi encontrado e levado ao Santuário. 🏰"
+          );
+  
+          return navigationFlow.santuario(message);
+      }
+  
+      // Ação do inimigo se a luta continua
+      const enemyAction = battle.enemyAction();
+      await client.sendMessage(message.from, enemyAction);
+      await client.sendMessage(message.from, battle.displayHP());
+  
+      // Remover buffs expirados
+      battle.buffsAtivos = battle.buffsAtivos.filter(buff => {
+          if (buff.duracao <= 0) {
+              client.sendMessage(message.from, `${buff.emoji} Seu Buff *${buff.nome}* acabou.`);
+              return false;
+          }
+          return true;
+      });
+  
+      // Atualizar personagem no banco
+      const updates = { status: battle.player.status };
+      const update = await updateCharacter(userData[message.from], updates);
+  
+      if (update.success) {
+          userData[message.from] = update.user;
+      } else {
+          await client.sendMessage(
+              message.from,
+              "❌ Houve um problema ao atualizar seu personagem. Tente novamente."
+          );
+      }
+  
+      // Exibir o grid do combate e continuar a batalha
+      await client.sendMessage(
+          message.from,
+          `Estado atual:\n${battle.displayGrid()}`
+      );
+  
+      return navigationFlow.batalha(message);
+  }
 
     default:
       await message.reply("Não entendi sua mensagem. Por favor, siga o fluxo.");
