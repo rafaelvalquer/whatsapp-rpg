@@ -234,6 +234,21 @@ function displayMana(currentMana, maxMana) {
   )
 }
 
+async function updateCharacterStatus(userId, status) {
+  const updates = { status };
+  const update = await updateCharacter(userData[userId], updates);
+
+  if (update.success) {
+      userData[userId] = update.user;
+  } else {
+      await client.sendMessage(
+          userId,
+          "❌ Houve um problema ao atualizar seu personagem. Tente novamente."
+      );
+  }
+}
+
+
 // Função para verificar se a arma do jogador é mais forte que a do inimigo
 function displayWeaponStrength(playerWeapon, enemyWeapon) {
   // Calculando o total de atributos de cada arma
@@ -826,7 +841,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       })
       .join("\n");
     
-    const mensagem = `${displayMana(userData[message.from].status.mana, userData[message.from].status.maxMana)}\m🎭*Selecione sua habilidade:*\n\n${listaSkills}`;
+    const mensagem = `${displayMana(userData[message.from].status.mana, userData[message.from].status.maxMana)}\n🎭*Selecione sua habilidade:*\n\n${listaSkills}`;
     await client.sendMessage(message.from, mensagem);
 
     userStates[message.from] = "usarSkill.retorno"; // Atualize corretamente o estado
@@ -1998,13 +2013,6 @@ const handleUserResponse = async (message, state) => {
     case "usarSkill.retorno": {
       const skillSelecionadaIndex = parseInt(input) - 1;
       const skillId = userData[message.from].status.skills[skillSelecionadaIndex];
-
-      console.log('##########################')
-      console.log("userData[message.from].status.skills = " + JSON.stringify(userData[message.from].status.skills));
-      console.log('skillSelecionadaIndex = ' + skillSelecionadaIndex)
-      console.log('skillId = ' + skillId)
-      console.log('##########################')
-
   
       if (!skillId) {
           await client.sendMessage(
@@ -2040,18 +2048,17 @@ const handleUserResponse = async (message, state) => {
           case 101:
               result = battle.golpeBrutal(skill);
               break;
-          case "102":
+          case 102:
               valor = battle.defesaImplacável();
-              result = `🛡️ *Defesa Implacável ativada!* Você receberá metade do dano pelos próximos 3 turnos!`
-            // Adiciona o Buff "Redução de Dano por 3 turnos"
-            battle.buffsAtivos.push({
-              nome: "Defesa Implacável",
-              valor: battle.player.status.con ,
-              efeito: "con",
-              duracao: 3,
-              emoji: "🛡️",
-          });
-            break;
+              result = `🛡️ *Defesa Implacável ativada!* Você receberá metade do dano pelos próximos 3 turnos!`;
+              battle.buffsAtivos.push({
+                  nome: "Defesa Implacável",
+                  valor: battle.player.status.con,
+                  efeito: "reduzirDano",
+                  duracao: 3,
+                  emoji: "🛡️",
+              });
+              break;
           default:
               await client.sendMessage(message.from, "❌ Skill inválida.");
               return navigationFlow.usarSkill(message);
@@ -2075,9 +2082,15 @@ const handleUserResponse = async (message, state) => {
               if (battle.enemy.arma) possibilidades.push("arma");
               if (battle.enemy.item) possibilidades.push("item");
               const evento = possibilidades[Math.floor(Math.random() * possibilidades.length)];
+  
+              // Atualiza o personagem antes de sair da função
+              await updateCharacterStatus(message.from, battle.player.status);
+  
               return navigationFlow.recompensa(message, evento);
           }
   
+          // Atualiza o personagem antes de sair da função
+          await updateCharacterStatus(message.from, battle.player.status);
           return navigationFlow.batalhaFim(message);
       }
   
@@ -2090,6 +2103,8 @@ const handleUserResponse = async (message, state) => {
               "⚔️ Mas seu destino ainda não acabou... Você foi encontrado e levado ao Santuário. 🏰"
           );
   
+          // Atualiza o personagem antes de sair da função
+          await updateCharacterStatus(message.from, battle.player.status);
           return navigationFlow.santuario(message);
       }
   
@@ -2107,18 +2122,8 @@ const handleUserResponse = async (message, state) => {
           return true;
       });
   
-      // Atualizar personagem no banco
-      const updates = { status: battle.player.status };
-      const update = await updateCharacter(userData[message.from], updates);
-  
-      if (update.success) {
-          userData[message.from] = update.user;
-      } else {
-          await client.sendMessage(
-              message.from,
-              "❌ Houve um problema ao atualizar seu personagem. Tente novamente."
-          );
-      }
+      // Atualizar personagem antes de continuar
+      await updateCharacterStatus(message.from, battle.player.status);
   
       // Exibir o grid do combate e continuar a batalha
       await client.sendMessage(
@@ -2128,6 +2133,7 @@ const handleUserResponse = async (message, state) => {
   
       return navigationFlow.batalha(message);
   }
+  
 
     default:
       await message.reply("Não entendi sua mensagem. Por favor, siga o fluxo.");
