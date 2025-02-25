@@ -1802,7 +1802,6 @@ const handleUserResponse = async (message, state) => {
       if (input === "1") {
         // Escolhe aleatoriamente entre item (0) ou batalha (1)
         const evento = Math.random() < 0.5 ? "item" : "enemy";
-
         if (evento === "item") {
           const item = battleController[message.from].item;
           await client.sendMessage(
@@ -2029,7 +2028,7 @@ const handleUserResponse = async (message, state) => {
               message.from,
               `💠 Mana insuficiente! Você precisa de ${skill.custo} Mana para usar *${skill.nome}*`
           );
-          return navigationFlow.usarSkill(message);
+          return navigationFlow.batalha(message);
       }
   
       const battle = battleController[message.from]?.battle;
