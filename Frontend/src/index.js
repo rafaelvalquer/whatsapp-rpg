@@ -2112,6 +2112,7 @@ const handleUserResponse = async (message, state) => {
       await client.sendMessage(message.from, battle.displayHP());
   
       // Remover buffs expirados
+      if (battle.buffsAtivos?.length) {
       battle.buffsAtivos = battle.buffsAtivos.filter(buff => {
           if (buff.duracao <= 0) {
               client.sendMessage(message.from, `${buff.emoji} Seu Buff *${buff.nome}* acabou.`);
@@ -2119,6 +2120,7 @@ const handleUserResponse = async (message, state) => {
           }
           return true;
       });
+    }
   
       // Atualizar personagem antes de continuar
       await updateCharacterStatus(message.from, battle.player.status);
