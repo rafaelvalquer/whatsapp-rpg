@@ -1837,10 +1837,9 @@ const handleUserResponse = async (message, state) => {
           "Você ignora o viajante e continua sua jornada sem olhar para trás."
         );
 
-        delete battleController[message.from].enemy;
         delete battleController[message.from].item;
 
-        handleUserResponse(message, "missao");
+        navigationFlow.batalhaFim(message);
       } else {
         await message.reply(
           "Opção inválida. Escolha 1️⃣ para Resgatar ou 2️⃣ para Ignorar."
