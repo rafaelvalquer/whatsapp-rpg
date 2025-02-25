@@ -202,8 +202,11 @@ class BattleSystem {
           const danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1);
           const damage = (danoBase + poderArma1 + poderArma2) * 2;
   
+          // Reduzindo Mana do player
+          this.player.status.mana -= skill.custo;
           // Reduzindo HP do inimigo
           this.enemy.enemyHP -= damage;
+
           
           if (this.enemy.enemyHP <= 0) {
             const xp = this.enemy.enemyXP;

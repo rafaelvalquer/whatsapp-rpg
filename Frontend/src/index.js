@@ -219,6 +219,21 @@ function displayStatus(currentHP, maxHP, currentMana, maxMana) {
   );
 }
 
+// Função para exibir recuperação do HP e Mana
+function displayMana(currentMana, maxMana) {
+  const getBar = (current, max, filledIcon) => {
+    const filledBars = Math.round((current / max) * 5);
+    const emptyBars = 5 - filledBars;
+    return filledIcon.repeat(filledBars) + "⬜".repeat(emptyBars);
+  };
+
+  const manaBar = getBar(currentMana, maxMana, "🟦"); // Mana em azul
+
+  return (
+    `🔵 Mana: ${manaBar} ${currentMana}/${maxMana}`
+  )
+}
+
 // Função para verificar se a arma do jogador é mais forte que a do inimigo
 function displayWeaponStrength(playerWeapon, enemyWeapon) {
   // Calculando o total de atributos de cada arma
@@ -807,11 +822,11 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
     const listaSkills = skillsPersonagem
       .map((id, index) => {
         const skill = skills[id];
-        return `${index + 1}. *${skill.nome}* - 💠 ${skill.custo} Mana`;
+        return `${index + 1}️⃣ *${skill.nome}* - 💠 ${skill.custo} Mana`;
       })
       .join("\n");
     
-    const mensagem = `🎭 *Selecione sua habilidade:*\n\n${listaSkills}`;
+    const mensagem = `${displayMana(userData[message.from].status.mana, userData[message.from].status.maxMana)}\m🎭*Selecione sua habilidade:*\n\n${listaSkills}`;
     await client.sendMessage(message.from, mensagem);
 
     userStates[message.from] = "usarSkill.retorno"; // Atualize corretamente o estado
