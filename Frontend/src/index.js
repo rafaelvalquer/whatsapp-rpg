@@ -477,7 +477,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
     let optionsText = "";
 
     mission.steps[step].options.forEach((option, index) => {
-      optionsText += `${index + 1}. ${option.text}\n`;
+      optionsText += `${index + 1}️⃣ ${option.text}\n`;
     });
 
     client.sendMessage(message.from, mission.steps[step].text);
@@ -496,7 +496,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
     let optionsText = "";
 
     mission.steps[step].options.forEach((option, index) => {
-      optionsText += `${index + 1}. ${option.text}\n`;
+      optionsText += `${index + 1}️⃣ ${option.text}\n`;
     });
 
     client.sendMessage(message.from, mission.steps[step].text);
@@ -613,7 +613,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
     txtItem += Object.entries(userData[message.from].status.item)
       .map(
         ([id, quantidade], index) =>
-          `*${index + 1}.* ${items[id].nome} ${
+          `${index + 1}️⃣ ${items[id].nome} ${
             items[id].emoji
           }  (x${quantidade})`
       )
@@ -728,7 +728,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
     txtSkill += skillsDisponiveis
       .map(
         ([id, skill], index) =>
-          `*${index + 1}.* ${skill.nome} ⚔️ (${skill.tipo})\n📜 ${
+          `${index + 1}️⃣ ${skill.nome} ⚔️ (${skill.tipo})\n📜 ${
             skill.descricao
           }\n💠 *Custo:* ${skill.custo} Mana\n`
       )
@@ -1197,7 +1197,7 @@ const handleUserResponse = async (message, state) => {
         let optionsText = "";
 
         step.options.forEach((option, index) => {
-          optionsText += `${index + 1}. ${option.text}\n`;
+          optionsText += `${index + 1}️⃣ ${option.text}\n`;
         });
 
         client.sendMessage(message.from, step.text);
@@ -1248,7 +1248,7 @@ const handleUserResponse = async (message, state) => {
               let optionsText = "";
 
               mission.steps[nextStep].options.forEach((option, index) => {
-                optionsText += `${index + 1}. ${option.text}\n`;
+                optionsText += `${index + 1}️⃣ ${option.text}\n`;
               });
 
               await client.sendMessage(message.from, text);
@@ -1283,7 +1283,7 @@ const handleUserResponse = async (message, state) => {
         let optionsText = "";
 
         mission.steps[step].options.forEach((option, index) => {
-          optionsText += `${index + 1}. ${option.text}\n`;
+          optionsText += `${index + 1}️⃣ ${option.text}\n`;
         });
 
         await client.sendMessage(message.from, text);
