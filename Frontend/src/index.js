@@ -1983,6 +1983,13 @@ const handleUserResponse = async (message, state) => {
     case "usarSkill.retorno": {
       const skillSelecionadaIndex = parseInt(input) - 1;
       const skillId = userData[message.from].status.skills[skillSelecionadaIndex];
+
+      console.log('##########################')
+      console.log("userData[message.from].status.skills = " + JSON.stringify(userData[message.from].status.skills));
+      console.log('skillSelecionadaIndex = ' + skillSelecionadaIndex)
+      console.log('skillId = ' + skillId)
+      console.log('##########################')
+
   
       if (!skillId) {
           await client.sendMessage(
