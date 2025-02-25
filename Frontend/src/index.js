@@ -2022,7 +2022,7 @@ const handleUserResponse = async (message, state) => {
   
       // Usar a skill correta
       switch (skillId) {
-          case "101":
+          case 101:
               result = battle.golpeBrutal(skill);
               break;
           case "102":
