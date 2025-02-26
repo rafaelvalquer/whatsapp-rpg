@@ -1393,10 +1393,10 @@ const handleUserResponse = async (message, state) => {
           battle.buffsAtivos = battle.buffsAtivos.filter(buff => buff.duracao > 0);  
         }
 
-      } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.item).length > 0) {
+      } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.skills).length > 0) {
         navigationFlow.usarSkill(message);
         return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
-      } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.item).length == 0) {
+      } else if ((input === "skill" || input === "4") && Object.keys(userData[message.from].status.skills).length == 0) {
         await client.sendMessage(
           message.from,
           "❌ Você ainda não aprendeu nenhuma habilidade."
