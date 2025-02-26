@@ -652,6 +652,11 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
         message.from,
         respostaLevelUp.mensagem + `\n${XP}`
       );
+    }
+
+    if (recompensa?.ouro) {
+      playerCopy.status.ouro += recompensa.ouro;
+    }
 
       // Atualizar Personagem no banco de dados
       let updates = { status: playerCopy.status };
@@ -674,7 +679,6 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
           "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
         );
       }
-    }
     await client.sendMessage(
       message.from,
       "🏡 Com a missão concluída, você retorna ao vilarejo para descansar e compartilhar sua história."
@@ -1643,9 +1647,8 @@ const handleUserResponse = async (message, state) => {
           }
 
           // Verifica se o item já existe e atualiza a quantidade
-          statusCopy.item[encontraItem.id] =
-            (statusCopy.item[encontraItem.id] || 0) + 1;
-          encontraItem.txt = `🗃️ Você guardou 1 do item ${
+          statusCopy.item[encontraItem.id] = (statusCopy.item[encontraItem.id] || 0) + 1;
+            encontraItem.txt = `🗃️ Você guardou 1 do item ${
             items[encontraItem.id].nome
           }.`;
         } else {
@@ -1657,10 +1660,7 @@ const handleUserResponse = async (message, state) => {
         // Salvar o item como true
         statusCopy.itemMissao[encontraItem.id] = true;
         encontraItem.txt = `🗃️ Você obteve o item ${items[encontraItem.id].nome}.`;
-    }
-        
-        
-
+        }
       }
 
       // Atualizar Personagem no banco de dados

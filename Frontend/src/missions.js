@@ -621,9 +621,10 @@ module.exports = {
           text: "🚶‍♂️ Você decide seguir seu caminho e deixar o vilarejo de Eldoria à sua própria sorte. Com um último olhar, você se afasta, determinado a encontrar seu próprio destino.🌟",
         },
         {
-          text: "🎉 Parabéns! Você foi recompensado com 150 de XP! 🌟",
+          text: "🎉 Parabéns! Você foi recompensado com 150 de XP e 100 de ouro! 🌟",
           recompensa: {
             xp: 150,
+            ouro: 100
           },
 
           // Adicione mais etapas conforme necessário.
@@ -1125,9 +1126,10 @@ module.exports = {
           text: "🚶‍♂️ Diante dos perigos desconhecidos, você decide que essa missão não vale o risco. Com um último olhar para a caverna, vira-se e retorna ao vilarejo, deixando o artefato para quem for ousado o suficiente para buscá-lo. Talvez outro desafio o aguarde na cidade... 🌆✨",
         },
         {
-          text: "🎉 Parabéns! Você foi recompensado com 200 de XP! 🌟",
+          text: "🎉 Parabéns! Você foi recompensado com 200 de XP e 150 de ouro! 🌟",
           recompensa: {
             xp: 200,
+            ouro: 150
           },
 
           // Adicione mais etapas conforme necessário.
