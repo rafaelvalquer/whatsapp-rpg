@@ -2054,6 +2054,11 @@ const handleUserResponse = async (message, state) => {
   
       const battle = battleController[message.from]?.battle;
       let result = "";
+
+      if (!battle.buffsAtivos) {
+        // Cria a propriedade buffsAtivos como um array e adiciona o primeiro buff
+        battle.buffsAtivos = [];
+      }
   
       // Aplicar buffs antes de atacar
       if (battle.buffsAtivos?.length) {
