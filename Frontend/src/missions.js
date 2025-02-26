@@ -178,6 +178,7 @@ module.exports = {
             },
           ],
         },
+
         {
           text: "⚔️ A batalha final chega ao fim com uma vitória retumbante! Os bandidos, derrotados e desmoralizados, recuam rapidamente para a floresta. Os aldeões, exaustos, mas triunfantes, comemoram sua bravura e determinação. 🏡✨",
           options: [
@@ -365,7 +366,7 @@ module.exports = {
                 enemyName: "Senhor da Guerra",
                 enemyHP: 70,
                 enemyMaxHP: 70,
-                enemyStr: 10,
+                enemyStr: 8,
                 enemyCon: 6,
                 position: 2,
                 enemyXP: 150,
@@ -381,8 +382,8 @@ module.exports = {
                 enemyName: "Senhor da Guerra",
                 enemyHP: 70,
                 enemyMaxHP: 70,
-                enemyStr: 12,
-                enemyCon: 10,
+                enemyStr: 8,
+                enemyCon: 6,
                 position: 4,
                 enemyXP: 125,
                 arma: 4,
@@ -397,8 +398,8 @@ module.exports = {
                 enemyName: "Senhor da Guerra",
                 enemyHP: 70,
                 enemyMaxHP: 70,
-                enemyStr: 12,
-                enemyCon: 10,
+                enemyStr: 8,
+                enemyCon: 6,
                 position: 5,
                 enemyXP: 110,
                 arma: 4,
@@ -620,15 +621,17 @@ module.exports = {
           text: "🚶‍♂️ Você decide seguir seu caminho e deixar o vilarejo de Eldoria à sua própria sorte. Com um último olhar, você se afasta, determinado a encontrar seu próprio destino.🌟",
         },
         {
-          text: "🎉 Parabéns! Você foi recompensado com 250 de XP! 🌟",
+          text: "🎉 Parabéns! Você foi recompensado com 150 de XP! 🌟",
           recompensa: {
-            xp: 250,
+            xp: 150,
           },
 
           // Adicione mais etapas conforme necessário.
         },
       ],
     },
+
+    //region Fase 2
     {
       id: 2,
       name: "A Busca pelo Artefato Perdido",
@@ -938,6 +941,8 @@ module.exports = {
             {
               text: "Ficar com o artefato para si.",
               nextStep: 16,
+              event: "encontraItem",
+              item: 201,
             },
           ],
         },
@@ -960,8 +965,6 @@ module.exports = {
             {
               text: "💰 Pegar sua recompensa",
               nextStep: "end",
-              event: "encontraItem",
-              item: 201,
             },
           ],
         },
@@ -1122,9 +1125,9 @@ module.exports = {
           text: "🚶‍♂️ Diante dos perigos desconhecidos, você decide que essa missão não vale o risco. Com um último olhar para a caverna, vira-se e retorna ao vilarejo, deixando o artefato para quem for ousado o suficiente para buscá-lo. Talvez outro desafio o aguarde na cidade... 🌆✨",
         },
         {
-          text: "🎉 Parabéns! Você foi recompensado com 50 de XP! 🌟",
+          text: "🎉 Parabéns! Você foi recompensado com 200 de XP! 🌟",
           recompensa: {
-            xp: 50,
+            xp: 200,
           },
 
           // Adicione mais etapas conforme necessário.

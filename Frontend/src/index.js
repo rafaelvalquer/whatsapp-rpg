@@ -254,8 +254,6 @@ function displayWeaponStrength(playerWeapon, enemyWeapon) {
   // Calculando o total de atributos de cada arma
   const playerWeaponStrength = calculateWeaponStrength(playerWeapon);
   const enemyWeaponStrength = calculateWeaponStrength(enemyWeapon);
-  console.log(playerWeaponStrength)
-  console.log(enemyWeaponStrength)
 
   // Comparando os totais e retornando o símbolo correspondente
   return playerWeaponStrength > enemyWeaponStrength ? `⬆️` : `⬇️`;
@@ -1059,10 +1057,12 @@ const handleUserResponse = async (message, state) => {
               con: 3,
               agi: 2,
               int: 1,
+              ouro: 0,
               arma1: 0,
               arma2: 0,
               armadura: 0,
               item: {},
+              itemMissao: {},
               skillPoint: 0,
               skills: [],
               santuario: false,
@@ -1081,10 +1081,12 @@ const handleUserResponse = async (message, state) => {
               con: 2,
               agi: 5,
               int: 1,
+              ouro: 0,
               arma1: 0,
               arma2: 0,
               armadura: 0,
               item: {},
+              itemMissao: {},
               skillPoint: 0,
               skills: [],
               santuario: false,
@@ -1103,10 +1105,12 @@ const handleUserResponse = async (message, state) => {
               con: 2,
               agi: 1,
               int: 6,
+              ouro: 0,
               arma1: 0,
               arma2: 0,
               armadura: 0,
               item: {},
+              itemMissao: {},
               skillPoint: 0,
               skills: [],
               santuario: false,
@@ -1261,8 +1265,9 @@ const handleUserResponse = async (message, state) => {
           let text = mission.steps[nextStep].text;
           await client.sendMessage(message.from, text);
 
-          battleController[message.from].recompensa =
-            mission.steps[nextStep].recompensa;
+          
+
+          battleController[message.from].recompensa = mission.steps[nextStep].recompensa;
           navigationFlow.missaoFim(message);
         } else if (option.nextStep == "return") {
           let nextStep = mission.steps.length - 2; // Pega o penultimo step
@@ -1629,7 +1634,7 @@ const handleUserResponse = async (message, state) => {
         } else {
           encontraItem.txt = `🤔 Esse item não tem efeito conhecido...`;
         }
-      } else if (input === "2" || items[encontraItem.id].tipo == "missao") {
+      } else if (input === "2" || (input === "1" && items[encontraItem.id].tipo == "missao")) {
         // Criar a propriedade 'item' se não existir
         if (!statusCopy.item) {
           statusCopy.item = {};

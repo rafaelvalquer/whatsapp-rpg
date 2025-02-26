@@ -42,6 +42,10 @@ const StatusSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  ouro: {
+    type: Number,
+    default: 0,
+  },
   arma1: {
     type: Number,
     default: 0,
@@ -55,6 +59,10 @@ const StatusSchema = new mongoose.Schema({
     default: 0,
   },
   item: {
+    type: Map, // Usando Map para permitir um objeto chave-valor
+    of: Number, // Os valores serão números (ex.: quantidades de itens)
+  },
+  itemMissao: {
     type: Map, // Usando Map para permitir um objeto chave-valor
     of: Number, // Os valores serão números (ex.: quantidades de itens)
   },
