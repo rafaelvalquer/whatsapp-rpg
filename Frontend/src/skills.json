@@ -21,10 +21,17 @@
     "custo": 10
   },
   "301": {
-    "nome": "Tempestade Arcana",
-    "descricao": "Chama relâmpagos que atingem todos os inimigos várias vezes.",
-    "lv": 5,
-    "tipo": "Ultimate",
+    "nome": "Bola de fogo",
+    "descricao": "Lança uma esfera flamejante que causa muito dano e queimadura por 3 turnos.",
+    "lv": 2,
+    "tipo": "ativa",
+    "custo": 10
+  },
+  "302": {
+    "nome": "Empurrão Arcano",
+    "descricao": "Empurra o inimigo para trás e pode atordoar.",
+    "lv": 2,
+    "tipo": "ativa",
     "custo": 10
   }
 }

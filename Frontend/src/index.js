@@ -153,7 +153,7 @@ Seus status aumentaram:`;
     }
 
     // Adiciona a mensagem de escolha de skill se o nível for divisível por 5
-    if (personagem.status.lv % 5 === 0) {
+    if (personagem.status.lv % 5 === 0 || personagem.status.lv == 2) {
       personagem.status.skillPoint++; //
       mensagem += `Parabéns! Você pode aprender uma nova *skill.* ⚔️\n`;
     }
@@ -1302,10 +1302,13 @@ const handleUserResponse = async (message, state) => {
     case "batalha.retorno":
       battle = battleController[message.from]?.battle;
 
-      if (battle.buffsAtivos) {
+      if (battle.buffsAtivos?.length) {
         // Aplicar buffs e reduzir duração
         battle.buffsAtivos.forEach(buff => {
             battle.applyBuffs(buff);
+            if(buff.efeito == "queimadura"){
+              client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`);
+            }
             buff.duracao--; 
         });
       }
@@ -2056,6 +2059,9 @@ const handleUserResponse = async (message, state) => {
       if (battle.buffsAtivos?.length) {
           battle.buffsAtivos.forEach(buff => {
               battle.applyBuffs(buff);
+              if(buff.efeito == "queimadura"){
+                client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`);
+              }
               buff.duracao--;
           });
       }
@@ -2066,7 +2072,6 @@ const handleUserResponse = async (message, state) => {
               result = battle.golpeBrutal(skill);
               break;
           case 102:
-              valor = battle.defesaImplacável();
               result = `🛡️ *Defesa Implacável ativada!* Você receberá metade do dano pelos próximos 3 turnos!`;
               battle.buffsAtivos.push({
                   nome: "Defesa Implacável",
@@ -2075,6 +2080,16 @@ const handleUserResponse = async (message, state) => {
                   duracao: 3,
                   emoji: "🛡️",
               });
+              break;
+          case 301:
+              result = battle.bolaDeFogo(skill);
+              battle.buffsAtivos.push({
+                nome: "Bola de fogo",
+                valor: battle.player.status.int / 4,
+                efeito: "queimadura",
+                duracao: 3,
+                emoji: "🔥",
+            });
               break;
           default:
               await client.sendMessage(message.from, "❌ Skill inválida.");

@@ -168,6 +168,8 @@ class BattleSystem {
     if (buff.efeito === "con") this.player.status.con += buff.valor;
     if (buff.efeito === "agi") this.player.status.agi += buff.valor;
     if (buff.efeito === "int") this.player.status.int += buff.valor;
+    if (buff.efeito === "reduzirDano") this.player.status.con += buff.valor;
+    if (buff.efeito === "queimadura") aplicarDanoQueimadura(buff.valor);
   }
 
   removeBuffs(buffs) {
@@ -176,7 +178,19 @@ class BattleSystem {
       if (buff.efeito === "con") this.player.status.con -= buff.valor;
       if (buff.efeito === "agi") this.player.status.agi -= buff.valor;
       if (buff.efeito === "int") this.player.status.int -= buff.valor;
+      if (buff.efeito === "reduzirDano") this.player.status.con -= buff.valor;
     });
+  }
+
+    // Função para aplicar o dano de queimadura em cada turno
+  aplicarDanoQueimadura(dano) {
+    if (!this.enemy) return;
+    
+    this.enemy.enemyHP -= dano;
+
+    if (this.enemy.enemyHP < 0) this.enemy.enemyHP = 0;
+
+    console.log(`🔥 O inimigo sofre ${dano.toFixed(1)} de dano por queimadura!`);
   }
 
   //#region Skills
@@ -219,16 +233,43 @@ class BattleSystem {
         }
   }
 
-  defesaImplacável(skill) {
-    // Pegando os atributos das armas (se existirem)
-    const defesaArma1 = this.player.status.arma1 ? this.player.status.arma1.con : 0;
-    const defesaArma2 = this.player.status.arma2 ? this.player.status.arma2.con : 0;
+  bolaDeFogo(skill) {
+    //Verificar distancia do Player com o inimigo
+    const distancia = Math.abs(this.playerPosition - this.enemyPosition);
 
-    const con = this.player.status.con
+    // Pegando as armas equipadas pelo jogador
+    const arma1 = this.player.status.arma1 ? items[this.player.status.arma1] : null;
+    const arma2 = this.player.status.arma2 ? items[this.player.status.arma2] : null;
+
+    // Declarando as variáveis corretamente
+    let poderArma1 = 0;
+    let poderArma2 = 0;
 
 
+    poderArma1 = arma1 ? arma1.int : 0;
+    poderArma2 = arma2 ? arma2.int : 0;
 
-      return defesaArma1 + defesaArma2 + con;
+    if (distancia >= 1 && distancia <= 5) {
+
+      // Dano base + dano das armas
+      const danoBase = Math.max(this.player.status.int - this.enemy.enemyCon, 1);
+      const damage = (danoBase + poderArma1 + poderArma2) * 2;
+
+      // Reduzindo Mana do player
+      this.player.status.mana -= skill.custo;
+      // Reduzindo HP do inimigo
+      this.enemy.enemyHP -= damage;
+
+      
+      if (this.enemy.enemyHP <= 0) {
+        const xp = this.enemy.enemyXP;
+        this.player.status.xp += xp;
+        return `🧑 *${this.player.name}*:\nUsou *${skill.nome}* e desferiu um golpe devastador! ⚡🔥\nO *${this.enemy.enemyName}* não resistiu e foi derrotado! 🎉\n🏆 Você ganhou *${xp}* XP! 🌟`;
+      }
+      return `🧑 *${this.player.name}*:\nUtilizou *${skill.nome}* causando *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP}🩸`;
+    } else {
+      return `O ${this.enemy.enemyName} está muito longe para atacar!`;
+    }
   }
 
 }
