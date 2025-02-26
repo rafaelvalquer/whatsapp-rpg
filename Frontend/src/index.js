@@ -254,6 +254,8 @@ function displayWeaponStrength(playerWeapon, enemyWeapon) {
   // Calculando o total de atributos de cada arma
   const playerWeaponStrength = calculateWeaponStrength(playerWeapon);
   const enemyWeaponStrength = calculateWeaponStrength(enemyWeapon);
+  console.log(playerWeaponStrength)
+  console.log(enemyWeaponStrength)
 
   // Comparando os totais e retornando o símbolo correspondente
   return playerWeaponStrength > enemyWeaponStrength ? `⬆️` : `⬇️`;
