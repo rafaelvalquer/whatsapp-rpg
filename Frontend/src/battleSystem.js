@@ -169,7 +169,7 @@ class BattleSystem {
     if (buff.efeito === "agi") this.player.status.agi += buff.valor;
     if (buff.efeito === "int") this.player.status.int += buff.valor;
     if (buff.efeito === "reduzirDano") this.player.status.con += buff.valor;
-    if (buff.efeito === "queimadura") aplicarDanoQueimadura(buff.valor);
+    if (buff.efeito === "queimadura") this.aplicarDanoQueimadura(buff.valor);
   }
 
   removeBuffs(buffs) {
