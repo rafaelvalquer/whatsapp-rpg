@@ -270,8 +270,8 @@ function calculateWeaponStrength(weapon) {
 const navigationFlow = {
   BoasVindas: async (message) => {
     const options = `Você é novo por aqui, escolha uma das opções:
-1. Criar uma conta
-2. Encerrar`;
+1️⃣ Criar uma conta
+2️⃣ Encerrar`;
 
     await message.reply(options);
     userStates[message.from] = "BoasVindas";
@@ -393,9 +393,9 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       // Exibe as missões disponíveis
       let missionsMessage = "Missões disponíveis:\n";
       missionsData.missoes.forEach((mission) => {
-        missionsMessage += `\n${mission.id}️⃣ .*${mission.name}*\n📜 ${mission.description}\n⚔️ Dificuldade: ${mission.difficulty}\n`;
+        missionsMessage += `\n${mission.id}️⃣ *${mission.name}*\n📜 ${mission.description}\n⚔️ Dificuldade: ${mission.difficulty}\n`;
       });
-      missionsMessage += `\n0️⃣. Voltar ao menu.`;
+      missionsMessage += `\n0️⃣ Voltar ao menu.`;
 
       await client.sendMessage(message.from, missionsMessage);
 
