@@ -1635,17 +1635,32 @@ const handleUserResponse = async (message, state) => {
           encontraItem.txt = `🤔 Esse item não tem efeito conhecido...`;
         }
       } else if (input === "2" || (input === "1" && items[encontraItem.id].tipo == "missao")) {
-        // Criar a propriedade 'item' se não existir
-        if (!statusCopy.item) {
-          statusCopy.item = {};
-        }
+        
+        if(input === "2"){
+          // Criar a propriedade 'item' se não existir
+          if (!statusCopy.item) {
+            statusCopy.item = {};
+          }
 
-        // Verifica se o item já existe e atualiza a quantidade
-        statusCopy.item[encontraItem.id] =
-          (statusCopy.item[encontraItem.id] || 0) + 1;
-        encontraItem.txt = `🗃️ Você guardou 1 do item ${
-          items[encontraItem.id].nome
-        }.`;
+          // Verifica se o item já existe e atualiza a quantidade
+          statusCopy.item[encontraItem.id] =
+            (statusCopy.item[encontraItem.id] || 0) + 1;
+          encontraItem.txt = `🗃️ Você guardou 1 do item ${
+            items[encontraItem.id].nome
+          }.`;
+        } else {
+          // Criar a propriedade 'itemMissao' se não existir
+          if (!statusCopy.itemMissao) {
+            statusCopy.itemMissao = {};
+          }
+
+        // Salvar o item como true
+        statusCopy.itemMissao[encontraItem.id] = true;
+        encontraItem.txt = `🗃️ Você obteve o item ${items[encontraItem.id].nome}.`;
+    }
+        
+        
+
       }
 
       // Atualizar Personagem no banco de dados
