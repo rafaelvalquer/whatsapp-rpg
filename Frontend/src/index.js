@@ -1307,10 +1307,11 @@ const handleUserResponse = async (message, state) => {
         battle.buffsAtivos.forEach(buff => {
             battle.applyBuffs(buff);
             if(buff.efeito == "queimadura"){
-              if(!txtBuff){
+              if(typeof txtBuff == "undefined"){
                 var txtBuff = []
+              } else {
+                txtBuff.push(`${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
               }
-              txtBuff.push(`${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
             }
             buff.duracao--;
 
@@ -1328,7 +1329,7 @@ const handleUserResponse = async (message, state) => {
       if (input === "avançar" || input === "1") {
         const result = battle.movePlayer(1); // Move o jogador para frente
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-        await client.sendMessage(message.from,result);
+        await client.sendMessage(message.from, result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
 
@@ -1350,7 +1351,7 @@ const handleUserResponse = async (message, state) => {
 
         //Verificar se o inimigo foi derrotado
         if (battle.enemy.enemyHP <= 0) {
-          await message.reply(result);
+          await client.sendMessage(message.from, result);
 
           const respostaLevelUp = verificarLevelUp(battle.player); // Verificar se o personagem pulou de LV
           battle.player = respostaLevelUp.personagem; // Atualiza os dados do usuário
@@ -1365,7 +1366,7 @@ const handleUserResponse = async (message, state) => {
           
         } else {
           const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-          await message.reply(result);
+          await client.sendMessage(message.from, result);
           await client.sendMessage(message.from, enemy);
           await client.sendMessage(message.from, battle.displayHP());
 
@@ -1387,7 +1388,7 @@ const handleUserResponse = async (message, state) => {
       } else if (input === "recuar" || input === "3") {
         const result = battle.movePlayer(-1); // Move o jogador para trás
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-        await message.reply(result);
+        await client.sendMessage(message.from,result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
 
@@ -2076,10 +2077,11 @@ const handleUserResponse = async (message, state) => {
         battle.buffsAtivos.forEach(buff => {
             battle.applyBuffs(buff);
             if(buff.efeito == "queimadura"){
-              if(!txtBuff){
+              if(typeof txtBuff == "undefined"){
                 var txtBuff = []
+              } else {
+                txtBuff.push(`${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
               }
-              txtBuff.push(`${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
             }
             buff.duracao--;
 
