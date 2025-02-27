@@ -1307,22 +1307,10 @@ const handleUserResponse = async (message, state) => {
         battle.buffsAtivos.forEach(buff => {
             battle.applyBuffs(buff);
             if(buff.efeito == "queimadura"){
-              if(typeof txtBuff == "undefined"){
-                var txtBuff = []
-              } else {
-                client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
-              }
+              client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
             }
             buff.duracao--;
 
-        });
-      }
-
-      await client.sendMessage(message.from, JSON.stringify(battle.buffsAtivos));
-
-      if(typeof txtBuff !== "undefined"){
-        txtBuff.forEach(txt => {
-          client.sendMessage(message.from, txt);
         });
       }
 
@@ -2075,11 +2063,7 @@ const handleUserResponse = async (message, state) => {
         battle.buffsAtivos.forEach(buff => {
             battle.applyBuffs(buff);
             if(buff.efeito == "queimadura"){
-              if(typeof txtBuff == "undefined"){
-                var txtBuff = []
-              } else {
                 client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
-              }
             }
             buff.duracao--;
 
