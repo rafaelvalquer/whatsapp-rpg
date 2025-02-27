@@ -1319,7 +1319,7 @@ const handleUserResponse = async (message, state) => {
 
       await client.sendMessage(message.from, JSON.stringify(battle.buffsAtivos));
 
-      if(!txtBuff){
+      if(typeof txtBuff !== "undefined"){
         txtBuff.forEach(txt => {
           client.sendMessage(message.from, txt);
         });
@@ -2088,7 +2088,7 @@ const handleUserResponse = async (message, state) => {
 
       await client.sendMessage(message.from, JSON.stringify(battle.buffsAtivos));
 
-      if(!txtBuff){
+      if(typeof txtBuff !== "undefined"){
         txtBuff.forEach(txt => {
           client.sendMessage(message.from, txt);
         });
