@@ -1307,17 +1307,28 @@ const handleUserResponse = async (message, state) => {
         battle.buffsAtivos.forEach(buff => {
             battle.applyBuffs(buff);
             if(buff.efeito == "queimadura"){
-              client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`);
+              if(!txtBuff){
+                var txtBuff = []
+              }
+              txtBuff.push(`${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
             }
-            buff.duracao--; 
+            buff.duracao--;
+
         });
       }
 
+      await client.sendMessage(message.from, JSON.stringify(buff.battle.buffsAtivos));
+
+      if(txtBuff?.length){
+        txtBuff.forEach(txt => {
+          client.sendMessage(message.from, txt);
+        });
+      }
 
       if (input === "avançar" || input === "1") {
         const result = battle.movePlayer(1); // Move o jogador para frente
         const enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-        await message.reply(result);
+        await client.sendMessage(message.from,result);
         await client.sendMessage(message.from, enemy);
         await client.sendMessage(message.from, battle.displayHP());
 
@@ -2062,13 +2073,25 @@ const handleUserResponse = async (message, state) => {
   
       // Aplicar buffs antes de atacar
       if (battle.buffsAtivos?.length) {
-          battle.buffsAtivos.forEach(buff => {
-              battle.applyBuffs(buff);
-              if(buff.efeito == "queimadura"){
-                client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`);
+        battle.buffsAtivos.forEach(buff => {
+            battle.applyBuffs(buff);
+            if(buff.efeito == "queimadura"){
+              if(!txtBuff){
+                var txtBuff = []
               }
-              buff.duracao--;
-          });
+              txtBuff.push(`${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
+            }
+            buff.duracao--;
+
+        });
+      }
+
+      await client.sendMessage(message.from, JSON.stringify(buff.battle.buffsAtivos));
+
+      if(txtBuff?.length){
+        txtBuff.forEach(txt => {
+          client.sendMessage(message.from, txt);
+        });
       }
   
       // Usar a skill correta
