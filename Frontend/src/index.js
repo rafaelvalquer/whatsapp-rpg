@@ -1310,7 +1310,7 @@ const handleUserResponse = async (message, state) => {
               if(typeof txtBuff == "undefined"){
                 var txtBuff = []
               } else {
-                txtBuff.push(`${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
+                client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
               }
             }
             buff.duracao--;
@@ -1846,9 +1846,7 @@ const handleUserResponse = async (message, state) => {
 
           await client.sendMessage(
             message.from,
-            `O que deseja fazer?  
-        1️⃣ Usar agora  
-        2️⃣ Guardar para mais tarde`
+            `O que deseja fazer? \n1️⃣ Usar agora \n2️⃣ Guardar para mais tarde`
           );
 
           delete battleController[message.from].enemy;
@@ -2080,7 +2078,7 @@ const handleUserResponse = async (message, state) => {
               if(typeof txtBuff == "undefined"){
                 var txtBuff = []
               } else {
-                txtBuff.push(`${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
+                client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor.toFixed(1)} de dano por queimadura.`)
               }
             }
             buff.duracao--;
@@ -2088,14 +2086,6 @@ const handleUserResponse = async (message, state) => {
         });
       }
 
-      await client.sendMessage(message.from, JSON.stringify(battle.buffsAtivos));
-
-      if(typeof txtBuff !== "undefined"){
-        txtBuff.forEach(txt => {
-          client.sendMessage(message.from, txt);
-        });
-      }
-  
       // Usar a skill correta
       switch (skillId) {
           case 101:
@@ -2115,7 +2105,7 @@ const handleUserResponse = async (message, state) => {
               result = battle.bolaDeFogo(skill);
               battle.buffsAtivos.push({
                 nome: "Bola de fogo",
-                valor: battle.player.status.int / 4,
+                valor: Math.floor(battle.player.status.int / 4),
                 efeito: "queimadura",
                 duracao: 3,
                 emoji: "🔥",
