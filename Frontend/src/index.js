@@ -1207,7 +1207,7 @@ const handleUserResponse = async (message, state) => {
           optionsText += `${index + 1}️⃣ ${option.text}\n`;
         });
 
-        client.sendMessage(message.from, step.text);
+        await client.sendMessage(message.from, step.text);
         await client.sendMessage(message.from, optionsText);
 
         userStates[message.from] = "missao";
@@ -1317,7 +1317,7 @@ const handleUserResponse = async (message, state) => {
         });
       }
 
-      await client.sendMessage(message.from, JSON.stringify(buff.battle.buffsAtivos));
+      await client.sendMessage(message.from, JSON.stringify(battle.buffsAtivos));
 
       if(txtBuff?.length){
         txtBuff.forEach(txt => {
@@ -2086,7 +2086,7 @@ const handleUserResponse = async (message, state) => {
         });
       }
 
-      await client.sendMessage(message.from, JSON.stringify(buff.battle.buffsAtivos));
+      await client.sendMessage(message.from, JSON.stringify(battle.buffsAtivos));
 
       if(txtBuff?.length){
         txtBuff.forEach(txt => {
