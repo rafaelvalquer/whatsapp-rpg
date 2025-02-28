@@ -190,7 +190,7 @@ class BattleSystem {
 
     if (this.enemy.enemyHP < 0) this.enemy.enemyHP = 0;
 
-    console.log(`🔥 O inimigo sofre ${dano.toFixed(1)} de dano por queimadura!`);
+    console.log(`🔥 O inimigo sofre ${dano} de dano por queimadura!`);
   }
 
   //#region Skills

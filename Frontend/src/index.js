@@ -1329,29 +1329,27 @@ const handleUserResponse = async (message, state) => {
 
       if (battle.buffsAtivos?.length) {
         // Aplicar buffs e reduzir duração
-        battle.buffsAtivos.forEach(buff => {
-            battle.applyBuffs(buff);
-            if(buff.efeito == "queimadura"){
-              client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor} de dano por queimadura.`)
-            }
-            buff.duracao--;
-
-        });
-      }
-      //Verificar se o inimigo foi derrotado
-      if (battle.enemy.enemyHP <= 0) {
-        await client.sendMessage(message.from, result);
-
-        const respostaLevelUp = verificarLevelUp(battle.player); // Verificar se o personagem pulou de LV
-        battle.player = respostaLevelUp.personagem; // Atualiza os dados do usuário
-        const XP = displayXP(
-          battle.player.status.xp,
-          battle.player.status.lv
-        );
-        await client.sendMessage(
-          message.from,
-          respostaLevelUp.mensagem + `\n${XP}`
-        );
+        for (const buff of battle.buffsAtivos) {
+          battle.applyBuffs(buff);
+      
+          if (buff.efeito == "queimadura") {
+              client.sendMessage(message.from, `${buff.emoji} O ${battle.enemy.enemyName} está em chamas! Ele sofre ${buff.valor} de dano por queimadura.`);
+          }
+      
+          if (battle.enemy.enemyHP <= 0) {
+              client.sendMessage(message.from, `${buff.emoji} O ${battle.enemy.enemyName} não aguentou ${buff.efeito} e foi derrotado! 🎉`);
+      
+              const respostaLevelUp = verificarLevelUp(battle.player);
+              battle.player = respostaLevelUp.personagem;
+              const XP = displayXP(battle.player.status.xp, battle.player.status.lv);
+      
+              client.sendMessage(message.from, respostaLevelUp.mensagem + `\n${XP}`);
+      
+              break; // 🔥 Para o loop imediatamente se o inimigo morrer
+          }
+      
+          buff.duracao--;
+        }
       } else {
 
         if (input === "avançar" || input === "1") {
@@ -1460,8 +1458,6 @@ const handleUserResponse = async (message, state) => {
           );
         }
       }
-
-
 
       //Atualizar Personagem no banco
       const updates = {
@@ -2113,9 +2109,25 @@ const handleUserResponse = async (message, state) => {
         });
       }
 
-      // Se o inimigo foi derrotado
-      if (battle.enemy.enemyHP <= 0) {
-        return await verificarInimigoDerrotado(message, battle);
+
+      if (battle.buffsAtivos?.length) {
+        // Aplicar buffs e reduzir duração
+        for (const buff of battle.buffsAtivos) {
+          battle.applyBuffs(buff);
+      
+          if (buff.efeito == "queimadura") {
+              client.sendMessage(message.from, `${buff.emoji} O ${battle.enemy.enemyName} está em chamas! Ele sofre ${buff.valor} de dano por queimadura.`);
+          }
+      
+          // Se o inimigo foi derrotado
+          if (battle.enemy.enemyHP <= 0) {
+            client.sendMessage(message.from, `${buff.emoji} O ${battle.enemy.enemyName} não aguentou ${buff.efeito} e foi derrotado! 🎉`);
+      
+            return await verificarInimigoDerrotado(message, battle);
+          }
+      
+          buff.duracao--;
+        }
       }
 
       // Usar a skill correta
