@@ -868,7 +868,8 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       })
       .join("\n");
     
-    const mensagem = `${displayMana(userData[message.from].status.mana, userData[message.from].status.maxMana)}\n🎭*Selecione sua habilidade:*\n\n${listaSkills}`;
+    var mensagem = `${displayMana(userData[message.from].status.mana, userData[message.from].status.maxMana)}\n🎭*Selecione sua habilidade:*\n\n${listaSkills}`;
+    mensagem += "\n0️⃣ Voltar";
     await client.sendMessage(message.from, mensagem);
 
     userStates[message.from] = "usarSkill.retorno"; // Atualize corretamente o estado
@@ -2077,145 +2078,158 @@ const handleUserResponse = async (message, state) => {
     }
 
     case "usarSkill.retorno": {
-      const skillSelecionadaIndex = parseInt(input) - 1;
-      const skillId = userData[message.from].status.skills[skillSelecionadaIndex];
-  
-      if (!skillId) {
-          await client.sendMessage(
-              message.from,
-              "❌ Escolha inválida! Selecione uma das habilidades listadas."
-          );
-          return navigationFlow.usarSkill(message);
-      }
-  
-      const skill = skills[skillId];
-  
-      if (userData[message.from].status.mana < skill.custo) {
-          await client.sendMessage(
-              message.from,
-              `💠 Mana insuficiente! Você precisa de ${skill.custo} Mana para usar *${skill.nome}*`
-          );
-          return navigationFlow.batalha(message);
-      }
-  
-      const battle = battleController[message.from]?.battle;
-      let result = "";
 
-      if (!battle.buffsAtivos) {
-        // Cria a propriedade buffsAtivos como um array e adiciona o primeiro buff
-        battle.buffsAtivos = [];
-      }
+      if(input != '0'){
+        const skillSelecionadaIndex = parseInt(input) - 1;
+        const skillId = userData[message.from].status.skills[skillSelecionadaIndex];
+    
+        if (!skillId) {
+            await client.sendMessage(
+                message.from,
+                "❌ Escolha inválida! Selecione uma das habilidades listadas."
+            );
+            return navigationFlow.usarSkill(message);
+        }
+    
+        const skill = skills[skillId];
+    
+        if (userData[message.from].status.mana < skill.custo) {
+            await client.sendMessage(
+                message.from,
+                `💠 Mana insuficiente! Você precisa de ${skill.custo} Mana para usar *${skill.nome}*`
+            );
+            return navigationFlow.batalha(message);
+        }
+    
+        const battle = battleController[message.from]?.battle;
+        let result = "";
   
-      // Aplicar buffs antes de atacar
-      if (battle.buffsAtivos?.length) {
-        battle.buffsAtivos.forEach(buff => {
+        if (!battle.buffsAtivos) {
+          // Cria a propriedade buffsAtivos como um array e adiciona o primeiro buff
+          battle.buffsAtivos = [];
+        }
+    
+        // Aplicar buffs antes de atacar
+        if (battle.buffsAtivos?.length) {
+          battle.buffsAtivos.forEach(buff => {
+              battle.applyBuffs(buff);
+              if(buff.efeito == "queimadura"){
+                  client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor} de dano por queimadura.`)
+              }
+              buff.duracao--;
+  
+          });
+        }
+  
+  
+        if (battle.buffsAtivos?.length) {
+          // Aplicar buffs e reduzir duração
+          for (const buff of battle.buffsAtivos) {
             battle.applyBuffs(buff);
-            if(buff.efeito == "queimadura"){
-                client.sendMessage(message.from, `${buff.emoji} O inimigo está em chamas! Ele sofre ${buff.valor} de dano por queimadura.`)
+        
+            if (buff.efeito == "queimadura") {
+                client.sendMessage(message.from, `${buff.emoji} O ${battle.enemy.enemyName} está em chamas! Ele sofre ${buff.valor} de dano por queimadura.`);
             }
+        
+            // Se o inimigo foi derrotado
+            if (battle.enemy.enemyHP <= 0) {
+              client.sendMessage(message.from, `${buff.emoji} O ${battle.enemy.enemyName} não aguentou ${buff.efeito} e foi derrotado! 🎉`);
+        
+              return await verificarInimigoDerrotado(message, battle);
+            }
+        
             buff.duracao--;
-
+          }
+        }
+  
+        // Usar a skill correta
+        switch (skillId) {
+            case 101:
+                result = battle.golpeBrutal(skill);
+                break;
+            case 102:
+                result = `🛡️ *Defesa Implacável ativada!* Você receberá metade do dano pelos próximos 3 turnos!`;
+                battle.buffsAtivos.push({
+                    nome: "Defesa Implacável",
+                    valor: battle.player.status.con,
+                    efeito: "reduzirDano",
+                    duracao: 3,
+                    emoji: "🛡️",
+                });
+                break;
+            case 301:
+                result = battle.bolaDeFogo(skill);
+                battle.buffsAtivos.push({
+                  nome: "Bola de fogo",
+                  valor: Math.floor(battle.player.status.int / 4),
+                  efeito: "queimadura",
+                  duracao: 3,
+                  emoji: "🔥",
+              });
+                break;
+            default:
+                await client.sendMessage(message.from, "❌ Skill inválida.");
+                return navigationFlow.usarSkill(message);
+        }
+    
+        await message.reply(result);
+    
+        // Se o inimigo foi derrotado
+        if (battle.enemy.enemyHP <= 0) {
+          return await verificarInimigoDerrotado(message, battle);
+      }
+    
+        // Se o jogador foi derrotado
+        if (battle.player.status.hp <= 0) {
+            delete battleController[message.from].battle;
+            delete battleController[message.from].enemy;
+    
+            await message.reply(
+                "⚔️ Mas seu destino ainda não acabou... Você foi encontrado e levado ao Santuário. 🏰"
+            );
+    
+            // Atualiza o personagem antes de sair da função
+            await updateCharacterStatus(message.from, battle.player.status);
+            return navigationFlow.santuario(message);
+        }
+    
+        // Ação do inimigo se a luta continua
+        const enemyAction = battle.enemyAction();
+        await client.sendMessage(message.from, enemyAction);
+        await client.sendMessage(message.from, battle.displayHP());
+    
+        // Remover buffs expirados
+        if (Array.isArray(battle?.buffsAtivos) && battle.buffsAtivos.length) {
+        battle.buffsAtivos = battle.buffsAtivos.filter(buff => {
+            if (buff.duracao <= 0) {
+                client.sendMessage(message.from, `${buff.emoji} Seu Buff *${buff.nome}* acabou.`);
+                return false;
+            }
+            return true;
         });
       }
-
-
-      if (battle.buffsAtivos?.length) {
-        // Aplicar buffs e reduzir duração
-        for (const buff of battle.buffsAtivos) {
-          battle.applyBuffs(buff);
-      
-          if (buff.efeito == "queimadura") {
-              client.sendMessage(message.from, `${buff.emoji} O ${battle.enemy.enemyName} está em chamas! Ele sofre ${buff.valor} de dano por queimadura.`);
-          }
-      
-          // Se o inimigo foi derrotado
-          if (battle.enemy.enemyHP <= 0) {
-            client.sendMessage(message.from, `${buff.emoji} O ${battle.enemy.enemyName} não aguentou ${buff.efeito} e foi derrotado! 🎉`);
-      
-            return await verificarInimigoDerrotado(message, battle);
-          }
-      
-          buff.duracao--;
-        }
-      }
-
-      // Usar a skill correta
-      switch (skillId) {
-          case 101:
-              result = battle.golpeBrutal(skill);
-              break;
-          case 102:
-              result = `🛡️ *Defesa Implacável ativada!* Você receberá metade do dano pelos próximos 3 turnos!`;
-              battle.buffsAtivos.push({
-                  nome: "Defesa Implacável",
-                  valor: battle.player.status.con,
-                  efeito: "reduzirDano",
-                  duracao: 3,
-                  emoji: "🛡️",
-              });
-              break;
-          case 301:
-              result = battle.bolaDeFogo(skill);
-              battle.buffsAtivos.push({
-                nome: "Bola de fogo",
-                valor: Math.floor(battle.player.status.int / 4),
-                efeito: "queimadura",
-                duracao: 3,
-                emoji: "🔥",
-            });
-              break;
-          default:
-              await client.sendMessage(message.from, "❌ Skill inválida.");
-              return navigationFlow.usarSkill(message);
-      }
-  
-      await message.reply(result);
-  
-      // Se o inimigo foi derrotado
-      if (battle.enemy.enemyHP <= 0) {
-        return await verificarInimigoDerrotado(message, battle);
-    }
-  
-      // Se o jogador foi derrotado
-      if (battle.player.status.hp <= 0) {
-          delete battleController[message.from].battle;
-          delete battleController[message.from].enemy;
-  
-          await message.reply(
-              "⚔️ Mas seu destino ainda não acabou... Você foi encontrado e levado ao Santuário. 🏰"
-          );
-  
-          // Atualiza o personagem antes de sair da função
-          await updateCharacterStatus(message.from, battle.player.status);
-          return navigationFlow.santuario(message);
-      }
-  
-      // Ação do inimigo se a luta continua
-      const enemyAction = battle.enemyAction();
-      await client.sendMessage(message.from, enemyAction);
-      await client.sendMessage(message.from, battle.displayHP());
-  
-      // Remover buffs expirados
-      if (Array.isArray(battle?.buffsAtivos) && battle.buffsAtivos.length) {
-      battle.buffsAtivos = battle.buffsAtivos.filter(buff => {
-          if (buff.duracao <= 0) {
-              client.sendMessage(message.from, `${buff.emoji} Seu Buff *${buff.nome}* acabou.`);
-              return false;
-          }
-          return true;
-      });
-    }
-  
-      // Atualizar personagem antes de continuar
-      await updateCharacterStatus(message.from, battle.player.status);
-  
-      // Exibir o grid do combate e continuar a batalha
-      await client.sendMessage(
+    
+        // Atualizar personagem antes de continuar
+        await updateCharacterStatus(message.from, battle.player.status);
+    
+        // Exibir o grid do combate e continuar a batalha
+        await client.sendMessage(
+            message.from,
+            `Estado atual:\n${battle.displayGrid()}`
+        );
+    
+        return navigationFlow.batalha(message);
+      } else {
+        //Digitou 0 para voltar para a batalha
+        const battle = battleController[message.from]?.battle;
+        // Exibir o grid do combate e continuar a batalha
+        await client.sendMessage(
           message.from,
           `Estado atual:\n${battle.displayGrid()}`
-      );
-  
-      return navigationFlow.batalha(message);
+        );
+        return navigationFlow.batalha(message);
+      }
+
   }
   
 
