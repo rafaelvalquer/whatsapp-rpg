@@ -1859,6 +1859,7 @@ const handleUserResponse = async (message, state) => {
           navigationFlow.usarItem(message);
         }
       }
+      battle = battleController[message.from]?.battle
       await client.sendMessage(
         message.from,
         `Estado atual:\n${battle.displayGrid()}`
