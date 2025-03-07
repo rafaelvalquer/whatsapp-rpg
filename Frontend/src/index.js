@@ -641,7 +641,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       )
       .join("\n");
 
-      txtItem += '0️⃣ Voltar'
+      txtItem += "\n0️⃣ Voltar";
     await client.sendMessage(message.from, txtItem);
 
     userStates[message.from] = "usarItem.retorno"; // Atualize corretamente o estado
@@ -1858,7 +1858,11 @@ const handleUserResponse = async (message, state) => {
           await client.sendMessage(message.from, "❌ Digite um item válido");
           navigationFlow.usarItem(message);
         }
-      } 
+      }
+      await client.sendMessage(
+        message.from,
+        `Estado atual:\n${battle.displayGrid()}`
+      );
       navigationFlow.batalha(message);
       break;
     }
