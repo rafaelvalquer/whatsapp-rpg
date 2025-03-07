@@ -1705,6 +1705,12 @@ const handleUserResponse = async (message, state) => {
         statusCopy.itemMissao[encontraItem.id] = true;
         encontraItem.txt = `🗃️ Você obteve o item ${items[encontraItem.id].nome}.`;
         }
+      } else {
+        await message.reply(
+          "❌ Opção inválida."
+        );
+        navigationFlow.encontraItem(message);
+        return; // 🔴 Adicione essa linha para interromper o fluxo aqui!
       }
 
       // Atualizar Personagem no banco de dados
