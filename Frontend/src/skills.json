@@ -30,7 +30,7 @@
   "302": {
     "nome": "Empurrão Arcano",
     "descricao": "Empurra o inimigo para trás e pode atordoar.",
-    "lv": 2,
+    "lv": 5,
     "tipo": "ativa",
     "custo": 10
   }
