@@ -641,6 +641,7 @@ Escolha uma missão para iniciar a sua jornada 🗺️:`
       )
       .join("\n");
 
+      txtItem += '0️⃣ Voltar'
     await client.sendMessage(message.from, txtItem);
 
     userStates[message.from] = "usarItem.retorno"; // Atualize corretamente o estado
@@ -1737,124 +1738,127 @@ const handleUserResponse = async (message, state) => {
     }
 
     case "usarItem.retorno": {
-      // Criar uma cópia do status do usuário antes de modificar
-      let statusCopy = structuredClone(userData[message.from].status);
+      
+      if(input != '0'){
+        // Criar uma cópia do status do usuário antes de modificar
+        let statusCopy = structuredClone(userData[message.from].status);
 
-      let usarItem = {};
+        let usarItem = {};
 
-      usarItem.userItems = statusCopy.item;
-      usarItem.opcoesValidas = Object.keys(usarItem.userItems).map((_, index) =>
-        (index + 1).toString()
-      );
+        usarItem.userItems = statusCopy.item;
+        usarItem.opcoesValidas = Object.keys(usarItem.userItems).map((_, index) =>
+          (index + 1).toString()
+        );
 
-      if (usarItem.opcoesValidas.includes(input)) {
-        // Validar Input
-        usarItem.itemIDs = Object.keys(usarItem.userItems);
-        usarItem.escolhaIndex = parseInt(input, 10) - 1;
+        if (usarItem.opcoesValidas.includes(input)) {
+          // Validar Input
+          usarItem.itemIDs = Object.keys(usarItem.userItems);
+          usarItem.escolhaIndex = parseInt(input, 10) - 1;
 
-        if (
-          usarItem.escolhaIndex >= 0 &&
-          usarItem.escolhaIndex < usarItem.itemIDs.length
-        ) {
-          usarItem.itemID = usarItem.itemIDs[usarItem.escolhaIndex];
+          if (
+            usarItem.escolhaIndex >= 0 &&
+            usarItem.escolhaIndex < usarItem.itemIDs.length
+          ) {
+            usarItem.itemID = usarItem.itemIDs[usarItem.escolhaIndex];
 
-          // Aplicar os efeitos do item no status copiado
-          if (items[usarItem.itemID].tipo === "hp") {
-            statusCopy.hp = Math.min(
-              statusCopy.maxHP,
-              statusCopy.hp + items[usarItem.itemID].valor
-            );
-            usarItem.txt = `💖 Você usou ${items[usarItem.itemID].nome}${
-              items[usarItem.itemID].emoji
-            } e recuperou *${items[usarItem.itemID].valor}* de HP!`;
-          } else if (items[usarItem.itemID].tipo === "mana") {
-            statusCopy.mana = Math.min(
-              statusCopy.maxMana,
-              statusCopy.mana + items[usarItem.itemID].valor
-            );
-            usarItem.txt = `🔷 Você usou ${items[usarItem.itemID].nome}${
-              items[usarItem.itemID].emoji
-            } e recuperou *${items[usarItem.itemID].valor}* de Mana!`;
-          } else if (items[usarItem.itemID].tipo === "buff") {
-            usarItem.txt = `💪 Você usou ${items[usarItem.itemID].nome}${
-              items[usarItem.itemID].emoji
-            } e aumentou sua Força em ${items[usarItem.itemID].valor} por ${
-              items[usarItem.itemID].duracao
-            } turnos!`;
+            // Aplicar os efeitos do item no status copiado
+            if (items[usarItem.itemID].tipo === "hp") {
+              statusCopy.hp = Math.min(
+                statusCopy.maxHP,
+                statusCopy.hp + items[usarItem.itemID].valor
+              );
+              usarItem.txt = `💖 Você usou ${items[usarItem.itemID].nome}${
+                items[usarItem.itemID].emoji
+              } e recuperou *${items[usarItem.itemID].valor}* de HP!`;
+            } else if (items[usarItem.itemID].tipo === "mana") {
+              statusCopy.mana = Math.min(
+                statusCopy.maxMana,
+                statusCopy.mana + items[usarItem.itemID].valor
+              );
+              usarItem.txt = `🔷 Você usou ${items[usarItem.itemID].nome}${
+                items[usarItem.itemID].emoji
+              } e recuperou *${items[usarItem.itemID].valor}* de Mana!`;
+            } else if (items[usarItem.itemID].tipo === "buff") {
+              usarItem.txt = `💪 Você usou ${items[usarItem.itemID].nome}${
+                items[usarItem.itemID].emoji
+              } e aumentou sua Força em ${items[usarItem.itemID].valor} por ${
+                items[usarItem.itemID].duracao
+              } turnos!`;
 
-            // Verifica se não existe buffs ativos
-            if (!battleController[message.from].battle.buffsAtivos) {
-              // Cria a propriedade buffsAtivos como um array e adiciona o primeiro buff
-              battleController[message.from].battle.buffsAtivos = [
-                {
+              // Verifica se não existe buffs ativos
+              if (!battleController[message.from].battle.buffsAtivos) {
+                // Cria a propriedade buffsAtivos como um array e adiciona o primeiro buff
+                battleController[message.from].battle.buffsAtivos = [
+                  {
+                    nome: items[usarItem.itemID].nome,
+                    valor: items[usarItem.itemID].valor,
+                    duracao: items[usarItem.itemID].duracao,
+                    efeito: items[usarItem.itemID].efeito,
+                    emoji: items[usarItem.itemID].emoji
+                  },
+                ];
+              } else {
+                // Adiciona o novo buff ao array de buffs
+                battleController[message.from].battle.buffsAtivos.push({
                   nome: items[usarItem.itemID].nome,
                   valor: items[usarItem.itemID].valor,
                   duracao: items[usarItem.itemID].duracao,
                   efeito: items[usarItem.itemID].efeito,
                   emoji: items[usarItem.itemID].emoji
-                },
-              ];
+                });
+              }
             } else {
-              // Adiciona o novo buff ao array de buffs
-              battleController[message.from].battle.buffsAtivos.push({
-                nome: items[usarItem.itemID].nome,
-                valor: items[usarItem.itemID].valor,
-                duracao: items[usarItem.itemID].duracao,
-                efeito: items[usarItem.itemID].efeito,
-                emoji: items[usarItem.itemID].emoji
-              });
+              usarItem.txt = `🤔 Esse item não tem efeito conhecido...`;
             }
+
+            // Reduzir a quantidade do item
+            statusCopy.item[usarItem.itemID] -= 1;
+
+            // Se a quantidade chegar a 0, remover do inventário
+            if (statusCopy.item[usarItem.itemID] <= 0) {
+              delete statusCopy.item[usarItem.itemID];
+            }
+          }
+
+          await client.sendMessage(message.from, usarItem.txt);
+
+          battle = battleController[message.from]?.battle;
+          battle.player.status = statusCopy;
+          usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
+
+          await client.sendMessage(message.from, usarItem.enemy);
+          await client.sendMessage(message.from, battle.displayHP());
+          await client.sendMessage(
+            message.from,
+            `Estado atual:\n${battle.displayGrid()}`
+          );
+
+          // Atualizar Personagem no banco de dados
+          usarItem.updates = { status: statusCopy };
+          usarItem.update = await updateCharacter(
+            userData[message.from],
+            usarItem.updates
+          );
+
+          console.log("usarItem = " + JSON.stringify(usarItem));
+
+          if (usarItem.update.success) {
+            await client.sendMessage(
+              message.from,
+              "Personagem atualizado com sucesso no banco"
+            );
+            userData[message.from].status = usarItem.update.user.status; // Atualiza os dados do personagem localmente
           } else {
-            usarItem.txt = `🤔 Esse item não tem efeito conhecido...`;
+            await client.sendMessage(
+              message.from,
+              "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
+            );
           }
-
-          // Reduzir a quantidade do item
-          statusCopy.item[usarItem.itemID] -= 1;
-
-          // Se a quantidade chegar a 0, remover do inventário
-          if (statusCopy.item[usarItem.itemID] <= 0) {
-            delete statusCopy.item[usarItem.itemID];
-          }
-        }
-
-        await client.sendMessage(message.from, usarItem.txt);
-
-        battle = battleController[message.from]?.battle;
-        battle.player.status = statusCopy;
-        usarItem.enemy = battle.enemyAction(); // Move o inimigo para frente ou ataca
-
-        await client.sendMessage(message.from, usarItem.enemy);
-        await client.sendMessage(message.from, battle.displayHP());
-        await client.sendMessage(
-          message.from,
-          `Estado atual:\n${battle.displayGrid()}`
-        );
-
-        // Atualizar Personagem no banco de dados
-        usarItem.updates = { status: statusCopy };
-        usarItem.update = await updateCharacter(
-          userData[message.from],
-          usarItem.updates
-        );
-
-        console.log("usarItem = " + JSON.stringify(usarItem));
-
-        if (usarItem.update.success) {
-          await client.sendMessage(
-            message.from,
-            "Personagem atualizado com sucesso no banco"
-          );
-          userData[message.from].status = usarItem.update.user.status; // Atualiza os dados do personagem localmente
         } else {
-          await client.sendMessage(
-            message.from,
-            "Houve um problema ao atualizar seu personagem. Por favor, tente novamente."
-          );
+          await client.sendMessage(message.from, "❌ Digite um item válido");
+          navigationFlow.usarItem(message);
         }
-      } else {
-        await client.sendMessage(message.from, "❌ Digite um item válido");
-        navigationFlow.usarItem(message);
-      }
+      } 
       navigationFlow.batalha(message);
       break;
     }
