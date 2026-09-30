@@ -8,8 +8,6 @@ class BattleSystem {
     this.playerPosition = playerPosition;
     this.enemyPosition = enemy.position;
 
-    console.log('Player = ' + JSON.stringify(player))
-    console.log('Enemy = ' + JSON.stringify(enemy))
   }
 
   movePlayer(direction) {
@@ -59,7 +57,7 @@ class BattleSystem {
       if (distancia === 1) {
   
         // Dano base + dano das armas
-        const danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1);
+        const danoBase = Math.max(this.player.status.str + this.getBuff("str") - this.enemy.enemyCon, 1);
         const damage = danoBase + poderArma1 + poderArma2;
 
         // Reduzindo HP do inimigo
@@ -72,8 +70,8 @@ class BattleSystem {
     }
     if (this.player.classe === "arqueiro") {
       if (distancia >= 1 && distancia <= 3) {
-        let danoBase = Math.max(this.player.status.agi - this.enemy.enemyCon, 1);
-        if (distancia === 1) danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1); // Se estiver perto, usa STR
+        let danoBase = Math.max(this.player.status.agi + this.getBuff("agi") - this.enemy.enemyCon, 1);
+        if (distancia === 1) danoBase = Math.max(this.player.status.str + this.getBuff("str") - this.enemy.enemyCon, 1);
   
         const damage = danoBase + poderArma1 + poderArma2;
         this.enemy.enemyHP -= damage;
@@ -84,8 +82,8 @@ class BattleSystem {
     }
     if (this.player.classe === "mago") {
       if (distancia >= 1 && distancia <= 5) {
-        let danoBase = Math.max(this.player.status.int - this.enemy.enemyCon, 1);
-        if (distancia === 1) danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1); // Se estiver perto, usa STR
+        let danoBase = Math.max(this.player.status.int + this.getBuff("int") - this.enemy.enemyCon, 1);
+        if (distancia === 1) danoBase = Math.max(this.player.status.str + this.getBuff("str") - this.enemy.enemyCon, 1);
   
         const damage = danoBase + poderArma1 + poderArma2;
         this.enemy.enemyHP -= damage;
@@ -99,7 +97,6 @@ class BattleSystem {
   verificarInimigoDerrotado(damage) {
     if (this.enemy.enemyHP <= 0) {
       const xp = this.enemy.enemyXP;
-      this.player.status.xp += xp;
       return `🧑 *${this.player.name}*:\nAtacou o inimigo *${this.enemy.enemyName}* e causou *${damage}* de dano! 💥\nO ${this.enemy.enemyName} foi derrotado! 🎉 Parabéns, herói! 🏆\nVocê ganhou *${this.enemy.enemyXP}* XP! 🌟`;
     }
     return `🧑  *${this.player.name}*:\nAtacou o inimigo *${this.enemy.enemyName}* e causou *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP}🩸`;
@@ -117,11 +114,12 @@ class BattleSystem {
     const defesaArma2 = arma2 ? arma2.con : 0;
 
     // Defesa total do jogador (constituição + defesa das armas)
-    const defesaTotal = this.player.status.con + defesaArma1 + defesaArma2;
+    const defesaTotal = this.player.status.con + this.getBuff("con") + defesaArma1 + defesaArma2;
 
     // Se o inimigo já está ao lado do jogador, ele ataca e não se move
     if (Math.abs(this.enemyPosition - this.playerPosition) === 1) {
-      const damage = Math.max(this.enemy.enemyStr - defesaTotal, 1);
+      const baseDamage = Math.max(this.enemy.enemyStr - defesaTotal, 1);
+      const damage = this.getBuff("reduzirDano") > 0 ? Math.max(Math.ceil(baseDamage / 2), 1) : baseDamage;
       this.player.status.hp -= damage;
 
       if (this.player.status.hp <= 0) {
@@ -164,22 +162,27 @@ class BattleSystem {
   }
 
   applyBuffs(buff) {
-    if (buff.efeito === "str") this.player.status.str += buff.valor;
-    if (buff.efeito === "con") this.player.status.con += buff.valor;
-    if (buff.efeito === "agi") this.player.status.agi += buff.valor;
-    if (buff.efeito === "int") this.player.status.int += buff.valor;
-    if (buff.efeito === "reduzirDano") this.player.status.con += buff.valor;
     if (buff.efeito === "queimadura") this.aplicarDanoQueimadura(buff.valor);
   }
 
-  removeBuffs(buffs) {
-    buffs.forEach(buff => {
-      if (buff.efeito === "str") this.player.status.str -= buff.valor;
-      if (buff.efeito === "con") this.player.status.con -= buff.valor;
-      if (buff.efeito === "agi") this.player.status.agi -= buff.valor;
-      if (buff.efeito === "int") this.player.status.int -= buff.valor;
-      if (buff.efeito === "reduzirDano") this.player.status.con -= buff.valor;
-    });
+  getBuff(effect) {
+    return (this.buffsAtivos || []).filter((buff) => buff.efeito === effect).reduce((sum, buff) => sum + buff.valor, 0);
+  }
+
+  tickBuffs(buffsToTick = this.buffsAtivos || []) {
+    const expired = [];
+    for (const buff of buffsToTick) {
+      if (!(this.buffsAtivos || []).includes(buff)) continue;
+      buff.duracao -= 1;
+      if (buff.duracao <= 0) expired.push(buff);
+    }
+    this.buffsAtivos = (this.buffsAtivos || []).filter((buff) => !expired.includes(buff));
+    return expired;
+  }
+
+  removeBuffs(buffs = []) {
+    const removed = new Set(buffs);
+    this.buffsAtivos = (this.buffsAtivos || []).filter((buff) => !removed.has(buff));
   }
 
     // Função para aplicar o dano de queimadura em cada turno
@@ -213,9 +216,9 @@ class BattleSystem {
         if (distancia === 1) {
     
           // Dano base + dano das armas
-          const danoBase = Math.max(this.player.status.str - this.enemy.enemyCon, 1);
-          const damage = (danoBase + poderArma1 + poderArma2) * 2;
-  
+          const danoBase = Math.max(this.player.status.str + this.getBuff("str") - this.enemy.enemyCon, 1);
+        const damage = (danoBase + poderArma1 + poderArma2) * 2;
+
           // Reduzindo Mana do player
           this.player.status.mana -= skill.custo;
           // Reduzindo HP do inimigo
@@ -224,7 +227,6 @@ class BattleSystem {
           
           if (this.enemy.enemyHP <= 0) {
             const xp = this.enemy.enemyXP;
-            this.player.status.xp += xp;
             return `🧑 *${this.player.name}*:\nUsou *${skill.nome}* e desferiu um golpe devastador! ⚡🔥\nO *${this.enemy.enemyName}* não resistiu e foi derrotado! 🎉\n🏆 Você ganhou *${xp}* XP! 🌟`;
           }
           return `🧑 *${this.player.name}*:\nUtilizou *${skill.nome}* causando *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP}🩸`;
@@ -252,7 +254,7 @@ class BattleSystem {
     if (distancia >= 1 && distancia <= 5) {
 
       // Dano base + dano das armas
-      const danoBase = Math.max(this.player.status.int - this.enemy.enemyCon, 1);
+      const danoBase = Math.max(this.player.status.int + this.getBuff("int") - this.enemy.enemyCon, 1);
       const damage = (danoBase + poderArma1 + poderArma2) * 2;
 
       // Reduzindo Mana do player
@@ -263,7 +265,6 @@ class BattleSystem {
       
       if (this.enemy.enemyHP <= 0) {
         const xp = this.enemy.enemyXP;
-        this.player.status.xp += xp;
         return `🧑 *${this.player.name}*:\nUsou *${skill.nome}* e desferiu um golpe devastador! ⚡🔥\nO *${this.enemy.enemyName}* não resistiu e foi derrotado! 🎉\n🏆 Você ganhou *${xp}* XP! 🌟`;
       }
       return `🧑 *${this.player.name}*:\nUtilizou *${skill.nome}* causando *${damage}* de dano! 💥\nHP do inimigo restante: ${this.enemy.enemyHP}🩸`;

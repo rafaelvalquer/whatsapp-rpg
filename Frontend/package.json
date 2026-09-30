@@ -5,6 +5,7 @@
     "whatsapp-web.js": "^1.26.0"
   },
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test": "node --experimental-test-isolation=none --test"
   }
 }

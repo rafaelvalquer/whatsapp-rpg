@@ -5,6 +5,7 @@
     "mongoose": "^8.9.3"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --experimental-test-isolation=none --test"
   }
 }
